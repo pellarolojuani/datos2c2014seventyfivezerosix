@@ -7,7 +7,7 @@
 
 #include "parser/ArbolB.h"
 #include "parser/Nodo.h"
-#include "NGrama.h"
+#include "NGrama/NGrama.h"
 
 #include <stdio.h>
 #include <stdlib.h>
