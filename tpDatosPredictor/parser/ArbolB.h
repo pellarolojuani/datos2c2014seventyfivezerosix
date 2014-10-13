@@ -24,7 +24,6 @@ Axiomas: 1 - Todas sus hojas estan en el mismo nivel.
 #include <iostream>
 #include <string.h>
 #include <stdio.h>
-#include "../../Parser/Posiciones.h"
 
 using namespace std;
 
@@ -58,7 +57,7 @@ struct B_nodo
 
 //			ARBOL B:
 //TODO LO QUE HAY QUE SABER DE ESTE CODIGO:
-//	ArbolB unArbol = new ArbolB(); --> para crear el arbol
+//	abb::ArbolB<Nodo,40> *lexico = new abb::ArbolB<Nodo, 40>; --> para crear el arbol
 //	unArbol.insertar(unNodo); --> para insertar un nodo al arbol
 //	unArbol.buscar(unNodo); --> chequea que ese nodo este en el arbol
 //	unArbol.buscarYdevolver(unNodo); --> si existe el nodo en el arbol, lo devuelve

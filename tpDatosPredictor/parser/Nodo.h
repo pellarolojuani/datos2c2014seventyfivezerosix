@@ -37,3 +37,4 @@ class Nodo {
 	bool operator>(Nodo&);//compara a mayor
 	bool operator=(Nodo);//asigna
 };
+#endif /* NODO_H_ */
