@@ -8,6 +8,9 @@
 #ifndef CONSTANTES_H_
 #define CONSTANTES_H_
 
+#ifndef LONG_MAX_LINEA
+#define LONG_MAX_LINEA						300
+#endif
 
 #ifndef READ
 #define READ								"r" //apertura para lectura. debe existir previamente

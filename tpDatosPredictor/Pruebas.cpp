@@ -8,6 +8,7 @@
 #include "parser/ArbolB.h"
 #include "parser/Nodo.h"
 #include "NGrama/NGrama.h"
+#include "parser/Parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +22,7 @@
 
 using namespace std;
 
-void PruebaArbol() {
+void pruebaArbol() {
 
 	abb::ArbolB<Nodo,40> *lexico = new abb::ArbolB<Nodo, 40>;
 	Nodo aux;
@@ -41,8 +42,6 @@ void pruebaNgrama(){
 	NGrama ngrama5 =  NGrama(oracion, 5,",");
 	ngrama5.stringANgrama();
 
-
-
 	vector<pair<string,int> > listaNgrama;
 	listaNgrama = ngrama5.getListaNgrama();
     std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
@@ -55,10 +54,58 @@ void pruebaNgrama(){
 	}
 }
 
-int main(int argc, char *argv[]){
-	//aca voy llamando a las diferentes pruebas
+void pruebaParser(){
+	Parser unParser;
+	unParser.abrirArchivo("train_v2.txt");
 
-	//PruebaArbol();
-	pruebaNgrama();
+	for (int i = 0; i < 100; i ++){
+		cout<<unParser.getSiguienteTermino()<<endl;
+	}
+	unParser.cerrarArchivo();
+}
+
+void pruebaParser2(){
+
+	/*
+	 * esta prueba devuelve los primeros 10 renglones del set de entrenamiento.
+	 * Para tener una idea de como esta formado el archivo de 4gb!!
+	 */
+
+	Parser unParser;
+	unParser.abrirArchivo("train_v2.txt");
+
+	for (int i = 0; i < 10; i++){
+		cout<<unParser.getLinea()<<endl;
+	}
+	unParser.cerrarArchivo();
+}
+
+int main(int argc, char *argv[]){
+
+//Aca voy habilitando las pruebas que quiera correr
+	int i=0;
+	cout<<"ELEGIR NUMERO DE PRUEBA: "<<endl;
+	cout<<"1- testPruebaArbol"<<endl;
+	cout<<"2- testPruebaNgrama"<<endl;
+	cout<<"3- testPruebaParser"<<endl;
+	cout<<"4- testPruebaParser2"<<endl;
+	cin>>i;
+	switch (i){
+		case 1: pruebaArbol();
+				break;
+		case 2: pruebaNgrama();
+				break;
+		case 3: pruebaParser();
+				break;
+		case 4: pruebaParser2();
+				break;
+
+	}
+	cout<<endl;
+
+	cout<<"FIN DE PRUEBAS."<<endl;
+	cout<<endl;
+	return 0;
+
 
 }

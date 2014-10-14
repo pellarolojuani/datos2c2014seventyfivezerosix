@@ -26,6 +26,9 @@ public:
 	virtual ~Parser();
 
 	bool abrirArchivo(string nombreArchivo);
-	string getSiguienteTermino();
+	void cerrarArchivo();
+	string getSiguienteTermino(); //devuelve el siguiente termino del texto
+	string getLinea(); //devuelve el siguiente renglon del texto
 
 };
+#endif
