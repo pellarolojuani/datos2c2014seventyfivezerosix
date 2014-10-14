@@ -149,7 +149,7 @@ class ArbolB{
                 for (i=0; i<actual->entradasOcupadas; i++)
                 {
                     emitirRecursivo(actual->ramas[i]);
-                    cout <<actual->data[i].getPalabra();
+                    cout <<actual->data[i].getTermino();
                     cout << endl;
 
                 }
