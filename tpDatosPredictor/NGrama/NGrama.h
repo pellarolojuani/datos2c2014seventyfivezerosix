@@ -29,9 +29,12 @@ private:
 
 public:
 	NGrama();
+	NGrama(int cantGrama, string separadorNgrama);
 	NGrama(string oracion,int cantGrama,string separadorNgrama);
 	virtual ~NGrama();
 	void stringANgrama();
+
+	void streamANgrama(FILE* fp);
 
 	const std::vector<std::string>& getListaTerminos() const {
 		return listaTerminos;

@@ -15,6 +15,12 @@ NGrama::NGrama() {
 	// TODO Auto-generated constructor stub
 	this->cantGrama = 1;
 }
+
+NGrama::NGrama(int cantGrama, string separadorNgrama){
+	this->cantGrama = cantGrama;
+	this->separadorNgrama = separadorNgrama;
+}
+
 NGrama::NGrama(string oracion, int cantgrama,string separadorNgrama) {
 	this->cantGrama = cantgrama;
 	this->oracion = oracion;
@@ -68,6 +74,30 @@ void NGrama:: stringANgrama(){
          }
          this->armarYGuardarNgrama(aux);
       }
+}
+
+void NGrama::streamANgrama(FILE* fp){
+	fpos_t position;
+	fgetpos(fp, &position);
+	fsetpos(fp, &position+cantGrama);
+	while (! feof(fp) ){
+		// Recuperamos la posicion normal dentro del archivo
+		fsetpos(fp, &position-cantGrama);
+
+		pair<std::string,int> aux;
+		for(int k = 0; k < cantGrama; k++) {
+			if (aux.first.compare("")){
+				this->armarYGuardarNgrama(aux);
+		    }
+		    if(k > 0) aux.first +=  this->separadorNgrama;
+		    char str [30];
+		    aux.first+= ( fscanf(fp, "%s", str) );
+		}
+
+		this->armarYGuardarNgrama(aux);
+
+		fsetpos(fp, &position+cantGrama);
+	}
 }
 
 void NGrama::armarYGuardarNgrama(pair<string,int> aux){
