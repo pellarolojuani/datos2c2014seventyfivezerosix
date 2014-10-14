@@ -8,6 +8,7 @@
 #include "NGrama.h"
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -42,6 +43,10 @@ void NGrama:: stringANgrama(){
 		if(sub.compare("")){
 			string ultimoCaracter = sub.substr(sub.length()-1) ;
 			//aca deberiamos salvar todos los caracter tipo ,.; etc
+
+			//NOTA: los caracteres .,; etc estan siempre separados de la palabra anterior
+			//por un espacio en el set de entrenamiento, es decir que nunca van a venir
+			//seguidos de una palabra sino de un espacio.
 			if(!ultimoCaracter.compare(".") || !ultimoCaracter.compare(",") || !ultimoCaracter.compare(";")){
 				this->listaTerminos.push_back(sub.substr(0,sub.length()-1));
 				this->listaTerminos.push_back(sub.substr(sub.length()-1));

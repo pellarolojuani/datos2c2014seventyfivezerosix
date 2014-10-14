@@ -32,6 +32,10 @@ bool Parser::abrirArchivo(string nombreArchivo){
 	return true;
 }
 
+void Parser::cerrarArchivo(){
+	fclose(this->archivo);
+}
+
 string Parser::getSiguienteTermino(){
 	string termino = "";
 	char c = fgetc(this->archivo);
@@ -40,5 +44,13 @@ string Parser::getSiguienteTermino(){
 		c = fgetc(this->archivo);
 	}
 	return termino;
+}
+
+string Parser::getLinea(){
+	char linea[LONG_MAX_LINEA];
+	fgets(linea, LONG_MAX_LINEA, this->archivo);
+
+
+	return linea;
 }
 
