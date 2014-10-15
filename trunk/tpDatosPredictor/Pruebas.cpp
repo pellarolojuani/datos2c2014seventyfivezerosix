@@ -54,6 +54,42 @@ void pruebaNgrama(){
 	}
 }
 
+void pruebaStreamANgrama(){
+	FILE* fp;
+	fp = fopen("file.txt", "w+");
+
+	const char* oracion = "This is a very beautiful day. This is a very big house. The elephant is very big. The house is small. The dog is black. The car is very big and red.";
+	fputs(oracion, fp);
+	rewind(fp);
+
+	long int length;
+	fseek(fp, 0, SEEK_END);
+	length = ftell(fp);
+	rewind(fp);
+
+	void* str = calloc(length + 1, 1);
+	fread(str, 1, length, fp);
+	rewind(fp);
+	printf("%s", str);
+	cout<<endl<<"ARCHIVO LISTO"<<endl;
+
+	NGrama ngrama5 =  NGrama(5,",");
+	ngrama5.streamANgrama(fp);
+	cout<<"Termina funcion";
+	vector<pair<string,int> > listaNgrama;
+	listaNgrama = ngrama5.getListaNgrama();
+    std::stable_sort(listaNgrama.begin(), listaNgrama.end());
+    std::cout << std::endl << "Sorted:" << std::endl;
+
+	for(std::size_t i=0;ngrama5.getListaNgrama().size();++i){
+		cout << listaNgrama[i].first  << "," << listaNgrama[i].second << endl;
+	}
+
+	fclose(fp);
+	remove("file.txt");
+	cout<<"FIN"<<endl;
+}
+
 void pruebaParser(){
 	Parser unParser;
 	unParser.abrirArchivo("train_v2.txt");
@@ -89,6 +125,7 @@ int main(int argc, char *argv[]){
 	cout<<"2- testPruebaNgrama"<<endl;
 	cout<<"3- testPruebaParser"<<endl;
 	cout<<"4- testPruebaParser2"<<endl;
+	cout<<"5- testPrueba stream"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -98,6 +135,8 @@ int main(int argc, char *argv[]){
 		case 3: pruebaParser();
 				break;
 		case 4: pruebaParser2();
+				break;
+		case 5: pruebaStreamANgrama();
 				break;
 
 	}

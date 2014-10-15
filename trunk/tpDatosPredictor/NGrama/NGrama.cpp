@@ -82,26 +82,24 @@ void NGrama:: stringANgrama(){
 }
 
 void NGrama::streamANgrama(FILE* fp){
-	fpos_t position;
-	fgetpos(fp, &position);
-	fsetpos(fp, &position+cantGrama);
-	while (! feof(fp) ){
-		// Recuperamos la posicion normal dentro del archivo
-		fsetpos(fp, &position-cantGrama);
-
+	cout<<"Entra a funcion"<<endl;
+	int i=0;
+	while (!feof(fp)){
+		i++;
+		cout<<"i= "<<i<<endl;
 		pair<std::string,int> aux;
 		for(int k = 0; k < cantGrama; k++) {
+			cout<<"k= "<<k<<endl;
 			if (aux.first.compare("")){
 				this->armarYGuardarNgrama(aux);
 		    }
 		    if(k > 0) aux.first +=  this->separadorNgrama;
-		    char str [30];
-		    aux.first+= ( fscanf(fp, "%s", str) );
+		    char* str;
+		    fscanf(fp, "%s", str);
+		    aux.first+= str;
 		}
 
 		this->armarYGuardarNgrama(aux);
-
-		fsetpos(fp, &position+cantGrama);
 	}
 }
 
