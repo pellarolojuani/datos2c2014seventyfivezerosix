@@ -55,6 +55,7 @@ void NGrama:: stringANgrama(){
 			}
 		}
 	}while(iss);
+    for (int i = 0; i < this->listaTerminos.size(); i++) cout<<this->listaTerminos[i]<<endl;
     //arma n-grama
  /*   for(std::size_t i=0;i<this->listaTerminos.size() -cantGrama+1; i++) {
        string aux;
@@ -68,7 +69,7 @@ void NGrama:: stringANgrama(){
        }
        this->listaNgrama.push_back(aux);
     } */
-    for(std::size_t i=0;i<this->listaTerminos.size() -cantGrama+1; i++) {
+    for(std::size_t i=0; i<this->listaTerminos.size() -cantGrama+1; i++) {
       	 pair<std::string,int> aux;
          for(int k = 0; k < cantGrama; k++) {
       	   if (aux.first.compare("")){
@@ -82,21 +83,23 @@ void NGrama:: stringANgrama(){
 }
 
 void NGrama::streamANgrama(FILE* fp){
-	cout<<"Entra a funcion"<<endl;
 	int i=0;
 	while (!feof(fp)){
 		i++;
 		cout<<"i= "<<i<<endl;
 		pair<std::string,int> aux;
+		aux.first = "";
+		aux.second = -1;
 		for(int k = 0; k < cantGrama; k++) {
 			cout<<"k= "<<k<<endl;
-			if (aux.first.compare("")){
+			if (aux.first == ""){
 				this->armarYGuardarNgrama(aux);
 		    }
 		    if(k > 0) aux.first +=  this->separadorNgrama;
-		    char* str;
+		    char* str = new char[100];
 		    fscanf(fp, "%s", str);
 		    aux.first+= str;
+		    delete []str;
 		}
 
 		this->armarYGuardarNgrama(aux);

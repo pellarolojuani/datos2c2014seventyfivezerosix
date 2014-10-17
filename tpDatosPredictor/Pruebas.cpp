@@ -37,6 +37,7 @@ void pruebaArbol() {
 
 void pruebaNgrama(){
 	string oracion ="This is a very beautiful day. This is a very big house. The elephant is very big. The house is small. The dog is black. The car is very big and red.";
+	//string oracion = "This is a very beautiful day.";
 
 	//oracion.max long ngrama y separador.
 	NGrama ngrama5 =  NGrama(oracion, 5,",");
@@ -47,10 +48,10 @@ void pruebaNgrama(){
     std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
     std::cout << std::endl << "Sorted:" << std::endl;
 
-	for(std::size_t i=0;ngrama5.getListaNgrama().size();++i){
-		cout << listaNgrama[i].first  << "," << listaNgrama[i].second << endl;
+    cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
+	for(int i=0; i < listaNgrama.size(); ++i){
+		cout << listaNgrama.at(i).first<< "," <<listaNgrama.at(i).second << endl;
 		//cout << ngrama5.getListaNgrama()[i] << endl;
-
 	}
 }
 
@@ -71,17 +72,17 @@ void pruebaStreamANgrama(){
 	fread(str, 1, length, fp);
 	rewind(fp);
 	printf("%s", str);
+
 	cout<<endl<<"ARCHIVO LISTO"<<endl;
 
 	NGrama ngrama5 =  NGrama(5,",");
 	ngrama5.streamANgrama(fp);
-	cout<<"Termina funcion";
 	vector<pair<string,int> > listaNgrama;
 	listaNgrama = ngrama5.getListaNgrama();
     std::stable_sort(listaNgrama.begin(), listaNgrama.end());
     std::cout << std::endl << "Sorted:" << std::endl;
 
-	for(std::size_t i=0;ngrama5.getListaNgrama().size();++i){
+	for(std::size_t i=0; i < ngrama5.getListaNgrama().size();++i){
 		cout << listaNgrama[i].first  << "," << listaNgrama[i].second << endl;
 	}
 
