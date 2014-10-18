@@ -12,6 +12,11 @@
 #define LONG_MAX_LINEA						300
 #endif
 
+#ifndef N
+#define N									5
+#endif
+
+
 #ifndef READ
 #define READ								"r" //apertura para lectura. debe existir previamente
 #endif
