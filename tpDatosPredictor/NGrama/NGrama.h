@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include "../Constantes.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ public:
 	NGrama(string oracion,int cantGrama,string separadorNgrama);
 	virtual ~NGrama();
 	void stringANgrama();
+	void stringA5Grama();
 
 	void streamANgrama(FILE* fp);
 

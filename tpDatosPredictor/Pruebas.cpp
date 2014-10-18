@@ -36,16 +36,16 @@ void pruebaArbol() {
 }
 
 void pruebaNgrama(){
-	string oracion ="This is a very beautiful day. This is a very big house. The elephant is very big. The house is small. The dog is black. The car is very big and red.";
-	//string oracion = "This is a very beautiful day.";
+	string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+	//string oracion = "This is a very beautiful day .";
 
 	//oracion.max long ngrama y separador.
 	NGrama ngrama5 =  NGrama(oracion, 5,",");
-	ngrama5.stringANgrama();
+	ngrama5.stringA5Grama();
 
 	vector<pair<string,int> > listaNgrama;
 	listaNgrama = ngrama5.getListaNgrama();
-    std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
+    //std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
     std::cout << std::endl << "Sorted:" << std::endl;
 
     cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
@@ -117,16 +117,38 @@ void pruebaParser2(){
 	unParser.cerrarArchivo();
 }
 
+void pruebaParser3(){
+
+	/*
+	 en esta prueba vamos a chequear el tamaño maximo que puede llegar a tener
+	 un string.
+	 */
+
+	Parser unParser;
+	unParser.abrirArchivo("train_v2.txt");
+	string texto = "";
+
+	for (int i = 0; i < 999999; i++){
+		texto += unParser.getLinea();
+	}
+
+	cout<<texto<<endl;
+
+	unParser.cerrarArchivo();
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
 	int i=0;
+	char j;
 	cout<<"ELEGIR NUMERO DE PRUEBA: "<<endl;
 	cout<<"1- testPruebaArbol"<<endl;
 	cout<<"2- testPruebaNgrama"<<endl;
 	cout<<"3- testPruebaParser"<<endl;
 	cout<<"4- testPruebaParser2"<<endl;
 	cout<<"5- testPrueba stream"<<endl;
+	cout<<"6- testPruebaParser3"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -139,7 +161,18 @@ int main(int argc, char *argv[]){
 				break;
 		case 5: pruebaStreamANgrama();
 				break;
-
+		case 6: cout<<"ADVERTENCIA: Esta prueba puede tardar varios minutos."<<endl;
+				cout<<"Continuar de todas formas? [Y/N]"<<endl;
+				cin>>j;
+				switch(j){
+					case 'Y': 	pruebaParser3();
+								break;
+					case 'y': 	pruebaParser3();
+								break;
+					case 'N': 	break;
+					case 'n': 	break;
+				}
+				break;
 	}
 	cout<<endl;
 
