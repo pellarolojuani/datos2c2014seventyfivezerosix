@@ -9,6 +9,7 @@
 #include "parser/Nodo.h"
 #include "NGrama/NGrama.h"
 #include "parser/Parser.h"
+#include "modelo/TestV2.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,6 +142,42 @@ void pruebaParser3(){
 	unParser.cerrarArchivo();
 }
 
+void pruebaObtenerSentenceTestV2(){
+	Parser unParser;
+	unParser.abrirArchivo("test_v2.txt");
+	//vector<TestV2 > listaTestV2;
+	TestV2 testV2 = TestV2();
+
+	for (int i = 0; i < 2; i ++){
+
+		string oracionAux =  unParser.getLinea();
+		//para que no procese "id","sentence" (son los nombres de las columnas).
+		if(oracionAux.find("sentence") == std::string::npos){
+			string oracion = oracionAux.erase(oracionAux.find_last_not_of(" \n\r\t")+1);
+			//cout<<oracion<<endl;
+			std::size_t pos = oracion.find(",");
+			string id = oracion.substr(0,pos);
+			string sentence = oracion.substr(pos+1);
+			//cout<<sentence.find('"')<<endl;
+			string sentenceSinComilla = sentence.substr(1,sentence.rfind('"')-1);
+			testV2.setId(std::atoi(id.c_str()));
+			testV2.setSentente(sentence);
+
+			//oracion.max long ngrama y separador.
+			NGrama ngrama5 =  NGrama(sentenceSinComilla, 5,",");
+			ngrama5.stringA5Grama();
+			testV2.setListaNgrama(ngrama5.getListaNgrama());
+			//cout<<sentenceSinComilla<<endl;
+			//cout<<testV2.getId()<<"-"<<testV2.getSentente()<<endl;
+		}
+
+	}
+	unParser.cerrarArchivo();
+	for(std::size_t i=0; i < testV2.getListaNgrama().size();++i){
+		cout << testV2.getListaNgrama()[i].first  << "," << testV2.getListaNgrama()[i].second << endl;
+	}
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -153,6 +190,7 @@ int main(int argc, char *argv[]){
 	cout<<"4- testPruebaParser2"<<endl;
 	cout<<"5- testPrueba stream"<<endl;
 	cout<<"6- testPruebaParser3"<<endl;
+	cout<<"7- testPruebaObtenerSentence"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -177,6 +215,8 @@ int main(int argc, char *argv[]){
 					case 'n': 	break;
 				}
 				break;
+		case 7: pruebaObtenerSentenceTestV2();
+		break;
 	}
 	cout<<endl;
 
