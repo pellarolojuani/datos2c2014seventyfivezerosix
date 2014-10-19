@@ -77,6 +77,11 @@ void pruebaStreamANgrama(){
 
 	NGrama ngrama5 =  NGrama(5,",");
 	ngrama5.streamANgrama(fp);
+
+	for(int i=1; i<=5; i++){
+	cout<<"La frecuencia total de Gramas de tamanio "<<i<<" es: "<<ngrama5.getFrecuenciaDeNgrama(i)<<endl;
+	}
+
 	vector<pair<string,int> > listaNgrama;
 	listaNgrama = ngrama5.getListaNgrama();
     std::stable_sort(listaNgrama.begin(), listaNgrama.end());
