@@ -80,9 +80,9 @@ long int ManejoArchivo::guardarRegistro(pair<string,int> unRegistro, abb::ArbolB
 	for (int i = 0; i < texto.size(); i++){
 		if (texto[i] == ',') cant++;
 	}
-	offset = ftell(this->getArchivo());
+	offset = ftell(this->fd_archivo);
 	if (cant == 0){ //si es un termino sin contexto lo guardamos en el arbol de offsets
-		Nodo termino;
+		Nodo termino ;
 		termino.setTermino(unRegistro.first);
 		termino.setOffset(offset);
 		lexico->insertar(termino); //agrega el elemento y su offset al arbol

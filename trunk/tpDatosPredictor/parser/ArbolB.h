@@ -149,7 +149,7 @@ class ArbolB{
                 for (i=0; i<actual->entradasOcupadas; i++)
                 {
                     emitirRecursivo(actual->ramas[i]);
-                    cout <<actual->data[i].getTermino();
+                    cout <<actual->data[i].getTermino()<<", "<<actual->data[i].getOffset();
                     cout << endl;
 
                 }

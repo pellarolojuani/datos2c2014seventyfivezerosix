@@ -163,6 +163,7 @@ void pruebaGuardarNgramasEnArchivo(){
 	fread(str, 1, length, fp);
 	rewind(fp);
 	printf("%s", str);
+	cout<<endl;
 
 	NGrama ngrama5 =  NGrama(5,",");
 	ngrama5.streamANgrama(fp);
@@ -181,6 +182,9 @@ void pruebaGuardarNgramasEnArchivo(){
 	ManejoArchivo manejoArchivo = ManejoArchivo("ngramas.txt");
 	manejoArchivo.armarArchivoNgramas(listaNgrama, lexico);
 	manejoArchivo.cerrarArchivo();
+
+	cout<<"<termino, offset>"<<endl;
+	lexico->emitir();
 
 	cout<<endl;
 	cout<<endl;
