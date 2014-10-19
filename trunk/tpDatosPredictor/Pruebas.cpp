@@ -51,7 +51,6 @@ void pruebaNgrama(){
     cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
 	for(int i=0; i < listaNgrama.size(); ++i){
 		cout << listaNgrama.at(i).first<< "," <<listaNgrama.at(i).second << endl;
-		//cout << ngrama5.getListaNgrama()[i] << endl;
 	}
 }
 
