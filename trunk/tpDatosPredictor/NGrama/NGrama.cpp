@@ -188,7 +188,12 @@ void NGrama::stringA5Grama(){
 
 void NGrama::streamANgrama(FILE* fp){
 	int i=0;
-	while (!feof(fp)){
+	fpos_t position;
+	FILE* fp_flag;
+	fp_flag = fp;
+	while (!feof(fp_flag)){
+		char* str = new char[100];
+		fgetpos(fp, &position);
 		i++;
 		cout<<"i= "<<i<<endl;
 		pair<std::string,int> aux;
@@ -196,17 +201,21 @@ void NGrama::streamANgrama(FILE* fp){
 		aux.second = -1;
 		for(int k = 0; k < cantGrama; k++) {
 			cout<<"k= "<<k<<endl;
+			/* ESTO NO DEBERIA ESTAR. NICO
 			if (aux.first == ""){
 				this->armarYGuardarNgrama(aux);
 		    }
+		    */
 		    if(k > 0) aux.first +=  this->separadorNgrama;
-		    char* str = new char[100];
+		    if (feof(fp)) break;
 		    fscanf(fp, "%s", str);
 		    aux.first+= str;
-		    delete []str;
+		    this->armarYGuardarNgrama(aux);
 		}
-
-		this->armarYGuardarNgrama(aux);
+		fp_flag = fp;
+		fsetpos(fp, &position);
+		fscanf(fp, "%s", str);
+		delete []str;
 	}
 }
 
