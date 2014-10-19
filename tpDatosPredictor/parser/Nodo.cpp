@@ -27,26 +27,29 @@ void Nodo::setTermino(string unTermino){
 }
 
 void Nodo::setOffset(long int unOffset){
-	this->offset = offset;
+	this->offset = unOffset;
 }
 
 
 //OPERADORES DE COMPARACION
 bool Nodo::operator==(Nodo& nuevoNodo)
 {
-	bool sonIguales = (nuevoNodo.getTermino() == this->getTermino());
-	return sonIguales;
+	int sonIguales = (nuevoNodo.getTermino().compare(this->getTermino()) == 0);
+	if (sonIguales == 0) return true;
+	return false;
 }
 
 bool Nodo::operator<(Nodo& nuevoTermino)
 {
-	bool soyMenor = (this->getTermino() < nuevoTermino.getTermino());
-	return soyMenor;
+	int soyMenor = (this->getTermino().compare(nuevoTermino.getTermino()) < 0);
+	if (soyMenor < 0) return true;
+	return false;
 }
 bool Nodo::operator>(Nodo& nuevoTermino)
 {
-	bool soyMayor = (this->getTermino() > nuevoTermino.getTermino());
-	return soyMayor;
+	int soyMayor = (this->getTermino().compare(nuevoTermino.getTermino()) > 0);
+	if (soyMayor > 0) return true;
+	return false;
 }
 
 
