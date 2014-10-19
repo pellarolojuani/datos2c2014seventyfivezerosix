@@ -27,6 +27,7 @@ private:
 	vector<pair<string,int> > listaNgrama;
 	map<string,int> mapDePosiciones;
 	void armarYGuardarNgrama(pair<string,int> par);
+	long* frecuenciaDeNgramas;
 
 public:
 	NGrama();
@@ -37,6 +38,8 @@ public:
 	void stringA5Grama();
 
 	void streamANgrama(FILE* fp);
+	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
+	long getFrecuenciaDeNgrama(int tamanioGrama);
 
 	const std::vector<std::string>& getListaTerminos() const {
 		return listaTerminos;

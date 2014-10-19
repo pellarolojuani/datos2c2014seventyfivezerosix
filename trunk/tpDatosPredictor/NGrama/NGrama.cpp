@@ -20,16 +20,24 @@ NGrama::NGrama() {
 NGrama::NGrama(int cantGrama, string separadorNgrama){
 	this->cantGrama = cantGrama;
 	this->separadorNgrama = separadorNgrama;
+	frecuenciaDeNgramas = new long[cantGrama+1];
+	for(int i=0; i<=cantGrama; i++){
+		(frecuenciaDeNgramas[i])=0;
+	}
 }
 
 NGrama::NGrama(string oracion, int cantgrama,string separadorNgrama) {
 	this->cantGrama = cantgrama;
 	this->oracion = oracion;
 	this->separadorNgrama = separadorNgrama;
+	frecuenciaDeNgramas = new long[cantGrama+1];
+	for(int i=0; i<=cantGrama; i++){
+		(frecuenciaDeNgramas[i])=0;
+	}
 }
 
 NGrama::~NGrama() {
-
+	delete[] frecuenciaDeNgramas;
 }
 void NGrama:: stringANgrama(){
 
@@ -187,20 +195,16 @@ void NGrama::stringA5Grama(){
 }
 
 void NGrama::streamANgrama(FILE* fp){
-	int i=0;
 	fpos_t position;
 	FILE* fp_flag;
 	fp_flag = fp;
 	while (!feof(fp_flag)){
 		char* str = new char[100];
 		fgetpos(fp, &position);
-		i++;
-		cout<<"i= "<<i<<endl;
 		pair<std::string,int> aux;
 		aux.first = "";
 		aux.second = -1;
 		for(int k = 0; k < cantGrama; k++) {
-			cout<<"k= "<<k<<endl;
 			/* ESTO NO DEBERIA ESTAR. NICO
 			if (aux.first == ""){
 				this->armarYGuardarNgrama(aux);
@@ -211,6 +215,7 @@ void NGrama::streamANgrama(FILE* fp){
 		    fscanf(fp, "%s", str);
 		    aux.first+= str;
 		    this->armarYGuardarNgrama(aux);
+		    this->aumentarFrecuenciaDeNgrama(k+1); //Esto va calculando la frecuencia de Gramas de tamanio k+1
 		}
 		fp_flag = fp;
 		fsetpos(fp, &position);
@@ -233,4 +238,14 @@ void NGrama::armarYGuardarNgrama(pair<string,int> aux){
 		this->listaNgrama[pos].second = frecuencia;
 	}
 }
+
+void NGrama::aumentarFrecuenciaDeNgrama(int tamanioGrama){
+	(frecuenciaDeNgramas[tamanioGrama])+=1;
+}
+
+long NGrama::getFrecuenciaDeNgrama(int tamanioGrama){
+	return (frecuenciaDeNgramas[tamanioGrama]);
+}
+
+
 
