@@ -59,7 +59,7 @@ void pruebaStreamANgrama(){
 	FILE* fp;
 	fp = fopen("file.txt", "w+");
 
-	const char* oracion = "This is a very beautiful day. This is a very big house. The elephant is very big. The house is small. The dog is black. The car is very big and red.";
+	const char* oracion = "This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
 	fputs(oracion, fp);
 	rewind(fp);
 
