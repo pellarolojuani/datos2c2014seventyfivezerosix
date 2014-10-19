@@ -9,6 +9,7 @@
 #include "parser/Nodo.h"
 #include "NGrama/NGrama.h"
 #include "parser/Parser.h"
+#include "manejoArchivo/manejoArchivo.h"
 #include "modelo/TestV2.h"
 
 #include <stdio.h>
@@ -37,8 +38,8 @@ void pruebaArbol() {
 }
 
 void pruebaNgrama(){
-	string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
-	//string oracion = "This is a very beautiful day .";
+	//string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+	string oracion = "This is a very beautiful day .";
 
 	//oracion.max long ngrama y separador.
 	NGrama ngrama5 =  NGrama(oracion, 5,",");
@@ -60,6 +61,7 @@ void pruebaStreamANgrama(){
 	fp = fopen("file.txt", "w+");
 
 	const char* oracion = "This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+
 	fputs(oracion, fp);
 	rewind(fp);
 
@@ -142,6 +144,50 @@ void pruebaParser3(){
 	unParser.cerrarArchivo();
 }
 
+void pruebaGuardarNgramasEnArchivo(){
+
+	const char* oracion = "This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+	abb::ArbolB<Nodo,40> *lexico = new abb::ArbolB<Nodo, 40>;
+
+	FILE* fp;
+	fp = fopen("file.txt", "w+");
+	fputs(oracion, fp);
+	rewind(fp);
+
+	long int length;
+	fseek(fp, 0, SEEK_END);
+	length = ftell(fp);
+	rewind(fp);
+
+	void* str = calloc(length + 1, 1);
+	fread(str, 1, length, fp);
+	rewind(fp);
+	printf("%s", str);
+
+	NGrama ngrama5 =  NGrama(5,",");
+	ngrama5.streamANgrama(fp);
+
+	vector<pair<string,int> > listaNgrama;
+	listaNgrama = ngrama5.getListaNgrama();
+    std::stable_sort(listaNgrama.begin(), listaNgrama.end());
+
+	for(std::size_t i=0; i < ngrama5.getListaNgrama().size();++i){
+		//cout << listaNgrama[i].first  << "," << listaNgrama[i].second << endl;
+	}
+
+	fclose(fp);
+	remove("file.txt");
+
+	ManejoArchivo manejoArchivo = ManejoArchivo("ngramas.txt");
+	manejoArchivo.armarArchivoNgramas(listaNgrama, lexico);
+	manejoArchivo.cerrarArchivo();
+
+	cout<<endl;
+	cout<<endl;
+	cout<<">>Se ha creado un archivo con todos los ngramas correspondientes."<<endl;
+}
+
+
 void pruebaObtenerSentenceTestV2(){
 	Parser unParser;
 	unParser.abrirArchivo("test_v2.txt");
@@ -191,6 +237,7 @@ int main(int argc, char *argv[]){
 	cout<<"5- testPrueba stream"<<endl;
 	cout<<"6- testPruebaParser3"<<endl;
 	cout<<"7- testPruebaObtenerSentence"<<endl;
+	cout<<"8- testArmarArchivoNgramas"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -217,6 +264,9 @@ int main(int argc, char *argv[]){
 				break;
 		case 7: pruebaObtenerSentenceTestV2();
 		break;
+		case 8: pruebaGuardarNgramasEnArchivo();
+		break;
+
 	}
 	cout<<endl;
 

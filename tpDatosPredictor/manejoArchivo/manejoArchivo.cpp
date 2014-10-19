@@ -22,7 +22,7 @@ ManejoArchivo::ManejoArchivo() {
 
 ManejoArchivo::ManejoArchivo(string pathEntrada) {
 	this->nombreArchivo = pathEntrada;
-	fd_archivo = fopen(pathEntrada.c_str(), "r");
+	fd_archivo = fopen(pathEntrada.c_str(), "w+");
 	if (fd_archivo == 0)
 		cout << "No se puede abrir el archivo" << "\n";
 	this->cantidadBytes = this->contarBytes();
@@ -32,6 +32,10 @@ ManejoArchivo::ManejoArchivo(string pathEntrada) {
 ManejoArchivo::~ManejoArchivo() {
 	// TODO Auto-generated destructor stub
 
+}
+
+FILE* ManejoArchivo::getArchivo(){
+	return this->fd_archivo;
 }
 
 void ManejoArchivo::cerrarArchivo() {
@@ -64,4 +68,43 @@ NGrama ManejoArchivo::leerProxReg(){
 		// ERROR DE LECTURA.
 	}
 	return ngrama;
+}
+
+long int ManejoArchivo::guardarRegistro(pair<string,int> unRegistro, abb::ArbolB<Nodo,40> *lexico){
+	/*Ya tiene que estar abierto el archivo para almacenar los registros*/
+
+	long int offset;
+	string texto = unRegistro.first;
+
+	int cant = 0;
+	for (int i = 0; i < texto.size(); i++){
+		if (texto[i] == ',') cant++;
+	}
+	offset = ftell(this->getArchivo());
+	if (cant == 0){ //si es un termino sin contexto lo guardamos en el arbol de offsets
+		Nodo termino;
+		termino.setTermino(unRegistro.first);
+		termino.setOffset(offset);
+		lexico->insertar(termino); //agrega el elemento y su offset al arbol
+	}
+	string registro = "";
+	stringstream frecuencia;
+	frecuencia << unRegistro.second;
+	registro += unRegistro.first;
+	registro += ',';
+	registro += frecuencia.str();
+	fputs(registro.c_str(), this->fd_archivo);
+
+	registro = "";
+	registro += '\n';
+	fputs(registro.c_str(), this->fd_archivo);
+
+	return offset;
+}
+
+void ManejoArchivo::armarArchivoNgramas(vector<pair<string,int> > listaNgrama, abb::ArbolB<Nodo,40> *lexico){
+
+	for (int i = 0; i < listaNgrama.size(); i++){
+		this->guardarRegistro(listaNgrama.at(i), lexico);
+	}
 }
