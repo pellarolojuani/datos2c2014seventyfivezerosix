@@ -104,6 +104,7 @@ long int ManejoArchivo::guardarRegistro(pair<string,int> unRegistro, abb::ArbolB
 
 void ManejoArchivo::armarArchivoNgramas(vector<pair<string,int> > listaNgrama, abb::ArbolB<Nodo,40> *lexico){
 
+	std::stable_sort(listaNgrama.begin(), listaNgrama.end());
 	for (int i = 0; i < listaNgrama.size(); i++){
 		this->guardarRegistro(listaNgrama.at(i), lexico);
 	}

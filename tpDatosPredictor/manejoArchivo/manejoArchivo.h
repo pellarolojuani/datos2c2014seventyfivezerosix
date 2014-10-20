@@ -10,6 +10,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <algorithm>    // std::stable_sort
 #include "../NGrama/NGrama.h"
 #include "../parser/Nodo.h"
 #include "../parser/ArbolB.h"
@@ -37,6 +38,7 @@ public:
 	NGrama leerProxReg();
 
 	void armarArchivoNgramas(vector<pair<string,int> > listaNgrama, abb::ArbolB<Nodo,40> *lexico);
+
 
 	FILE* getArchivo();
 
