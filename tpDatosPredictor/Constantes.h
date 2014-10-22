@@ -16,6 +16,9 @@
 #define N									5
 #endif
 
+#ifndef SEPARADOR_NGRAMA
+#define SEPARADOR_NGRAMA					' '
+#endif
 
 #ifndef READ
 #define READ								"r" //apertura para lectura. debe existir previamente

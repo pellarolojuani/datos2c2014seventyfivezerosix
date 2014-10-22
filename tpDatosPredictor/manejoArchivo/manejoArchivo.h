@@ -8,12 +8,15 @@
 #ifndef MANEJOARCHIVO_H_
 #define MANEJOARCHIVO_H_
 #include <string>
+#include <stdlib.h>
 #include <fstream>
 #include <sstream>
 #include <algorithm>    // std::stable_sort
 #include "../NGrama/NGrama.h"
 #include "../parser/Nodo.h"
 #include "../parser/ArbolB.h"
+#include "../NGrama/Registro.h"
+#include "../Constantes.h"
 
 using namespace std;
 
@@ -39,6 +42,8 @@ public:
 
 	void armarArchivoNgramas(vector<pair<string,int> > listaNgrama, abb::ArbolB<Nodo,40> *lexico);
 
+	Registro getRegistro(long int offset); //devuelve el registro ubicado en la posicion indicada por el offset
+	Registro getSiguienteRegistro();//sirve para la busqueda secuencial de elementos dentro del archivo
 
 	FILE* getArchivo();
 
