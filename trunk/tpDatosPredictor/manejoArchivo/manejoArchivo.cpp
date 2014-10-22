@@ -78,7 +78,7 @@ long int ManejoArchivo::guardarRegistro(pair<string,int> unRegistro, abb::ArbolB
 
 	int cant = 0;
 	for (int i = 0; i < texto.size(); i++){
-		if (texto[i] == ',') cant++;
+		if (texto[i] == SEPARADOR_NGRAMA) cant++;
 	}
 	offset = ftell(this->fd_archivo);
 	if (cant == 0){ //si es un termino sin contexto lo guardamos en el arbol de offsets
@@ -91,7 +91,7 @@ long int ManejoArchivo::guardarRegistro(pair<string,int> unRegistro, abb::ArbolB
 	stringstream frecuencia;
 	frecuencia << unRegistro.second;
 	registro += unRegistro.first;
-	registro += ',';
+	registro += SEPARADOR_NGRAMA;
 	registro += frecuencia.str();
 	fputs(registro.c_str(), this->fd_archivo);
 
@@ -108,4 +108,41 @@ void ManejoArchivo::armarArchivoNgramas(vector<pair<string,int> > listaNgrama, a
 	for (int i = 0; i < listaNgrama.size(); i++){
 		this->guardarRegistro(listaNgrama.at(i), lexico);
 	}
+}
+
+Registro ManejoArchivo::getRegistro(long int offset){
+	//*devuelve el registro ubicado en la posicion indicada por el offset*/
+
+	fseek(this->fd_archivo, offset, 0);
+	return this->getSiguienteRegistro();
+
+}
+
+Registro ManejoArchivo::getSiguienteRegistro(){
+	//*sirve para la busqueda secuencial de elementos dentro del archivo*/
+
+	Registro unRegistro = Registro();
+	char linea[LONG_MAX_LINEA];
+	fgets(linea, LONG_MAX_LINEA, this->fd_archivo);
+	string aux = string(linea);
+	istringstream iss(aux);
+	int contexto = 0;
+	for (int i = 0; i < aux.size(); i++){
+		if (aux[i] == SEPARADOR_NGRAMA){
+			contexto++;
+		}
+	}
+	string unContexto = "";
+	string termino;
+	for (int j = 0; j < contexto-1; j++ ){
+		iss >> termino;
+		unContexto += termino;
+		unContexto += SEPARADOR_NGRAMA;
+	}
+	unRegistro.setContexto(unContexto);
+	iss >> termino;
+	unRegistro.setTermino(termino);
+	iss >> termino;
+	unRegistro.setFrecuencia(atoi(termino.c_str()));
+	return unRegistro;
 }

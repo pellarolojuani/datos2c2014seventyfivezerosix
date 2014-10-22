@@ -165,7 +165,7 @@ void pruebaGuardarNgramasEnArchivo(){
 	printf("%s", str);
 	cout<<endl;
 
-	NGrama ngrama5 =  NGrama(5,",");
+	NGrama ngrama5 =  NGrama(5," ");
 	ngrama5.streamANgrama(fp);
 
 	vector<pair<string,int> > listaNgrama;
@@ -189,6 +189,11 @@ void pruebaGuardarNgramasEnArchivo(){
 	cout<<endl;
 	cout<<endl;
 	cout<<">>Se ha creado un archivo con todos los ngramas correspondientes."<<endl;
+}
+
+void pruebaGetRegistroDeArchivo(){
+
+
 }
 
 
