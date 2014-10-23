@@ -186,6 +186,7 @@ void pruebaGuardarNgramasEnArchivo(){
 	cout<<"<termino, offset>"<<endl;
 	lexico->emitir();
 
+	delete []lexico;
 	cout<<endl;
 	cout<<endl;
 	cout<<">>Se ha creado un archivo con todos los ngramas correspondientes."<<endl;
@@ -193,6 +194,67 @@ void pruebaGuardarNgramasEnArchivo(){
 
 void pruebaGetRegistroDeArchivo(){
 
+		const char* oracion = "This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+		abb::ArbolB<Nodo,40> *lexico = new abb::ArbolB<Nodo, 40>;
+
+		FILE* fp;
+		fp = fopen("file.txt", "w+");
+		fputs(oracion, fp);
+		rewind(fp);
+
+		long int length;
+		fseek(fp, 0, SEEK_END);
+		length = ftell(fp);
+		rewind(fp);
+
+		void* str = calloc(length + 1, 1);
+		fread(str, 1, length, fp);
+		rewind(fp);
+		printf("%s", str);
+		cout<<endl;
+
+		NGrama ngrama5 =  NGrama(5," ");
+		ngrama5.streamANgrama(fp);
+
+		vector<pair<string,int> > listaNgrama;
+		listaNgrama = ngrama5.getListaNgrama();
+	    std::stable_sort(listaNgrama.begin(), listaNgrama.end());
+
+	    fclose(fp);
+	    remove("file.txt");
+
+	    ManejoArchivo manejoArchivo = ManejoArchivo("ngramas.txt");
+	    manejoArchivo.armarArchivoNgramas(listaNgrama, lexico);
+	    manejoArchivo.cerrarArchivo();
+
+	    cout<<"<termino, offset>"<<endl;
+	    lexico->emitir();
+
+	   manejoArchivo = ManejoArchivo("ngramas.txt", "r");
+
+	    Registro unRegistro;
+	    unRegistro = manejoArchivo.getRegistro(657);
+
+	    cout<<endl;
+	    cout<<"Contexto: "<<unRegistro.getContexto()<<endl;
+	    cout<<"Termino: "<<unRegistro.getTermino()<<endl;
+	    cout<<"Frecuencia: "<<unRegistro.getFrecuencia()<<endl;
+
+	    unRegistro = manejoArchivo.getSiguienteRegistro();
+
+	    cout<<endl;
+	    cout<<"Contexto: "<<unRegistro.getContexto()<<endl;
+	    cout<<"Termino: "<<unRegistro.getTermino()<<endl;
+	    cout<<"Frecuencia: "<<unRegistro.getFrecuencia()<<endl;
+
+	    unRegistro = manejoArchivo.getSiguienteRegistro();
+
+	    cout<<endl;
+	    cout<<"Contexto: "<<unRegistro.getContexto()<<endl;
+	    cout<<"Termino: "<<unRegistro.getTermino()<<endl;
+	    cout<<"Frecuencia: "<<unRegistro.getFrecuencia()<<endl;
+
+	    manejoArchivo.cerrarArchivo();
 
 }
 
@@ -247,6 +309,7 @@ int main(int argc, char *argv[]){
 	cout<<"6- testPruebaParser3"<<endl;
 	cout<<"7- testPruebaObtenerSentence"<<endl;
 	cout<<"8- testArmarArchivoNgramas"<<endl;
+	cout<<"9- testGetRegistroDeArchivo"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -275,8 +338,11 @@ int main(int argc, char *argv[]){
 		break;
 		case 8: pruebaGuardarNgramasEnArchivo();
 		break;
+		case 9: pruebaGetRegistroDeArchivo();
+		break;
 
 	}
+
 	cout<<endl;
 
 	cout<<"FIN DE PRUEBAS."<<endl;
