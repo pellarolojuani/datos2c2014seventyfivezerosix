@@ -29,6 +29,15 @@ ManejoArchivo::ManejoArchivo(string pathEntrada) {
 	eof = false;
 }
 
+ManejoArchivo::ManejoArchivo(string pathEntrada, string modo){
+	this->nombreArchivo = pathEntrada;
+	fd_archivo = fopen(pathEntrada.c_str(), modo.c_str());
+	if (fd_archivo == 0)
+		cout << "No se puede abrir el archivo" << "\n";
+	this->cantidadBytes = this->contarBytes();
+	eof = false;
+}
+
 ManejoArchivo::~ManejoArchivo() {
 	// TODO Auto-generated destructor stub
 
@@ -125,7 +134,7 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 	char linea[LONG_MAX_LINEA];
 	fgets(linea, LONG_MAX_LINEA, this->fd_archivo);
 	string aux = string(linea);
-	istringstream iss(aux);
+
 	int contexto = 0;
 	for (int i = 0; i < aux.size(); i++){
 		if (aux[i] == SEPARADOR_NGRAMA){
@@ -133,16 +142,25 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 		}
 	}
 	string unContexto = "";
-	string termino;
-	for (int j = 0; j < contexto-1; j++ ){
-		iss >> termino;
-		unContexto += termino;
-		unContexto += SEPARADOR_NGRAMA;
+	string termino = "";
+
+	for (int j = 0; j < contexto -1; j++){
+		int pos = aux.find_first_of(SEPARADOR_NGRAMA);
+		for (int k = 0; k < pos; k++){
+			unContexto += aux[k];
+		}
+		aux = aux.substr(pos+1);
+		unContexto += " ";
 	}
 	unRegistro.setContexto(unContexto);
-	iss >> termino;
+
+	int pos = aux.find_first_of(SEPARADOR_NGRAMA);
+	for (int k = 0; k < pos; k++){
+		termino += aux[k];
+	}
+	aux = aux.substr(pos+1);
 	unRegistro.setTermino(termino);
-	iss >> termino;
-	unRegistro.setFrecuencia(atoi(termino.c_str()));
+	unRegistro.setFrecuencia(atoi(aux.c_str()));
+
 	return unRegistro;
 }
