@@ -264,10 +264,13 @@ void pruebaObtenerSentenceTestV2(){
 	unParser.abrirArchivo("test_v2.txt");
 	//vector<TestV2 > listaTestV2;
 	TestV2 testV2 = TestV2();
+	long posicion = 0;
 
-	for (int i = 0; i < 2; i ++){
+	for (int i = 0; i < 3; i ++){
 
+		posicion = unParser.getPosicionActualArchivo();
 		string oracionAux =  unParser.getLinea();
+
 		//para que no procese "id","sentence" (son los nombres de las columnas).
 		if(oracionAux.find("sentence") == std::string::npos){
 			string oracion = oracionAux.erase(oracionAux.find_last_not_of(" \n\r\t")+1);
@@ -278,7 +281,7 @@ void pruebaObtenerSentenceTestV2(){
 			//cout<<sentence.find('"')<<endl;
 			string sentenceSinComilla = sentence.substr(1,sentence.rfind('"')-1);
 			testV2.setId(std::atoi(id.c_str()));
-			testV2.setSentente(sentence);
+			testV2.setSentence(sentence);
 
 			//oracion.max long ngrama y separador.
 			NGrama ngrama5 =  NGrama(sentenceSinComilla, 5,",");
@@ -289,10 +292,16 @@ void pruebaObtenerSentenceTestV2(){
 		}
 
 	}
-	unParser.cerrarArchivo();
+
 	for(std::size_t i=0; i < testV2.getListaNgrama().size();++i){
 		cout << testV2.getListaNgrama()[i].first  << "," << testV2.getListaNgrama()[i].second << endl;
 	}
+	//si siguiera leyendo, esta es la linea que sigue.
+	cout << "antes de posicionamineto estoy en = " << unParser.getLinea() << endl;
+	//aca me posiciono en la ultima linea que lei en el for.
+	unParser.setPosicionArchivo(posicion);
+	cout << "se posiciona en la ultima pos leida del archivo posicionamiento = " << unParser.getLinea() << endl;
+	unParser.cerrarArchivo();
 }
 
 int main(int argc, char *argv[]){
