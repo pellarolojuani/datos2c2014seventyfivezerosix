@@ -53,4 +53,11 @@ string Parser::getLinea(){
 
 	return linea;
 }
+long Parser::getPosicionActualArchivo() {
+	return ftell(this->archivo);
+}
+
+void Parser::setPosicionArchivo(long posicion){
+	fseek(this->archivo,posicion,SEEK_SET);
+}
 
