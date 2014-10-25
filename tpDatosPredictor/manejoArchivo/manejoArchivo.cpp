@@ -164,3 +164,50 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 
 	return unRegistro;
 }
+
+void merge(int cantArchivos){
+	FILE* fp, fp_merged;
+
+	// Creo un archivo destino <merged>
+	fp_merged = fopen("file_merged.txt", "w");
+
+	// Abro todos los archivos
+	for (int i=0; i<cantArchivos; i++){
+		char nombreArchivo[8] = "file";
+		char num = (char) (i+1);
+		strcat(nombreArchivo, &num);
+		strcat(nombreArchivo, ".txt");
+		(fp+i) = fopen(nombreArchivo, "r");
+	}
+
+	int cant_eof = 0;
+
+	char str[], *str_menor;
+	(*str_menor) = "zzzzzzzzzzzzzzzzzzzz";
+
+	while ( cant_eof < cantArchivos ){
+		// Leo una linea de todos los arhivos
+		for (int i=0; i<cantArchivos; i++){
+			if ( !feof(fp+i) ) fgets( (str+i), 256, (fp+i) );
+
+			// ACA DEBERIA TRANSFORMAR LAS LINEAS OBTENIDAS A REGISTRO DE NGRAMAS
+			// Y COMPARAR CON STR_MENOR
+
+		}
+
+		// ACA DEBERIA GUARDAR EN FP_MERGED AL MENOR REGISTRO
+
+		// Leo proxima linea en archivo que ya se copio al merged
+		for(int i=0; i<cantArchivos; i++){
+			if ( *(str+i) == *(str_menor) ){
+				if ( !feof(fp+i) ) fgets( (str+i), 256, (fp+i) );
+			}
+		}
+
+		// Cuento cuantos archivos terminaron
+		cant_eof = 0;
+		for (int i=0; i<cantArchivos; i++){
+			if ( feof(fp+i) ) cant_eof++;
+		}
+	}
+}

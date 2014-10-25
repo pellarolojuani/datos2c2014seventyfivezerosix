@@ -50,4 +50,8 @@ public:
 
 };
 
+
+void merge(int cantArchivos);
+
+
 #endif /*MANEJOARCHIVO_H_*/
