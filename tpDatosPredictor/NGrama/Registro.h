@@ -25,6 +25,7 @@ private:
 	string contexto;
 	string termino;
 	int frecuencia;
+	int longitud;
 
 public:
 	Registro();
@@ -36,6 +37,14 @@ public:
 	string getContexto();
 	string getTermino();
 	int getFrecuencia();
+
+	int getLongitud() const {
+		return longitud;
+	}
+
+	void setLongitud(int longitud) {
+		this->longitud = longitud;
+	}
 };
 
 #endif /* REGISTRO_H_ */

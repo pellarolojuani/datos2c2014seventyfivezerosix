@@ -11,6 +11,7 @@ Registro::Registro() {
 	this->contexto = "";
 	this->termino = "";
 	this->frecuencia = 0;
+	this->longitud = 0;
 }
 
 Registro::~Registro() {
