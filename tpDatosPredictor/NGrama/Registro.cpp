@@ -74,7 +74,9 @@ string Registro::registroAString(){
 	resultado = resultado.append(this->termino);
 	resultado = resultado.append(" ");
 
-	string frec = to_string(this->frecuencia);
+	stringstream ss2;
+	ss2 << frecuencia;
+	string frec = ss2.str();
 	resultado = resultado.append(frec);
 
 	return resultado;
