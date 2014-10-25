@@ -37,3 +37,45 @@ int Registro::getFrecuencia(){
 	return this->frecuencia;
 }
 
+void Registro::stringARegistro(char* str){
+	char* token;
+	char* separador = " ";
+
+	token = strtok(str, separador);
+
+	int i = 0;
+	while (token != NULL){
+		i++;
+		(token+i) = strtok(str, separador);
+	}
+	// str tenia i+1 de palabras separadas
+
+	string contexto = "";
+	for (int j=0; j<i; j++){
+		contexto = contexto.append( (token+j) );
+	}
+
+	string termino = "";
+	termino = termino.append( (token+i) );
+
+	int frecuencia;
+	frecuencia = *(token+i+1);
+
+	this->setContexto(contexto);
+	this->setTermino(termino);
+	this->setFrecuencia(frecuencia);
+}
+
+string Registro::registroAString(){
+	string resultado = "";
+
+	resultado = resultado.append(this->contexto);
+	resultado = resultado.append(" ");
+	resultado = resultado.append(this->termino);
+	resultado = resultado.append(" ");
+
+	string frec = to_string(this->frecuencia);
+	resultado = resultado.append(frec);
+
+	return resultado;
+}

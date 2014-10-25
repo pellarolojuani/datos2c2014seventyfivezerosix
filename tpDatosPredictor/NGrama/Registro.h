@@ -38,13 +38,11 @@ public:
 	string getTermino();
 	int getFrecuencia();
 
-	int getLongitud() const {
-		return longitud;
-	}
+	int getLongitud() const;
+	void setLongitud(int longitud);
 
-	void setLongitud(int longitud) {
-		this->longitud = longitud;
-	}
+	void stringARegistro(char* str);
+	string registroAString();
 };
 
 #endif /* REGISTRO_H_ */
