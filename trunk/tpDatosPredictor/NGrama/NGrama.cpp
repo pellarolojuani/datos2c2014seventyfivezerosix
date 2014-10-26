@@ -116,7 +116,7 @@ void NGrama::stringA5Grama(){
 		}
 	}while(iss);
 
-    for (int i = 0; i < this->listaTerminos.size(); i++){
+	for (int i = 0; i < this->listaTerminos.size(); i++){
     	cout<<i<<": "<<this->listaTerminos.at(i)<<endl;
     }
 
@@ -127,6 +127,7 @@ void NGrama::stringA5Grama(){
     	pair<std::string,int> tercero; tercero.first = "";
     	pair<std::string,int> cuarto; cuarto.first = "";
     	pair<std::string,int> quinto; quinto.first = "";
+
 
     	primero.first += this->listaTerminos.at(i-4);
     	this->armarYGuardarNgrama(primero);
@@ -209,7 +210,7 @@ void NGrama::streamANgrama(FILE* fp){
 			if (aux.first == ""){
 				this->armarYGuardarNgrama(aux);
 		    }
-		    */
+			*/
 		    if(k > 0) aux.first +=  this->separadorNgrama;
 		    if (feof(fp)) break;
 		    fscanf(fp, "%s", str);
@@ -239,6 +240,8 @@ void NGrama::armarYGuardarNgrama(pair<string,int> aux){
 	}
 }
 
+
+
 void NGrama::aumentarFrecuenciaDeNgrama(int tamanioGrama){
 	(frecuenciaDeNgramas[tamanioGrama])+=1;
 }
@@ -246,6 +249,47 @@ void NGrama::aumentarFrecuenciaDeNgrama(int tamanioGrama){
 long NGrama::getFrecuenciaDeNgrama(int tamanioGrama){
 	return (frecuenciaDeNgramas[tamanioGrama]);
 }
+
+void NGrama:: stringANGramaMax(){
+
+    istringstream iss(this->oracion);
+    do
+	{
+		string sub;
+		//split por espacios.
+		iss >> sub;
+		//porque en la ultima iteracion viene vacio y pincha, tengo que ver bien la condicion de while.
+		if(sub.compare("")){
+			string ultimoCaracter = sub.substr(sub.length()-1) ;
+			if(!ultimoCaracter.compare(".") || !ultimoCaracter.compare(",") || !ultimoCaracter.compare(";")){
+				//this->listaTerminos.push_back(sub.substr(0,sub.length()-1));
+				this->listaTerminos.push_back(sub.substr(sub.length()-1));
+			}else{
+				//para no guardar los espacios.
+				this->listaTerminos.push_back(sub);
+			}
+		}
+	}while(iss);
+
+    for(std::size_t i=0; i<this->listaTerminos.size() -cantGrama+1; i++) {
+      	 pair<std::string,int> aux;
+         for(int k = 0; k < cantGrama; k++) {
+      	   if (aux.first.compare(" ") && k == cantGrama ){
+      		 this->armarYGuardarNgrama(aux);
+      	   }
+           if(k > 0 && k != cantGrama -1 ){
+        	   aux.first +=  " ";
+           }
+           if(k > 0 && k == cantGrama - 1){
+        	   aux.first +=  ",";
+           }
+           aux.first+= (this->listaTerminos[i+k]);
+         }
+
+         this->armarYGuardarNgrama(aux);
+      }
+}
+
 
 
 
