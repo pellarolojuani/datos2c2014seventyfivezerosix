@@ -5,7 +5,7 @@
  *      Author: lucas
  */
 
-#include "Busqueda.h"
+#include "BusquedaNGrama.h"
 
 using namespace std;
 
@@ -33,6 +33,7 @@ string BusquedaNGrama::buscarPalabraFaltanteAPartirDeNgrama(string ngrama, strin
 	 *  - armo la frase completa con el ngrama de M y luego la devuelvo.
 	 *
 	*/
+
 	return "";
 }
 
