@@ -36,6 +36,7 @@ public:
 	virtual ~NGrama();
 	void stringANgrama();
 	void stringA5Grama();
+	void stringANGramaMax(); //solo arma los ngrama de long max indicada.
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
