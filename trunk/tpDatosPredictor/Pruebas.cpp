@@ -56,6 +56,25 @@ void pruebaNgrama(){
 	}
 }
 
+void pruebaNgramaMax(){
+	//string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+	string oracion = "This is a very beautiful day . ";
+
+	//oracion.max long ngrama y separador.
+	NGrama ngrama5 =  NGrama(oracion, 5,",");
+	ngrama5.stringANGramaMax();
+
+	vector<pair<string,int> > listaNgrama;
+	listaNgrama = ngrama5.getListaNgrama();
+    //std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
+    std::cout << std::endl << "Sorted:" << std::endl;
+
+    cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
+	for(std::size_t i=0; i < listaNgrama.size(); ++i){
+		cout << listaNgrama.at(i).first<< "," <<listaNgrama.at(i).second << endl;
+	}
+}
+
 void pruebaStreamANgrama(){
 	FILE* fp;
 	fp = fopen("file.txt", "w+");
@@ -319,6 +338,7 @@ int main(int argc, char *argv[]){
 	cout<<"7- testPruebaObtenerSentence"<<endl;
 	cout<<"8- testArmarArchivoNgramas"<<endl;
 	cout<<"9- testGetRegistroDeArchivo"<<endl;
+	cout<<"10- testPruebaNgramaMax"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -348,6 +368,8 @@ int main(int argc, char *argv[]){
 		case 8: pruebaGuardarNgramasEnArchivo();
 		break;
 		case 9: pruebaGetRegistroDeArchivo();
+		break;
+		case 10: pruebaNgramaMax();
 		break;
 
 	}
