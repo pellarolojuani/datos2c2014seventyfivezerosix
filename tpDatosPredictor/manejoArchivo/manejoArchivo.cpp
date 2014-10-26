@@ -10,6 +10,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <iostream>
+#include "../NGrama/Registro.h"
 
 using namespace std;
 
@@ -166,7 +167,8 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 }
 
 void merge(int cantArchivos){
-	FILE* fp, fp_merged;
+	FILE* fp;
+	ofstream fp_merged;
 
 	// Creo un archivo destino <merged>
 	fp_merged = fopen("file_merged.txt", "w");
@@ -182,25 +184,50 @@ void merge(int cantArchivos){
 
 	int cant_eof = 0;
 
-	char str[], *str_menor;
-	(*str_menor) = "zzzzzzzzzzzzzzzzzzzz";
+	char str[];	               //va a contener 1 cadena de caracteres por archivo
+	Registro registro_menor;           //va a guardar el menor registro entre los que leyo de los archivos
+	registro_menor.setContexto("zzzzzzzzzzzzzzzzzz");
+	registro_menor.setTermino("zzzzzzzzzzzzzzzzz");
+	registro_menor.setFrecuencia(0);
+
+	// Leo una linea de todos los arhivos
+			for (int i=0; i<cantArchivos; i++){
+				if ( !feof(fp+i) ) fgets( (str+i), 256, (fp+i) );
+			}
 
 	while ( cant_eof < cantArchivos ){
-		// Leo una linea de todos los arhivos
 		for (int i=0; i<cantArchivos; i++){
-			if ( !feof(fp+i) ) fgets( (str+i), 256, (fp+i) );
+			// Transformo la cadenas de caracteres a registro
+			Registro registro;
+			registro.stringARegistro( (str+i) );
 
-			// ACA DEBERIA TRANSFORMAR LAS LINEAS OBTENIDAS A REGISTRO DE NGRAMAS
-			// Y COMPARAR CON STR_MENOR
-
+			// COMPARO CON REGISTRO_MENOR
+			if ( registro.getTermino() < registro_menor.getTermino() ){
+				// caso termino menor
+				registro_menor.copiarRegistro(registro);
+			}
+			else if ( registro.getTermino() == registro_menor.getTermino() ){
+				if ( registro.getContexto() < registro_menor.getContexto() ){
+					// caso mismo termino pero contexto menor
+					registro_menor.copiarRegistro(registro);
+				}
+				else if ( registro.getContexto() == registro_menor.getContexto() ){
+					// caso mismo termino mismo contexto
+					registro_menor.aumentarFrecuencia( registro.getFrecuencia() );
+				}
+			}
 		}
 
 		// ACA DEBERIA GUARDAR EN FP_MERGED AL MENOR REGISTRO
+		fp_merged << registro_menor.registroAString();
 
 		// Leo proxima linea en archivo que ya se copio al merged
 		for(int i=0; i<cantArchivos; i++){
-			if ( *(str+i) == *(str_menor) ){
-				if ( !feof(fp+i) ) fgets( (str+i), 256, (fp+i) );
+			// Transformo la cadenas de caracteres a registro
+			Registro registro;
+			registro.stringARegistro( (str+i) );
+			if ( (registro.getContexto() == registro_menor.getContexto()) && (registro.getTermino() == registro_menor.getTermino()) ){
+				fgets( (str+i), 256, (fp+i) );
 			}
 		}
 
@@ -210,4 +237,17 @@ void merge(int cantArchivos){
 			if ( feof(fp+i) ) cant_eof++;
 		}
 	}
+
+	fp_merged.close();                         // Cierro el archivo mergeado
+
+	// Cierro y elimino todos los archivos
+	for (int i=0; i<cantArchivos; i++){
+		fclose(fp+i);
+		char nombreArchivo[8] = "file";
+		char num = (char) (i+1);
+		strcat(nombreArchivo, &num);
+		strcat(nombreArchivo, ".txt");
+		remove(nombreArchivo);
+	}
+
 }

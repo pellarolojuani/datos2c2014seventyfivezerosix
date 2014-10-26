@@ -43,6 +43,8 @@ public:
 
 	void stringARegistro(char* str);
 	string registroAString();
+	void copiarRegistro(Registro unRegistro);
+	void aumentarFrecuencia(int numero);
 };
 
 #endif /* REGISTRO_H_ */
