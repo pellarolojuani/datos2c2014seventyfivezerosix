@@ -17,7 +17,7 @@ class TestV2 {
 
 private:
  	int id;
-	string sentente; //contiene una sentencia incompleta.
+	string sentence; //contiene una sentencia incompleta.
 	string sentencePredicha; //contiene la sentencia completa.
 	vector<pair<string,int> > listaNgrama;
 
@@ -42,12 +42,12 @@ public:
 		this->listaNgrama = listaNgrama;
 	}
 
-	const string& getSentente() const {
-		return sentente;
+	const string& getSentence() const {
+		return sentence;
 	}
 
 	void setSentence(const string& sentente) {
-		this->sentente = sentente;
+		this->sentence = sentente;
 	}
 
 	const string& getSentencePredicha() const {

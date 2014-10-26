@@ -12,14 +12,14 @@ namespace std {
 
 TestV2::TestV2() {
 	this->id = 0;
-	this->sentente = "";
+	this->sentence = "";
 	this->sentencePredicha = "";
 
 }
 
 TestV2::TestV2(int id, string sentence,vector<pair<string,int> > listaNgrama) {
 	this->id = id;
-	this->sentente = sentence;
+	this->sentence = sentence;
 	this->listaNgrama = listaNgrama;
 	this->sentencePredicha = "";
 
