@@ -81,3 +81,14 @@ string Registro::registroAString(){
 
 	return resultado;
 }
+
+void Registro::copiarRegistro(Registro unRegistro){
+	this->contexto = unRegistro.getContexto();
+	this->frecuencia = unRegistro.getFrecuencia();
+	this->termino = unRegistro.getTermino();
+	this->longitud = unRegistro.getLongitud();
+}
+
+void Registro::aumentarFrecuencia(int numero){
+	this->frecuencia = this->frecuencia + numero;
+}
