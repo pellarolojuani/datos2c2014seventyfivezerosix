@@ -46,7 +46,7 @@ public:
 		return sentente;
 	}
 
-	void setSentente(const string& sentente) {
+	void setSentence(const string& sentente) {
 		this->sentente = sentente;
 	}
 
