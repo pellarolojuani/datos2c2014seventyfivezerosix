@@ -167,11 +167,11 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 }
 
 void merge(int cantArchivos){
-	FILE* fp;
+	FILE* fp[cantArchivos-1];
 	ofstream fp_merged;
 
 	// Creo un archivo destino <merged>
-	fp_merged = fopen("file_merged.txt", "w");
+	fp_merged.open("file_merged.txt");
 
 	// Abro todos los archivos
 	for (int i=0; i<cantArchivos; i++){
@@ -179,12 +179,12 @@ void merge(int cantArchivos){
 		char num = (char) (i+1);
 		strcat(nombreArchivo, &num);
 		strcat(nombreArchivo, ".txt");
-		(fp+i) = fopen(nombreArchivo, "r");
+		fp[i] = fopen(nombreArchivo, "r");
 	}
 
 	int cant_eof = 0;
 
-	char str[];	               //va a contener 1 cadena de caracteres por archivo
+	char* str[cantArchivos-1];	               //va a contener 1 cadena de caracteres por archivo
 	Registro registro_menor;           //va a guardar el menor registro entre los que leyo de los archivos
 	registro_menor.setContexto("zzzzzzzzzzzzzzzzzz");
 	registro_menor.setTermino("zzzzzzzzzzzzzzzzz");
@@ -192,14 +192,14 @@ void merge(int cantArchivos){
 
 	// Leo una linea de todos los arhivos
 			for (int i=0; i<cantArchivos; i++){
-				if ( !feof(fp+i) ) fgets( (str+i), 256, (fp+i) );
+				if ( !feof(fp[i]) ) fgets( str[i], 256, fp[i] );
 			}
 
 	while ( cant_eof < cantArchivos ){
 		for (int i=0; i<cantArchivos; i++){
 			// Transformo la cadenas de caracteres a registro
 			Registro registro;
-			registro.stringARegistro( (str+i) );
+			registro.stringARegistro(str[i]);
 
 			// COMPARO CON REGISTRO_MENOR
 			if ( registro.getTermino() < registro_menor.getTermino() ){
@@ -225,16 +225,16 @@ void merge(int cantArchivos){
 		for(int i=0; i<cantArchivos; i++){
 			// Transformo la cadenas de caracteres a registro
 			Registro registro;
-			registro.stringARegistro( (str+i) );
+			registro.stringARegistro(str[i]);
 			if ( (registro.getContexto() == registro_menor.getContexto()) && (registro.getTermino() == registro_menor.getTermino()) ){
-				fgets( (str+i), 256, (fp+i) );
+				fgets( str[i], 256, fp[i] );
 			}
 		}
 
 		// Cuento cuantos archivos terminaron
 		cant_eof = 0;
 		for (int i=0; i<cantArchivos; i++){
-			if ( feof(fp+i) ) cant_eof++;
+			if ( feof(fp[i]) ) cant_eof++;
 		}
 	}
 
@@ -242,7 +242,7 @@ void merge(int cantArchivos){
 
 	// Cierro y elimino todos los archivos
 	for (int i=0; i<cantArchivos; i++){
-		fclose(fp+i);
+		fclose(fp[i]);
 		char nombreArchivo[8] = "file";
 		char num = (char) (i+1);
 		strcat(nombreArchivo, &num);
