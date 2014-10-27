@@ -38,7 +38,7 @@ public:
 	string getTermino();
 	int getFrecuencia();
 
-	int getLongitud() const;
+	int getLongitud();
 	void setLongitud(int longitud);
 
 	void stringARegistro(char* str);
