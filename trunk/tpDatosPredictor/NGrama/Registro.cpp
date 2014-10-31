@@ -23,6 +23,10 @@ Registro::~Registro() {
 void Registro::setContexto(string unContexto){
 	this->contexto = unContexto;
 }
+void Registro::agregarContexto(string masContexto){
+	this->contexto += masContexto;
+}
+
 void Registro::setTermino(string unTermino){
 	this->termino = unTermino;
 }
@@ -47,9 +51,9 @@ int Registro::getLongitud(){
 }
 
 void Registro::stringARegistro(char* str){
+
 	char** token;
 	const char separador[2] = " ";
-
 
 	(*token) = strtok(str, separador);
 
@@ -74,6 +78,34 @@ void Registro::stringARegistro(char* str){
 	this->setContexto(contexto);
 	this->setTermino(termino);
 	this->setFrecuencia(frecuencia);
+}
+
+void Registro::stringARegistro(string unTexto){
+
+	int contexto = 0;
+	for (int i = 0; i < unTexto.size(); i++){
+		if (unTexto[i] == SEPARADOR_NGRAMA){
+			contexto++;
+		}
+	}
+	string unContexto = "";
+	string termino = "";
+
+	for (int j = 0; j < contexto; j++){
+		int pos = unTexto.find_first_of(SEPARADOR_NGRAMA);
+		for (int k = 0; k < pos; k++){
+			unContexto += unTexto[k];
+		}
+		unTexto = unTexto.substr(pos+1);
+		unContexto += " "; //OJO: Al final del contexto queda un espacio!!
+	}
+	this->setContexto(unContexto);
+
+	for (int k = 0; k < unTexto.size(); k++){
+		termino += unTexto[k];
+	}
+	this->setTermino(termino);
+
 }
 
 string Registro::registroAString(){
@@ -101,4 +133,47 @@ void Registro::copiarRegistro(Registro unRegistro){
 
 void Registro::aumentarFrecuencia(int numero){
 	this->frecuencia = this->frecuencia + numero;
+}
+
+//OPERADORES DE COMPARACION. TERMINAR DE DEFINIR CRITERIO!!!
+bool Registro::operator==(Registro& nuevoRegistro)
+{
+	string unTermino = "";
+	string otroTermino = "";
+	unTermino += this->getTermino();
+	unTermino += " ";
+	unTermino += this->getContexto();
+	otroTermino += nuevoRegistro.getTermino();
+	otroTermino += " ";
+	otroTermino += nuevoRegistro.getContexto();
+	bool igualTermino = (unTermino == otroTermino);
+	if (igualTermino) return true;
+	return false;
+}
+
+bool Registro::operator<(Registro& nuevoRegistro)
+{
+	int terminoMenor = (this->getTermino().compare(nuevoRegistro.getTermino()) < 0);
+	//int contextoMenor = (this->getContexto().compare(nuevoRegistro.getContexto()) < 0);
+	if (terminoMenor < 0 /*&& contextoMenor < 0*/) return true;
+	//if (terminoMenor == 0 && contextoMenor < 0) return true;
+	return false;
+}
+bool Registro::operator>(Registro& nuevoRegistro)
+{
+	int terminoMayor = (this->getTermino().compare(nuevoRegistro.getTermino()) > 0);
+	//int contextoMayor = (this->getContexto().compare(nuevoRegistro.getContexto()) > 0);
+	if (terminoMayor > 0 /*&& contextoMayor > 0*/) return true;
+	//if (terminoMayor == 0 && contextoMayor > 0) return true;
+	return false;
+}
+
+
+bool Registro::operator=(Registro nuevoRegistro)
+{
+	this->contexto = nuevoRegistro.getContexto();
+	this->termino = nuevoRegistro.getTermino();
+	this->frecuencia = nuevoRegistro.getFrecuencia();
+
+	return true;
 }
