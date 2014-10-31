@@ -200,17 +200,14 @@ void NGrama::streamANgrama(FILE* fp){
 	FILE* fp_flag;
 	fp_flag = fp;
 	while (!feof(fp_flag)){
+		// cout<<"offset: "<<ftell(fp_flag)<<endl;
+		if (ftell(fp_flag)>GIGA) break;
 		char* str = new char[100];
 		fgetpos(fp, &position);
 		pair<std::string,int> aux;
 		aux.first = "";
 		aux.second = -1;
 		for(int k = 0; k < cantGrama; k++) {
-			/* ESTO NO DEBERIA ESTAR. NICO
-			if (aux.first == ""){
-				this->armarYGuardarNgrama(aux);
-		    }
-			*/
 		    if(k > 0) aux.first +=  this->separadorNgrama;
 		    if (feof(fp)) break;
 		    fscanf(fp, "%s", str);

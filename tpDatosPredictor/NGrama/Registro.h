@@ -11,6 +11,7 @@
 #include <string.h>
 #include <fstream>
 #include <sstream>
+#include "../Constantes.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ public:
 
 	void setContexto(string unContexto);
 	void setTermino(string unTermino);
+	void agregarContexto(string masContexto); //contexto +=
 	void setFrecuencia(int unaFrecuencia);
 	string getContexto();
 	string getTermino();
@@ -42,9 +44,17 @@ public:
 	void setLongitud(int longitud);
 
 	void stringARegistro(char* str);
+	void stringARegistro(string str);
 	string registroAString();
 	void copiarRegistro(Registro unRegistro);
 	void aumentarFrecuencia(int numero);
+
+	//con las siguientes operaciones vamos a definir los operadores
+	//para comparar registros
+	bool operator==(Registro&);//compara a igual
+	bool operator<(Registro&);//compara a menor
+	bool operator>(Registro&);//compara a mayor
+	bool operator=(Registro);//asigna
 };
 
 #endif /* REGISTRO_H_ */

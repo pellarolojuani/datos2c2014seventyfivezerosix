@@ -111,11 +111,16 @@ class ArbolB{
         return buscarRecursivamente(raiz, target);
     }
 
-   /* bool modify(T target)
+    bool aumentarFrecuencia(T target){
+    	/*Solo para el caso en el que se guarden Registros en el arbol*/
+    	return aumentarFrecuenciaRecursivo(raiz, target);
+    }
+
+   bool modify(T target)
 
 	{
     	return buscarRecursivamenteParaModify(raiz, target);
-	}*/
+	}
 
     T buscarYdevolver(T target)
 
@@ -129,6 +134,10 @@ class ArbolB{
     {
         emitirRecursivo(raiz);
     };
+
+    void emitirRegistros(){
+    	emitirRegistrosRecursivo(raiz);
+    }
 
     void borrar()
 	{
@@ -154,6 +163,20 @@ class ArbolB{
 
                 }
                 emitirRecursivo(actual->ramas[actual->entradasOcupadas]);
+            }
+        }
+        void emitirRegistrosRecursivo(B_nodo<T,orden>* actual)
+        {
+            int i;
+            if (actual){
+                for (i=0; i<actual->entradasOcupadas; i++)
+                {
+                    emitirRegistrosRecursivo(actual->ramas[i]);
+                    cout <<actual->data[i].getTermino()<<", "<<actual->data[i].getContexto()<<actual->data[i].getFrecuencia();
+                    cout << endl;
+
+                }
+                emitirRegistrosRecursivo(actual->ramas[actual->entradasOcupadas]);
             }
         }
 
@@ -326,6 +349,41 @@ class ArbolB{
                 return false;
         }
 
+        bool aumentarFrecuenciaRecursivo(B_nodo<T,orden>* actual, T& target){
+
+            bool resultado = false;
+            int posicion;
+
+            if ( actual != NULL )
+            {
+                resultado = buscarEnNodoParaAumentarFrecuencia(actual, target, posicion);
+                if ( resultado == false )
+                    resultado = aumentarFrecuenciaRecursivo(actual->ramas[posicion], target);
+                else
+                    target = actual->data[posicion];//PARTE QUE NO ENTIENDO.
+            }
+            return resultado;
+
+        }
+
+        bool buscarEnNodoParaAumentarFrecuencia(B_nodo<T,orden>* actual, T& target, int &posicion){
+        	posicion = 0;
+
+        	//Aumenta posicion hasta que target sea menor que la siguiente entrada.
+        	//Y, ademas, mientras la posicion no exceda la cantidad de nodos ocupados.
+        	while (( posicion < actual->entradasOcupadas )&&( target > actual->data[posicion]))
+        	{
+        	    posicion++;
+        	}
+
+        	if (( posicion < actual->entradasOcupadas )&&( target == actual->data[posicion] )){
+        		actual->data[posicion].aumentarFrecuencia(1);
+        		return true;
+        	}
+
+        	else
+        	    return false;
+        }
 
 
         bool buscarRecursivamenteParaModify(B_nodo<T,orden>* actual, T& target)

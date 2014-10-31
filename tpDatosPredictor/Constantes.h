@@ -20,6 +20,10 @@
 #define SEPARADOR_NGRAMA					' '
 #endif
 
+#ifndef GIGA
+#define GIGA								52428800
+#endif
+
 #ifndef READ
 #define READ								"r" //apertura para lectura. debe existir previamente
 #endif

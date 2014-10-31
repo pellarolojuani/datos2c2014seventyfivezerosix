@@ -61,3 +61,30 @@ void Parser::setPosicionArchivo(long posicion){
 	fseek(this->archivo,posicion,SEEK_SET);
 }
 
+long int Parser::setDeEntrenamiento(){
+	long int offset;
+
+	NGrama ngrama5 =  NGrama(5," ");
+
+	cout<<"Comienza la lectura del set de entrenamiento.."<<endl;
+	ngrama5.streamANgrama(this->archivo);
+	cout<<"FIN de la lectura del set de entrenamiento.."<<endl;
+	fclose(this->archivo);
+
+	vector<pair<string,int> > listaNgrama;
+	listaNgrama = ngrama5.getListaNgrama();
+	cout<<"Ordenando lista de NGramas.."<<endl;
+	//std::stable_sort(listaNgrama.begin(), listaNgrama.end());
+
+	ManejoArchivo manejoArchivo = ManejoArchivo("1erSet.txt");
+	cout<<"Guardando Ngramas en disco.."<<endl;
+	manejoArchivo.armarArchivoNgramas(listaNgrama, this->lexico);
+	manejoArchivo.cerrarArchivo();
+
+	//cout<<"<termino, offset>"<<endl;
+	//lexico->emitir();
+
+	cout<<"FIN."<<endl;
+
+	return offset;
+}

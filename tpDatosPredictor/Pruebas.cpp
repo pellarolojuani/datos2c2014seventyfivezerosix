@@ -33,8 +33,30 @@ void pruebaArbol() {
 	if (!lexico->buscar(aux)) cout<<"OK"<<endl;
 	lexico->insertar(aux);
 	if (lexico->buscar(aux)) cout<<"OK"<<endl;
-
 	cout<<"Fin de pruebas Arbol."<<endl;
+
+	delete []lexico;
+
+	abb::ArbolB<Registro,40> *otroArbol = new abb::ArbolB<Registro,40>;
+	Registro unRegistro = Registro();
+	Registro otroRegistro = Registro();
+	Registro resultado;
+	Registro auxiliar = Registro();
+
+	auxiliar.setTermino("Datos");
+
+	unRegistro.setTermino("Datos");
+	unRegistro.setFrecuencia(2);
+
+	otroRegistro.setTermino("Prueba");
+	otroRegistro.setFrecuencia(5);
+
+	otroArbol->insertar(unRegistro);
+	otroArbol->insertar(otroRegistro);
+	otroArbol->aumentarFrecuencia(unRegistro);
+	otroArbol->emitirRegistros();
+
+	delete []otroArbol;
 }
 
 void pruebaNgrama(){
@@ -154,13 +176,23 @@ void pruebaParser3(){
 	unParser.abrirArchivo("train_v2.txt");
 	string texto = "";
 
-	for (int i = 0; i < 999999; i++){
+	for (int i = 0; i < 100000; i++){
 		texto += unParser.getLinea();
 	}
 
 	cout<<texto<<endl;
 
 	unParser.cerrarArchivo();
+}
+
+void pruebaTextoARegistro(){
+	Registro unRegistro = Registro();
+	string unTexto = "Hola como te va";
+	unRegistro.stringARegistro(unTexto);
+
+	cout<<"Contexto: "<<unRegistro.getContexto()<<endl;
+	cout<<"Termino: "<<unRegistro.getTermino()<<endl;
+	cout<<"Frecuencia: "<<unRegistro.getFrecuencia()<<endl;
 }
 
 void pruebaGuardarNgramasEnArchivo(){
@@ -323,6 +355,14 @@ void pruebaObtenerSentenceTestV2(){
 	unParser.cerrarArchivo();
 }
 
+void pruebaCorrerSetDeEntrenamiento(){
+	Parser unParser = Parser();
+	unParser.abrirArchivo("train_v2.txt");
+	long int offset;
+
+	offset = unParser.setDeEntrenamiento();
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -339,6 +379,8 @@ int main(int argc, char *argv[]){
 	cout<<"8- testArmarArchivoNgramas"<<endl;
 	cout<<"9- testGetRegistroDeArchivo"<<endl;
 	cout<<"10- testPruebaNgramaMax"<<endl;
+	cout<<"11- testSetDeEntrenamiento"<<endl;
+	cout<<"12- testPruebaTextoARegistro"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -370,6 +412,10 @@ int main(int argc, char *argv[]){
 		case 9: pruebaGetRegistroDeArchivo();
 		break;
 		case 10: pruebaNgramaMax();
+		break;
+		case 11: pruebaCorrerSetDeEntrenamiento();
+		break;
+		case 12: pruebaTextoARegistro();
 		break;
 
 	}
