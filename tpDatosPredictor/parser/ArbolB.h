@@ -39,7 +39,7 @@ enum codigosDeError
 template <class T, int orden>
 struct B_nodo
 {
-    int entradasOcupadas; //Cuan ocupado esta el nodo.
+    size_t entradasOcupadas; //Cuan ocupado esta el nodo.
     T *data; //Array que posee los datos del nodo.
     B_nodo< T, orden > *ramas[orden];//punteros hacia las ramas.
     // constructor:
@@ -153,7 +153,7 @@ class ArbolB{
 
         void emitirRecursivo(B_nodo<T,orden>* actual)
         {
-            int i;
+            size_t i;
             if (actual){
                 for (i=0; i<actual->entradasOcupadas; i++)
                 {
@@ -167,12 +167,12 @@ class ArbolB{
         }
         void emitirRegistrosRecursivo(B_nodo<T,orden>* actual)
         {
-            int i;
+            size_t i;
             if (actual){
                 for (i=0; i<actual->entradasOcupadas; i++)
                 {
                     emitirRegistrosRecursivo(actual->ramas[i]);
-                    cout <<actual->data[i].getTermino()<<", "<<actual->data[i].getContexto()<<actual->data[i].getFrecuencia();
+                    cout <<actual->data[i].getContexto()<<" "<<actual->data[i].getTermino()<<" "<<actual->data[i].getFrecuencia();
                     cout << endl;
 
                 }
@@ -182,7 +182,7 @@ class ArbolB{
 
         void borrarRec(B_nodo<T,orden>* actual)
 		{
-        	int i;
+        	size_t i;
 			if (actual){
 				for (i=0; i<actual->entradasOcupadas; i++)
 				{
@@ -206,7 +206,7 @@ class ArbolB{
         {
             codigosDeError resultado;
 
-            int posicion;
+            size_t posicion;
 
             if (actual == NULL)
             {
@@ -239,12 +239,12 @@ class ArbolB{
             return resultado;
         }
 
-        void push_in(B_nodo<T,orden> *actual, const T &entrada, B_nodo<T,orden> *rama_derecha, int posicion)
+        void push_in(B_nodo<T,orden> *actual, const T &entrada, B_nodo<T,orden> *rama_derecha, size_t posicion)
         /*Pre: actual apunta a un nodo de un arbol B, dicho nodo no esta lleno.
            Post: Se inserta entrada junto con su rama derecha en actual en la posicion indicada.
         */
         {
-            int i;
+            size_t i;
             for (i = actual->entradasOcupadas; i > posicion; i-- ) {
                                 // manda todos los posteriores hacia la derecha.
                 actual->data[i] = actual->data[i - 1];
@@ -257,7 +257,7 @@ class ArbolB{
 
 
 
-        void partir_nodo(B_nodo<T,orden> *actual, const T &entradaAuxiliar,B_nodo<T,orden> *extraRama, int posicion,
+        void partir_nodo(B_nodo<T,orden> *actual, const T &entradaAuxiliar,B_nodo<T,orden> *extraRama, size_t posicion,
                 B_nodo<T, orden> * &mitad_derecha, T &datoMedio)
         /*
         actual: nodo a ser partido.
@@ -274,9 +274,9 @@ class ArbolB{
         */
         {
 			mitad_derecha = new B_nodo<T,orden>;
-			int mid = orden/2;             // Los datos que estan despues del medio iran a la mitad derecha.
+			size_t mid = orden/2;             // Los datos que estan despues del medio iran a la mitad derecha.
 			if (posicion <= mid) {         // Primer caso: entradaAuxiliar pertenece a la parte izquierda.
-				for (int i = mid; i < orden - 1; i ++ ) { // se mueven las entradas a la parte derecha
+				for (long int i = mid; i < orden - 1; i ++ ) { // se mueven las entradas a la parte derecha
 					mitad_derecha->data[i - mid] = actual->data[i];
 					mitad_derecha->ramas[i + 1 - mid] = actual->ramas[i + 1];
 				}
@@ -286,7 +286,7 @@ class ArbolB{
 			}
 			else {                         // Segundo caso: entradaAuxiliar pertenece a la mitad izquierda.
 				mid ++ ;                    // Por el momento se deja el dato medio en la parte izquierda.
-				for (int i = mid; i < orden - 1; i ++ ) { // se mueven las entradas a la parte derecha
+				for (size_t i = mid; i < orden - 1; i ++ ) { // se mueven las entradas a la parte derecha
 					mitad_derecha->data[i - mid] = actual->data[i];
 					mitad_derecha->ramas[i + 1 - mid] = actual->ramas[i + 1];
 				}
@@ -310,7 +310,7 @@ class ArbolB{
             bool resultado = false;
             //se almacena si se encuentra el target, la posicion en el nodo en la que esta
             //o si no se encuentra el target, la rama que hay que tomar para continuar la busqueda.
-            int posicion;
+            size_t posicion;
 
             if ( actual != NULL )
             {
@@ -323,7 +323,7 @@ class ArbolB{
             return resultado;
         }
 
-        bool buscarEnNodo(B_nodo<T,orden>* actual, T& target, int &posicion)
+        bool buscarEnNodo(B_nodo<T,orden>* actual, T& target, size_t &posicion)
         {
             /*
             pre: actual apunta a un B_nodo.
@@ -352,7 +352,7 @@ class ArbolB{
         bool aumentarFrecuenciaRecursivo(B_nodo<T,orden>* actual, T& target){
 
             bool resultado = false;
-            int posicion;
+            size_t posicion;
 
             if ( actual != NULL )
             {
@@ -366,7 +366,7 @@ class ArbolB{
 
         }
 
-        bool buscarEnNodoParaAumentarFrecuencia(B_nodo<T,orden>* actual, T& target, int &posicion){
+        bool buscarEnNodoParaAumentarFrecuencia(B_nodo<T,orden>* actual, T& target, size_t &posicion){
         	posicion = 0;
 
         	//Aumenta posicion hasta que target sea menor que la siguiente entrada.
@@ -392,7 +392,7 @@ class ArbolB{
         	bool resultado = false;
 			//se almacena si se encuentra el target, la posicion en el nodo en la que esta
 			//o si no se encuentra el target, la rama que hay que tomar para continuar la busqueda.
-			int posicion;
+			size_t posicion;
 
 			if ( actual != NULL )
 			{
@@ -407,7 +407,7 @@ class ArbolB{
 
 
 
-        bool buscarEnNodoParaModify(B_nodo<T,orden>* actual, T& target, int &posicion)
+        bool buscarEnNodoParaModify(B_nodo<T,orden>* actual, T& target, size_t &posicion)
 		{
 			/*
 			pre: actual apunta a un B_nodo.
@@ -441,7 +441,7 @@ class ArbolB{
 			bool resultado = false;
 			//se almacena si se encuentra el target, la posicion en el nodo en la que esta
 			//o si no se encuentra el target, la rama que hay que tomar para continuar la busqueda.
-			int posicion;
+			size_t posicion;
 
 			if ( actual != NULL )
 			{
@@ -456,7 +456,7 @@ class ArbolB{
 
 
 
-		bool buscarEnNodoParaDevolver(B_nodo<T,orden>* actual, T& target, int &posicion, T* devuelto)
+		bool buscarEnNodoParaDevolver(B_nodo<T,orden>* actual, T& target, size_t &posicion, T* devuelto)
 		{
 			posicion = 0;
 
