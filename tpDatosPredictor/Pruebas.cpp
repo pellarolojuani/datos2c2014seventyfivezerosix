@@ -355,11 +355,30 @@ void pruebaObtenerSentenceTestV2(){
 	unParser.cerrarArchivo();
 }
 
+void pruebaNgramaGenerico(){
+	//string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+	string oracion = "This is a very beautiful day .";
+
+	//oracion.max long ngrama y separador.
+	NGrama ngrama5 =  NGrama(oracion, 5,",");
+	ngrama5.stringANgrama();
+
+	vector<pair<string,int> > listaNgrama;
+	listaNgrama = ngrama5.getListaNgrama();
+    //std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
+    std::cout << std::endl << "Sorted:" << std::endl;
+
+    cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
+	for(int i=0; i < listaNgrama.size(); ++i){
+		cout << listaNgrama.at(i).first<< "," <<listaNgrama.at(i).second << endl;
+	}
+}
+
 void pruebaCorrerSetDeEntrenamiento(){
 	Parser unParser = Parser();
 	unParser.abrirArchivo("train_v2.txt");
 	long int offset;
-
+	
 	offset = unParser.setDeEntrenamiento();
 }
 
@@ -426,6 +445,23 @@ void pruebaMerge(){
     cout<<"Termino el proceso de MERGE"<<endl;
 }
 
+void pruebaNgramaSoloConMap(){
+
+	string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+
+	map<string, int>::const_iterator itr;
+	NGrama ngrama5 =  NGrama(oracion, 5,",");
+	ngrama5.stringANGramaAlmacenadoEnMap();
+
+	map<string,int> mapNgrama;
+	mapNgrama = ngrama5.getMapDePosiciones();
+
+	for(itr = mapNgrama.begin(); itr != mapNgrama.end(); ++itr){
+			cout << (*itr).first << "," << (*itr).second <<endl;
+
+		}
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -445,6 +481,7 @@ int main(int argc, char *argv[]){
 	cout<<"11- testSetDeEntrenamiento"<<endl;
 	cout<<"12- testPruebaTextoARegistro"<<endl;
 	cout<<"13- test MERGE"<<endl;
+	cout<<"14- test armar ngramas con map"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -483,6 +520,8 @@ int main(int argc, char *argv[]){
 		break;
 		case 13: pruebaMerge();
 		break;
+		case 14: pruebaNgramaSoloConMap();
+				break;
 	}
 
 	cout<<endl;
