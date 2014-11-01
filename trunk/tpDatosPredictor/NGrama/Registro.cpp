@@ -111,15 +111,15 @@ void Registro::stringARegistro(string unTexto){
 string Registro::registroAString(){
 	string resultado = "";
 
-	resultado = resultado.append(this->contexto);
-	resultado = resultado.append(" ");
-	resultado = resultado.append(this->termino);
-	resultado = resultado.append(" ");
+	resultado += (this->contexto);
+	resultado += " ";
+	resultado += (this->termino);
+	resultado += " ";
 
-	stringstream ss2;
-	ss2 << frecuencia;
-	string frec = ss2.str();
-	resultado = resultado.append(frec);
+	ostringstream num;
+	num << (this->frecuencia);
+	string frec = num.str();
+	resultado += frec;
 
 	return resultado;
 }
@@ -132,7 +132,7 @@ void Registro::copiarRegistro(Registro unRegistro){
 }
 
 void Registro::aumentarFrecuencia(int numero){
-	this->frecuencia = this->frecuencia + numero;
+	this->frecuencia = this->frecuencia+numero;
 }
 
 //OPERADORES DE COMPARACION. TERMINAR DE DEFINIR CRITERIO!!!

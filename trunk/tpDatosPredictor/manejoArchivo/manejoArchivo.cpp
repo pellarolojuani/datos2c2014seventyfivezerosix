@@ -167,7 +167,7 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 }
 
 void merge(int cantArchivos){
-	FILE* fp[cantArchivos-1];
+	fstream fp[cantArchivos];
 	ofstream fp_merged;
 
 	// Creo un archivo destino <merged>
@@ -175,16 +175,19 @@ void merge(int cantArchivos){
 
 	// Abro todos los archivos
 	for (int i=0; i<cantArchivos; i++){
-		char nombreArchivo[8] = "file";
-		char num = (char) (i+1);
-		strcat(nombreArchivo, &num);
-		strcat(nombreArchivo, ".txt");
-		fp[i] = fopen(nombreArchivo, "r");
+		string nombreArchivo = "";
+		nombreArchivo += "file";
+		ostringstream num;
+		num << i+1;
+		nombreArchivo += num.str();
+		nombreArchivo += ".txt";
+		fp[i].open(nombreArchivo.c_str());
+		cout<< nombreArchivo <<" abierto"<<endl;
 	}
 
 	int cant_eof = 0;
 
-	char* str[cantArchivos-1];	               //va a contener 1 cadena de caracteres por archivo
+	string str[cantArchivos];	               //va a contener 1 cadena de caracteres por archivo
 	Registro registro_menor;           //va a guardar el menor registro entre los que leyo de los archivos
 	registro_menor.setContexto("zzzzzzzzzzzzzzzzzz");
 	registro_menor.setTermino("zzzzzzzzzzzzzzzzz");
@@ -192,14 +195,14 @@ void merge(int cantArchivos){
 
 	// Leo una linea de todos los arhivos
 			for (int i=0; i<cantArchivos; i++){
-				if ( !feof(fp[i]) ) fgets( str[i], 256, fp[i] );
+				if ( !fp[i].eof() ) getline(fp[i], str[i]);
 			}
 
 	while ( cant_eof < cantArchivos ){
 		for (int i=0; i<cantArchivos; i++){
 			// Transformo la cadenas de caracteres a registro
 			Registro registro;
-			registro.stringARegistro(str[i]);
+			registro.stringARegistro(str[i].c_str());
 
 			// COMPARO CON REGISTRO_MENOR
 			if ( registro.getTermino() < registro_menor.getTermino() ){
@@ -217,9 +220,10 @@ void merge(int cantArchivos){
 				}
 			}
 		}
-
+		cout<<registro_menor.registroAString()<<endl;
 		// ACA DEBERIA GUARDAR EN FP_MERGED AL MENOR REGISTRO
 		fp_merged << registro_menor.registroAString();
+		fp_merged << endl;
 
 		// Leo proxima linea en archivo que ya se copio al merged
 		for(int i=0; i<cantArchivos; i++){
@@ -227,26 +231,33 @@ void merge(int cantArchivos){
 			Registro registro;
 			registro.stringARegistro(str[i]);
 			if ( (registro.getContexto() == registro_menor.getContexto()) && (registro.getTermino() == registro_menor.getTermino()) ){
-				fgets( str[i], 256, fp[i] );
+				getline(fp[i], str[i]);
 			}
 		}
+
 		// Cuento cuantos archivos terminaron
 		cant_eof = 0;
 		for (int i=0; i<cantArchivos; i++){
-			if ( feof(fp[i]) ) cant_eof++;
+			if ( fp[i].eof() ) cant_eof++;
 		}
+
+		registro_menor.setContexto("zzzzzzzzzzzzzzzzzz");
+		registro_menor.setTermino("zzzzzzzzzzzzzzzzz");
+		registro_menor.setFrecuencia(0);
 	}
 
 	fp_merged.close();                         // Cierro el archivo mergeado
 
 	// Cierro y elimino todos los archivos
 	for (int i=0; i<cantArchivos; i++){
-		fclose(fp[i]);
-		char nombreArchivo[8] = "file";
-		char num = (char) (i+1);
-		strcat(nombreArchivo, &num);
-		strcat(nombreArchivo, ".txt");
-		remove(nombreArchivo);
+		fp[i].close();
+		string nombreArchivo = "";
+				nombreArchivo += "file";
+				ostringstream num;
+				num << i+1;
+				nombreArchivo += num.str();
+				nombreArchivo += ".txt";
+		remove(nombreArchivo.c_str());
 	}
 
 }

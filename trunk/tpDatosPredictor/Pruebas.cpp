@@ -363,6 +363,69 @@ void pruebaCorrerSetDeEntrenamiento(){
 	offset = unParser.setDeEntrenamiento();
 }
 
+void pruebaMerge(){
+
+	const char* oracion = "This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
+	abb::ArbolB<Nodo,40> *lexico = new abb::ArbolB<Nodo, 40>;
+
+	FILE* fp;
+	fp = fopen("file.txt", "w+");
+	fputs(oracion, fp);
+	rewind(fp);
+
+	long int length;
+	fseek(fp, 0, SEEK_END);
+	length = ftell(fp);
+	rewind(fp);
+
+	void* str = calloc(length + 1, 1);
+	fread(str, 1, length, fp);
+	rewind(fp);
+	printf("%s", str);
+	cout<<endl;
+
+	NGrama ngrama5 =  NGrama(5," ");
+	ngrama5.streamANgrama(fp);
+
+	vector<pair<string,int> > listaNgrama;
+	listaNgrama = ngrama5.getListaNgrama();
+    std::stable_sort(listaNgrama.begin(), listaNgrama.end());
+
+	for(std::size_t i=0; i < ngrama5.getListaNgrama().size();++i){
+		//cout << listaNgrama[i].first  << "," << listaNgrama[i].second << endl;
+	}
+
+	fclose(fp);
+	remove("file.txt");
+
+	ManejoArchivo manejoArchivo = ManejoArchivo("file1.txt");
+	manejoArchivo.armarArchivoNgramas(listaNgrama, lexico);
+	manejoArchivo.cerrarArchivo();
+
+	cout<<"<termino, offset>"<<endl;
+	lexico->emitir();
+
+	delete []lexico;
+	cout<<endl;
+	cout<<endl;
+	cout<<">>Se ha creado UN archivo con todos los ngramas correspondientes."<<endl;
+
+	FILE *fp1, *fp2;
+
+	fp1 = fopen("file1.txt", "r");
+	fp2 = fopen("file2.txt", "w+");
+	char ch;
+	while ( ( ch = fgetc(fp1) ) != EOF ){
+		fputc(ch, fp2);
+	}
+    fclose(fp1);
+    fclose(fp2);
+    cout<<">>Se ha creado OTRO archivo con todos los ngramas correspondientes."<<endl;
+
+    merge(2);
+    cout<<"Termino el proceso de MERGE"<<endl;
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -381,6 +444,7 @@ int main(int argc, char *argv[]){
 	cout<<"10- testPruebaNgramaMax"<<endl;
 	cout<<"11- testSetDeEntrenamiento"<<endl;
 	cout<<"12- testPruebaTextoARegistro"<<endl;
+	cout<<"13- test MERGE"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -417,7 +481,8 @@ int main(int argc, char *argv[]){
 		break;
 		case 12: pruebaTextoARegistro();
 		break;
-
+		case 13: pruebaMerge();
+		break;
 	}
 
 	cout<<endl;
