@@ -39,6 +39,10 @@ ManejoArchivo::ManejoArchivo(string pathEntrada, string modo){
 	eof = false;
 }
 
+ManejoArchivo::~ManejoArchivo() {
+}
+
+
 FILE* ManejoArchivo::getArchivo(){
 	return this->fd_archivo;
 }
