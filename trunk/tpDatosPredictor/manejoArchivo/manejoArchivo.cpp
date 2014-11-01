@@ -39,11 +39,6 @@ ManejoArchivo::ManejoArchivo(string pathEntrada, string modo){
 	eof = false;
 }
 
-ManejoArchivo::~ManejoArchivo() {
-	// TODO Auto-generated destructor stub
-
-}
-
 FILE* ManejoArchivo::getArchivo(){
 	return this->fd_archivo;
 }
