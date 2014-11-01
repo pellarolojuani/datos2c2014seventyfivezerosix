@@ -105,9 +105,9 @@ void Registro::stringARegistro(string unTexto){
 		termino += unTexto[k];
 	}
 	this->setTermino(termino);
+	this->setFrecuencia(1);
 
 }
-
 string Registro::registroAString(){
 	string resultado = "";
 
@@ -153,18 +153,28 @@ bool Registro::operator==(Registro& nuevoRegistro)
 
 bool Registro::operator<(Registro& nuevoRegistro)
 {
-	int terminoMenor = (this->getTermino().compare(nuevoRegistro.getTermino()) < 0);
-	//int contextoMenor = (this->getContexto().compare(nuevoRegistro.getContexto()) < 0);
-	if (terminoMenor < 0 /*&& contextoMenor < 0*/) return true;
-	//if (terminoMenor == 0 && contextoMenor < 0) return true;
+	string unTermino = "";
+	string otroTermino = "";
+	unTermino += this->getTermino();
+	unTermino += " ";
+	unTermino += this->getContexto();
+	otroTermino += nuevoRegistro.getTermino();
+	otroTermino += " ";
+	otroTermino += nuevoRegistro.getContexto();
+	if (unTermino < otroTermino) return true;
 	return false;
 }
 bool Registro::operator>(Registro& nuevoRegistro)
 {
-	int terminoMayor = (this->getTermino().compare(nuevoRegistro.getTermino()) > 0);
-	//int contextoMayor = (this->getContexto().compare(nuevoRegistro.getContexto()) > 0);
-	if (terminoMayor > 0 /*&& contextoMayor > 0*/) return true;
-	//if (terminoMayor == 0 && contextoMayor > 0) return true;
+	string unTermino = "";
+	string otroTermino = "";
+	unTermino += this->getTermino();
+	unTermino += " ";
+	unTermino += this->getContexto();
+	otroTermino += nuevoRegistro.getTermino();
+	otroTermino += " ";
+	otroTermino += nuevoRegistro.getContexto();
+	if (unTermino > otroTermino) return true;
 	return false;
 }
 
