@@ -237,6 +237,18 @@ void NGrama::armarYGuardarNgrama(pair<string,int> aux){
 	}
 }
 
+void NGrama::armarYGuardarNgramaSoloEnMap(pair<string,int> aux){
+	if(mapDePosiciones.count(aux.first)== 0){
+		//no existe en el map entonces lo doy de alta con frecuencia 1.
+		mapDePosiciones.insert(std::pair<std::string,int>(aux.first,1));
+	}else{
+		//esta en el map, entonces saco la pos y sumo frecuencia.
+		int frecuencia =  mapDePosiciones.find(aux.first)->second;
+		frecuencia++;
+		mapDePosiciones.find(aux.first)->second = frecuencia;
+	}
+}
+
 
 
 void NGrama::aumentarFrecuenciaDeNgrama(int tamanioGrama){
@@ -285,6 +297,109 @@ void NGrama:: stringANGramaMax(){
 
          this->armarYGuardarNgrama(aux);
       }
+}
+
+void NGrama::stringANGramaAlmacenadoEnMap(){
+    istringstream iss(this->oracion);
+    do
+	{
+		string sub;
+		//split por espacios.
+		iss >> sub;
+		//porque en la ultima iteracion viene vacio y pincha, tengo que ver bien la condicion de while.
+		if(sub.compare("")){
+			string ultimoCaracter = sub.substr(sub.length()-1) ;
+			//aca deberiamos salvar todos los caracter tipo ,.; etc
+
+			//NOTA: los caracteres .,; etc estan siempre separados de la palabra anterior
+			//por un espacio en el set de entrenamiento, es decir que nunca van a venir
+			//seguidos de una palabra sino de un espacio.
+			if(!ultimoCaracter.compare(".") || !ultimoCaracter.compare(",") || !ultimoCaracter.compare(";")){
+				//this->listaTerminos.push_back(sub.substr(0,sub.length()-1));
+				this->listaTerminos.push_back(sub.substr(sub.length()-1));
+			}else{
+				this->listaTerminos.push_back(sub);
+			}
+		}
+	}while(iss);
+
+	for (int i = 0; i < this->listaTerminos.size(); i++){
+    	cout<<i<<": "<<this->listaTerminos.at(i)<<endl;
+    }
+
+    for (int i = 4; i < this->listaTerminos.size(); i++){
+
+    	pair<std::string,int> primero; primero.first = "";
+    	pair<std::string,int> segundo; segundo.first = "";
+    	pair<std::string,int> tercero; tercero.first = "";
+    	pair<std::string,int> cuarto; cuarto.first = "";
+    	pair<std::string,int> quinto; quinto.first = "";
+
+
+    	primero.first += this->listaTerminos.at(i-4);
+    	this->armarYGuardarNgramaSoloEnMap(primero);
+
+    	segundo.first += this->listaTerminos.at(i-4);
+    	segundo.first += this->separadorNgrama;
+    	segundo.first += this->listaTerminos.at(i-3);
+    	this->armarYGuardarNgramaSoloEnMap(segundo);
+
+    	tercero.first += this->listaTerminos.at(i-4);
+    	tercero.first += " ";
+    	tercero.first += this->listaTerminos.at(i-3);
+    	tercero.first += this->separadorNgrama;
+    	tercero.first += this->listaTerminos.at(i-2);
+    	this->armarYGuardarNgramaSoloEnMap(tercero);
+
+    	cuarto.first += this->listaTerminos.at(i-4);
+    	cuarto.first += " ";
+    	cuarto.first += this->listaTerminos.at(i-3);
+    	cuarto.first += " ";
+    	cuarto.first += this->listaTerminos.at(i-2);
+    	cuarto.first += this->separadorNgrama;
+    	cuarto.first += this->listaTerminos.at(i-1);
+    	this->armarYGuardarNgramaSoloEnMap(cuarto);
+
+    	quinto.first += this->listaTerminos.at(i-4);
+    	quinto.first += " ";
+    	quinto.first += this->listaTerminos.at(i-3);
+    	quinto.first += " ";
+    	quinto.first += this->listaTerminos.at(i-2);
+    	quinto.first += " ";
+    	quinto.first += this->listaTerminos.at(i-1);
+    	quinto.first += this->separadorNgrama;
+    	quinto.first += this->listaTerminos.at(i);
+    	this->armarYGuardarNgramaSoloEnMap(quinto);
+    }
+    pair<std::string,int> ultimo; ultimo.first = "";
+
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-4);
+    ultimo.first += " ";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-3);
+    ultimo.first += " ";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-2);
+    ultimo.first += this->separadorNgrama;
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgramaSoloEnMap(ultimo);
+
+    ultimo.first = "";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-3);
+    ultimo.first += " ";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-2);
+    ultimo.first += this->separadorNgrama;
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgramaSoloEnMap(ultimo);
+
+    ultimo.first = "";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-2);
+    ultimo.first += this->separadorNgrama;
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgramaSoloEnMap(ultimo);
+
+    ultimo.first = "";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgramaSoloEnMap(ultimo);
+
 }
 
 

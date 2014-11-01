@@ -27,6 +27,7 @@ private:
 	vector<pair<string,int> > listaNgrama;
 	map<string,int> mapDePosiciones;
 	void armarYGuardarNgrama(pair<string,int> par);
+	void armarYGuardarNgramaSoloEnMap(pair<string,int> par);
 	long* frecuenciaDeNgramas;
 
 public:
@@ -37,6 +38,7 @@ public:
 	void stringANgrama();
 	void stringA5Grama();
 	void stringANGramaMax(); //solo arma los ngrama de long max indicada.
+	void stringANGramaAlmacenadoEnMap();
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
@@ -73,6 +75,14 @@ public:
 	void setListaNgrama(
 			const std::vector<std::pair<std::string, int> >& listaNgrama) {
 		this->listaNgrama = listaNgrama;
+	}
+
+	const map<string, int>& getMapDePosiciones() const {
+		return mapDePosiciones;
+	}
+
+	void setMapDePosiciones(const map<string, int>& mapDePosiciones) {
+		this->mapDePosiciones = mapDePosiciones;
 	}
 };
 
