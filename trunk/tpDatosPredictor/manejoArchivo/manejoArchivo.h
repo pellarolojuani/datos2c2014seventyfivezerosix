@@ -48,10 +48,10 @@ public:
 
 	FILE* getArchivo();
 
+	void merge(int cantArchivos);
+
 };
 
-
-void merge(int cantArchivos);
 
 
 #endif /*MANEJOARCHIVO_H_*/
