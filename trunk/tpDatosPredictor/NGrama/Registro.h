@@ -43,7 +43,7 @@ public:
 	int getLongitud();
 	void setLongitud(int longitud);
 
-	void stringARegistro(char* str);
+	void lineaNGramaARegistro(string str);
 	void stringARegistro(string str);
 	string registroAString();
 	void copiarRegistro(Registro unRegistro);

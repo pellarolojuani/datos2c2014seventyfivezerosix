@@ -8,6 +8,8 @@
 #include "Registro.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 
 Registro::Registro() {
 	this->contexto = "";
@@ -50,34 +52,35 @@ int Registro::getLongitud(){
 	return this->longitud;
 }
 
-void Registro::stringARegistro(char* str){
+void Registro::lineaNGramaARegistro(string str){
 
-	char** token;
-	const char separador[2] = " ";
+		int contexto = 0;
+		for (int i = 0; i < str.size(); i++){
+			if (str[i] == SEPARADOR_NGRAMA){
+				contexto++;
+			}
+		}
+		string unContexto = "";
+		string termino = "";
 
-	(*token) = strtok(str, separador);
+		for (int j = 0; j < contexto -1; j++){
+			int pos = str.find_first_of(SEPARADOR_NGRAMA);
+			for (int k = 0; k < pos; k++){
+				unContexto += str[k];
+			}
+			str = str.substr(pos+1);
+			unContexto += " ";
+		}
+		this->setContexto(unContexto);
 
-	int i = 0;
-	while (token != NULL){
-		i++;
-		*(token+i) = strtok(str, separador);
-	}
-	// str tenia i+1 de palabras separadas
+		int pos = str.find_first_of(SEPARADOR_NGRAMA);
+		for (int k = 0; k < pos; k++){
+			termino += str[k];
+		}
+		str = str.substr(pos+1);
+		this->setTermino(termino);
+		this->setFrecuencia(atoi(str.c_str()));
 
-	string contexto = "";
-	for (int j=0; j<i; j++){
-		contexto = contexto.append( *(token+j) );
-	}
-
-	string termino = "";
-	termino = termino.append( *(token+i) );
-
-	int frecuencia;
-	frecuencia = **(token+i+1);
-
-	this->setContexto(contexto);
-	this->setTermino(termino);
-	this->setFrecuencia(frecuencia);
 }
 
 void Registro::stringARegistro(string unTexto){
