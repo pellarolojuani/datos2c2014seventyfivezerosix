@@ -201,7 +201,7 @@ void merge(int cantArchivos){
 		for (int i=0; i<cantArchivos; i++){
 			// Transformo la cadenas de caracteres a registro
 			Registro registro;
-			registro.stringARegistro(str[i].c_str());
+			registro.lineaNGramaARegistro(str[i]);
 
 			// COMPARO CON REGISTRO_MENOR
 			if ( registro.getTermino() < registro_menor.getTermino() ){
@@ -228,7 +228,7 @@ void merge(int cantArchivos){
 		for(int i=0; i<cantArchivos; i++){
 			// Transformo la cadenas de caracteres a registro
 			Registro registro;
-			registro.stringARegistro(str[i]);
+			registro.lineaNGramaARegistro(str[i]);
 			if ( (registro.getContexto() == registro_menor.getContexto()) && (registro.getTermino() == registro_menor.getTermino()) ){
 				getline(fp[i], str[i]);
 			}

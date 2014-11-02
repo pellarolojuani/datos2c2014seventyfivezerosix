@@ -49,6 +49,6 @@ void NGramas::streamANgrama(FILE* fp){
 			}else{
 				this->lexico->aumentarFrecuencia(unRegistro);
 			}
+		}
 	}
 }
-
