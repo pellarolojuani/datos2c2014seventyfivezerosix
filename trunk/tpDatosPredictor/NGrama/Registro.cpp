@@ -69,7 +69,7 @@ void Registro::lineaNGramaARegistro(string str){
 				unContexto += str[k];
 			}
 			str = str.substr(pos+1);
-			unContexto += " ";
+			if (j < contexto-2 ) unContexto += " ";
 		}
 		this->setContexto(unContexto);
 

@@ -150,7 +150,7 @@ Registro ManejoArchivo::getSiguienteRegistro(){
 			unContexto += aux[k];
 		}
 		aux = aux.substr(pos+1);
-		unContexto += " ";
+		if (j < contexto-2 ) unContexto += " ";
 	}
 	unRegistro.setContexto(unContexto);
 
@@ -219,7 +219,6 @@ void merge(int cantArchivos){
 				}
 			}
 		}
-		cout<<registro_menor.registroAString()<<endl;
 		// ACA DEBERIA GUARDAR EN FP_MERGED AL MENOR REGISTRO
 		fp_merged << registro_menor.registroAString();
 		fp_merged << endl;
