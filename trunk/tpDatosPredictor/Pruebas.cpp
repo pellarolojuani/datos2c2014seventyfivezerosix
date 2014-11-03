@@ -462,6 +462,42 @@ void pruebaNgramaSoloConMap(){
 		}
 }
 
+void pruebaSetEntrenamientoConMap(){
+
+	 char cadena[128];
+	 char * buffer = new char [GIGA];
+	 ofstream fichero("ngrama.txt");
+	map<string, int>::const_iterator itr;
+
+	 ifstream leer_fich ("train_v2.txt");
+	// leer_fich.getline(cadena,128);
+	 leer_fich.read(buffer,GIGA);
+	 leer_fich.close();
+	cout<< "Termino de leer el archivo" <<endl;
+	NGrama ngrama5 =  NGrama(buffer, 5,",");
+	cout<< "Comienza Armado Ngrama" <<endl;
+	 ngrama5.stringANGramaAlmacenadoEnMapSinListaTerminos();
+
+	 map<string,int> mapNgrama;
+	 mapNgrama = ngrama5.getMapDePosiciones();
+	 cout<< "Finaliza Armado Ngrama" <<endl;
+	 cout<< "Comienza copiado de mensaje" <<endl;
+	 for(itr = mapNgrama.begin(); itr != mapNgrama.end(); ++itr){
+		 string ngrama = (*itr).first.c_str();
+		 ngrama = ngrama + ",";
+		 stringstream ss;
+		 ss << (*itr).second;
+		 ngrama = ngrama + ss.str();
+
+		 //cout<< ngrama << endl;
+		 fichero << ngrama << endl;
+		// cout << (*itr).first << "," << (*itr).second <<endl;
+	 }
+	 cout<< "finaliza copiado de mensaje" <<endl;
+	 fichero.close();
+	 delete[] buffer;
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -482,6 +518,7 @@ int main(int argc, char *argv[]){
 	cout<<"12- testPruebaTextoARegistro"<<endl;
 	cout<<"13- test MERGE"<<endl;
 	cout<<"14- test armar ngramas con map"<<endl;
+	cout<<"15- test procesar set entrenamiento con map "<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -522,6 +559,8 @@ int main(int argc, char *argv[]){
 		break;
 		case 14: pruebaNgramaSoloConMap();
 				break;
+		case 15:pruebaSetEntrenamientoConMap();
+		break;
 	}
 
 	cout<<endl;
