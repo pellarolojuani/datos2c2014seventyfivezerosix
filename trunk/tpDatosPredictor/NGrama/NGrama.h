@@ -29,6 +29,7 @@ private:
 	void armarYGuardarNgrama(pair<string,int> par);
 	void armarYGuardarNgramaSoloEnMap(pair<string,int> par);
 	long* frecuenciaDeNgramas;
+	string avanzarPalabra(string oracion);
 
 public:
 	NGrama();
@@ -39,6 +40,7 @@ public:
 	void stringA5Grama();
 	void stringANGramaMax(); //solo arma los ngrama de long max indicada.
 	void stringANGramaAlmacenadoEnMap();
+	void stringANGramaAlmacenadoEnMapSinListaTerminos();
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);

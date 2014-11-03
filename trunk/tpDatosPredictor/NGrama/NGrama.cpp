@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -400,6 +401,50 @@ void NGrama::stringANGramaAlmacenadoEnMap(){
     ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
     this->armarYGuardarNgramaSoloEnMap(ultimo);
 
+}
+
+string  NGrama::avanzarPalabra(string oracion){
+	return oracion.substr(oracion.find(' ')+1,oracion.size());
+}
+
+void NGrama::stringANGramaAlmacenadoEnMapSinListaTerminos(){
+
+	while (oracion.size()> 1){
+		string oracionAux = oracion;
+		string ngramaAux = "";
+		int i = 0;
+		while(i<4){
+			std::size_t found = oracionAux.find(' ');
+			if (found!=std::string::npos){
+				ngramaAux = ngramaAux + oracionAux.substr(0,found);
+				pair<string,int> par;
+				par.first = ngramaAux;
+				armarYGuardarNgramaSoloEnMap(par);
+				std::replace( ngramaAux.begin(), ngramaAux.end(), ',', ' ');
+				ngramaAux = ngramaAux + ",";
+				oracionAux = avanzarPalabra(oracionAux);
+				i++;
+			}else{
+				ngramaAux = ngramaAux + oracionAux.substr(0,oracionAux.size());
+				pair<string,int> par;
+				par.first = ngramaAux;
+				armarYGuardarNgramaSoloEnMap(par);
+				ngramaAux = ngramaAux + " ";
+				oracionAux = avanzarPalabra(oracionAux);
+				break;
+
+			}
+		}
+		oracion = avanzarPalabra(oracion);
+		oracionAux.clear();
+		ngramaAux.clear();
+	}
+	//guardo la ultima palabra.
+	pair<string,int> par;
+	par.first = oracion;
+	armarYGuardarNgramaSoloEnMap(par);
+	//cout<< oracion << endl;
+	oracion.clear();
 }
 
 
