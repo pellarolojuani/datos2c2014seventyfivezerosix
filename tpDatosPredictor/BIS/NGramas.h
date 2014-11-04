@@ -24,7 +24,7 @@ private:
 	int cantGrama;
 	string separadorNgrama;
 	vector<string> listaTerminos;
-	abb::ArbolB<Registro,40> *lexico;
+	abb::ArbolB<Registro,60> *lexico;
 
 	void armarYGuardarNgrama(pair<string,int> par);
 
@@ -41,6 +41,9 @@ public:
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
 	long getFrecuenciaDeNgrama(int tamanioGrama);
+
+	abb::ArbolB<Registro,60>* getLexico();
+	void agregarRegistroEnArbol(Registro unRegistro);
 
 };
 

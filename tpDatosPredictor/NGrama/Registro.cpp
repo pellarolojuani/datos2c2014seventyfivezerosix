@@ -100,12 +100,13 @@ void Registro::stringARegistro(string unTexto){
 			unContexto += unTexto[k];
 		}
 		unTexto = unTexto.substr(pos+1);
-		unContexto += " "; //OJO: Al final del contexto queda un espacio!!
+		unContexto += " ";
 	}
+	unContexto = unContexto.substr(0, unContexto.size()-1); //saco el ultimo espacio
 	this->setContexto(unContexto);
 
 	for (int k = 0; k < unTexto.size(); k++){
-		termino += unTexto[k];
+		if (unTexto[k] != ' ') termino += unTexto[k];
 	}
 	this->setTermino(termino);
 	this->setFrecuencia(1);
@@ -136,6 +137,29 @@ void Registro::copiarRegistro(Registro unRegistro){
 
 void Registro::aumentarFrecuencia(int numero){
 	this->frecuencia = this->frecuencia+numero;
+}
+
+size_t Registro::guardarRegistroEnDisco(FILE* fp){
+
+	size_t offset;
+	string texto = this->registroAString();
+	texto += '\n';
+
+	int cant = 0;
+	for (int i = 0; i < texto.size(); i++){
+		if (texto[i] == SEPARADOR_NGRAMA) cant++;
+	}
+	offset = ftell(fp);
+	/*if (cant == 0){ //si es un termino sin contexto lo guardamos en el arbol de offsets
+		Nodo termino ;
+		termino.setTermino(unRegistro.first);
+		termino.setOffset(offset);
+		lexico->insertar(termino); //agrega el elemento y su offset al arbol
+	}*/
+
+	fputs(texto.c_str(), fp);
+
+	return offset;
 }
 
 //OPERADORES DE COMPARACION. TERMINAR DE DEFINIR CRITERIO!!!

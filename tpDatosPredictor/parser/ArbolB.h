@@ -144,12 +144,35 @@ class ArbolB{
 		borrarRec(raiz);
 	};
 
+    void guardarEnArchivo(FILE *unArchivo)	//falta armar el arbol de offsets!!!
+        {
+    	guardarEnArchivoRecursivo(raiz, unArchivo);
+
+        };
+
 
     private:
 
 
 
         B_nodo<T,orden> *raiz;
+
+
+        void guardarEnArchivoRecursivo(B_nodo<T,orden>* actual, FILE *unArchivo)
+                {
+                    int i;
+                    if (actual){
+                        for (i=0; i<actual->entradasOcupadas; i++)
+                        {
+                            guardarEnArchivoRecursivo(actual->ramas[i], unArchivo);
+                            size_t *unOffset = new size_t;
+                            *unOffset = ftell(unArchivo);
+                            actual->data[i].guardarRegistroEnDisco(unArchivo);
+                        }
+                        guardarEnArchivoRecursivo(actual->ramas[actual->entradasOcupadas], unArchivo);
+                    }
+                }
+
 
         void emitirRecursivo(B_nodo<T,orden>* actual)
         {
@@ -172,8 +195,10 @@ class ArbolB{
                 for (i=0; i<actual->entradasOcupadas; i++)
                 {
                     emitirRegistrosRecursivo(actual->ramas[i]);
-                    cout <<actual->data[i].getContexto()<<" "<<actual->data[i].getTermino()<<" "<<actual->data[i].getFrecuencia();
-                    cout << endl;
+                    cout<<"TERMINO: "<<actual->data[i].getTermino()<<endl;
+                    cout<<"CONTEXTO: "<<actual->data[i].getContexto()<<endl;
+                    cout<<"FRECUENCIA: "<<actual->data[i].getFrecuencia()<<endl;
+                    cout<<"----------------------------"<<endl;
 
                 }
                 emitirRegistrosRecursivo(actual->ramas[actual->entradasOcupadas]);
@@ -187,10 +212,16 @@ class ArbolB{
 				for (i=0; i<actual->entradasOcupadas; i++)
 				{
 					borrarRec(actual->ramas[i]);
+					//cout<<"BORRADO!!!!2"<<endl;
+					if (actual->ramas[i]->data != NULL)
+						//delete[] actual->ramas[i]->data;
+					delete actual->ramas[i];
 				}
-				borrarRec(actual->ramas[actual->entradasOcupadas]);
+				//delete[] actual->data;
+				//borrarRec(actual->ramas[actual->entradasOcupadas]);
 			}
-//			delete actual;
+			//delete[] actual->data;
+			//cout<<"BORRADO!!!!1"<<endl;
 		}
 
         codigosDeError push_down(B_nodo<T,orden> *actual, T &nueva_entrada, T &datoMedio,

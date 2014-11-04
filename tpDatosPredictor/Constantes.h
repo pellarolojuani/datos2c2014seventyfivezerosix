@@ -20,8 +20,9 @@
 #define SEPARADOR_NGRAMA					' '
 #endif
 
+/*1073741824*/
 #ifndef GIGA
-#define GIGA								52428800
+#define GIGA								268435456 //1/4 giga
 #endif
 
 #ifndef READ
