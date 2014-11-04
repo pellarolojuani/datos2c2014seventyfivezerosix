@@ -21,6 +21,10 @@ ManejoArchivo::ManejoArchivo() {
 	eof = false;
 }
 
+ManejoArchivo::~ManejoArchivo() {
+
+}
+
 ManejoArchivo::ManejoArchivo(string pathEntrada) {
 	this->nombreArchivo = pathEntrada;
 	fd_archivo = fopen(pathEntrada.c_str(), "w+");
@@ -39,8 +43,6 @@ ManejoArchivo::ManejoArchivo(string pathEntrada, string modo){
 	eof = false;
 }
 
-ManejoArchivo::~ManejoArchivo() {
-}
 
 
 FILE* ManejoArchivo::getArchivo(){

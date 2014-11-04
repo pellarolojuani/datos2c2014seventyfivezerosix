@@ -49,6 +49,8 @@ public:
 	void copiarRegistro(Registro unRegistro);
 	void aumentarFrecuencia(int numero);
 
+	size_t guardarRegistroEnDisco(FILE* fp);
+
 	//con las siguientes operaciones vamos a definir los operadores
 	//para comparar registros
 	bool operator==(Registro&);//compara a igual

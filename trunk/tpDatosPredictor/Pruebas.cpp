@@ -11,6 +11,7 @@
 #include "parser/Parser.h"
 #include "manejoArchivo/manejoArchivo.h"
 #include "modelo/TestV2.h"
+#include "BIS/NGramas.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -444,7 +445,6 @@ void pruebaMerge(){
     merge(2);
     cout<<"Termino el proceso de MERGE"<<endl;
 }
-
 void pruebaNgramaSoloConMap(){
 
 	string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
@@ -498,6 +498,18 @@ void pruebaSetEntrenamientoConMap(){
 	 delete[] buffer;
 }
 
+
+void nuevaPruebaStreamANgrama(){
+	NGramas nGramas = NGramas(3, " ");
+	FILE *pruebas = fopen("train_v2.txt", "r");
+	FILE *fp_ngramas = fopen("ngramas.txt", "w+");
+	nGramas.streamANgrama(pruebas);
+	nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
+	//nGramas.getLexico()->emitirRegistros();
+
+	fclose(pruebas);
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -518,7 +530,8 @@ int main(int argc, char *argv[]){
 	cout<<"12- testPruebaTextoARegistro"<<endl;
 	cout<<"13- test MERGE"<<endl;
 	cout<<"14- test armar ngramas con map"<<endl;
-	cout<<"15- test procesar set entrenamiento con map "<<endl;
+	cout<<"15- test procesar set entrenamiento con map "<<endl;	
+	cout<<"16- nuevaPruebaStreamANgrama"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -558,8 +571,10 @@ int main(int argc, char *argv[]){
 		case 13: pruebaMerge();
 		break;
 		case 14: pruebaNgramaSoloConMap();
-				break;
+		break;
 		case 15:pruebaSetEntrenamientoConMap();
+		break;
+		case 16: nuevaPruebaStreamANgrama();
 		break;
 	}
 
