@@ -29,6 +29,41 @@ abb::ArbolB<Registro,60>* NGramas::getLexico(){
 	return this->lexico;
 }
 
+void NGramas::streamANgrama(FILE* fp){
+
+	char *c = new char[2684354560];	//reservamos 2.5gb de memoria!
+	fpos_t position;
+	FILE* fp_flag;
+	size_t offset = 0;
+	delete[] c;	//libero la memoria reservada
+
+	while (!feof(fp) && offset < GIGA){ //ESTARIA FALTANDO QUE ARME BIEN LOS NGRAMAS!!!
+
+		offset = ftell(fp);
+		cout<<offset<<endl;
+		string ngrama = "";
+
+		ngrama += getSiguienteTermino(fp);
+		//if (ngrama == "") break;
+		size_t nuevoOffset = ftell(fp);
+		Registro unRegistro = Registro();
+		unRegistro.stringARegistro(ngrama);
+		this->agregarRegistroEnArbol(unRegistro);
+		for (int k = 0; k < cantGrama-1; k++){
+			ngrama += " ";
+			ngrama += getSiguienteTermino(fp);
+			unRegistro.stringARegistro(ngrama);
+			this->agregarRegistroEnArbol(unRegistro);
+
+		}
+		fseek(fp, nuevoOffset, SEEK_SET);
+
+	}
+
+}
+
+//--------------------------------------------------------//
+//---------Comienzo de funciones auxiliares --------------//
 string getSiguienteTermino(FILE* fp){
 	string termino = "";
 	char c = fgetc(fp);
@@ -56,37 +91,5 @@ void NGramas::agregarRegistroEnArbol(Registro unRegistro){
 		this->lexico->aumentarFrecuencia(unRegistro);
 	}
 }
-
-
-void NGramas::streamANgrama(FILE* fp){
-
-	char *c = new char[2684354560];	//reservamos 2.5gb de memoria!
-	fpos_t position;
-	FILE* fp_flag;
-	size_t offset = 0;
-	delete[] c;	//libero la memoria reservada
-
-	while (!feof(fp) || offset < GIGA){ //ESTARIA FALTANDO QUE ARME BIEN LOS NGRAMAS!!!
-
-		offset = ftell(fp);
-		cout<<offset<<endl;
-		string ngrama = "";
-
-		ngrama += getSiguienteTermino(fp);
-		//if (ngrama == "") break;
-		size_t nuevoOffset = ftell(fp);
-		Registro unRegistro = Registro();
-		unRegistro.stringARegistro(ngrama);
-		this->agregarRegistroEnArbol(unRegistro);
-		for (int k = 0; k < cantGrama-1; k++){
-			ngrama += " ";
-			ngrama += getSiguienteTermino(fp);
-			unRegistro.stringARegistro(ngrama);
-			this->agregarRegistroEnArbol(unRegistro);
-
-		}
-		fseek(fp, nuevoOffset, SEEK_SET);
-
-	}
-
-}
+//--------------------------------------------------------//
+//--------------Fin de funciones auxiliares --------------//

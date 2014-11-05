@@ -504,6 +504,7 @@ void nuevaPruebaStreamANgrama(){
 	FILE *pruebas = fopen("train_v2.txt", "r");
 	FILE *fp_ngramas = fopen("ngramas.txt", "w+");
 	nGramas.streamANgrama(pruebas);
+	cout<<"Guardando en disco.."<<endl;
 	nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
 	//nGramas.getLexico()->emitirRegistros();
 
