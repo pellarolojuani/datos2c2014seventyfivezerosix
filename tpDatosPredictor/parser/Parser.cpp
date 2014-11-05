@@ -21,7 +21,6 @@ Parser::Parser() {
 }
 
 Parser::~Parser() {
-	delete []this->lexico;
 }
 
 bool Parser::abrirArchivo(string nombreArchivo){

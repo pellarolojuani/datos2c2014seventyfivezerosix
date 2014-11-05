@@ -335,10 +335,15 @@ void pruebaObtenerSentenceTestV2(){
 			testV2.setId(std::atoi(id.c_str()));
 			testV2.setSentence(sentence);
 
+			cout<<"---"<<endl;
+			cout<<"ID: "<<testV2.getId()<<endl;
+			cout<<"SENTENCE: "<<testV2.getSentence()<<endl;
+			cout<<"---"<<endl<<endl;
+
 			//oracion.max long ngrama y separador.
-			NGrama ngrama5 =  NGrama(sentenceSinComilla, 5,",");
-			ngrama5.stringA5Grama();
-			testV2.setListaNgrama(ngrama5.getListaNgrama());
+			//NGrama ngrama5 =  NGrama(sentenceSinComilla, 5,",");
+			//ngrama5.stringA5Grama();
+			//testV2.setListaNgrama(ngrama5.getListaNgrama());
 			//cout<<sentenceSinComilla<<endl;
 			//cout<<testV2.getId()<<"-"<<testV2.getSentente()<<endl;
 		}
@@ -511,6 +516,19 @@ void nuevaPruebaStreamANgrama(){
 	fclose(pruebas);
 }
 
+void pruebaLeerLoteDePruebas(){
+
+	TestV2 pruebas = TestV2();
+
+	for (int i = 0; i < 10; i++){
+		pruebas.readNextSentence();
+		cout<<pruebas.getId()<<": "<<pruebas.getSentence()<<endl<<endl;
+	}
+
+
+	pruebas.cerrarArchivo();
+}
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
@@ -533,6 +551,7 @@ int main(int argc, char *argv[]){
 	cout<<"14- test armar ngramas con map"<<endl;
 	cout<<"15- test procesar set entrenamiento con map "<<endl;	
 	cout<<"16- nuevaPruebaStreamANgrama"<<endl;
+	cout<<"17- Leer lote de pruebas"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -576,6 +595,8 @@ int main(int argc, char *argv[]){
 		case 15:pruebaSetEntrenamientoConMap();
 		break;
 		case 16: nuevaPruebaStreamANgrama();
+		break;
+		case 17: pruebaLeerLoteDePruebas();
 		break;
 	}
 
