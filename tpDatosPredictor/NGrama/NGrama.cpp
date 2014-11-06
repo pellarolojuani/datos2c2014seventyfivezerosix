@@ -420,8 +420,8 @@ void NGrama::stringANGramaAlmacenadoEnMapSinListaTerminos(){
 				pair<string,int> par;
 				par.first = ngramaAux;
 				armarYGuardarNgramaSoloEnMap(par);
-				std::replace( ngramaAux.begin(), ngramaAux.end(), ',', ' ');
-				ngramaAux = ngramaAux + ",";
+				//std::replace( ngramaAux.begin(), ngramaAux.end(), ',', ' ');
+				ngramaAux = ngramaAux + ' ';
 				oracionAux = avanzarPalabra(oracionAux);
 				i++;
 			}else{
@@ -429,8 +429,9 @@ void NGrama::stringANGramaAlmacenadoEnMapSinListaTerminos(){
 				pair<string,int> par;
 				par.first = ngramaAux;
 				armarYGuardarNgramaSoloEnMap(par);
-				ngramaAux = ngramaAux + " ";
+				ngramaAux = ngramaAux + ' ';
 				oracionAux = avanzarPalabra(oracionAux);
+				oracion.clear();
 				break;
 
 			}
