@@ -160,13 +160,13 @@ class ArbolB{
 
         void guardarEnArchivoRecursivo(B_nodo<T,orden>* actual, FILE *unArchivo)
                 {
-                    int i;
+                    size_t i;
                     if (actual){
                         for (i=0; i<actual->entradasOcupadas; i++)
                         {
                             guardarEnArchivoRecursivo(actual->ramas[i], unArchivo);
-                            size_t *unOffset = new size_t;
-                            *unOffset = ftell(unArchivo);
+                            //size_t *unOffset = new size_t;
+                            //*unOffset = ftell(unArchivo);
                             actual->data[i].guardarRegistroEnDisco(unArchivo);
                         }
                         guardarEnArchivoRecursivo(actual->ramas[actual->entradasOcupadas], unArchivo);
