@@ -37,7 +37,6 @@ public:
 	NGrama(string oracion,int cantGrama,string separadorNgrama);
 	virtual ~NGrama();
 	void stringANgrama();
-	void stringA5Grama();
 	void stringANGramaMax(); //solo arma los ngrama de long max indicada.
 	void stringANGramaAlmacenadoEnMap();
 	void stringANGramaAlmacenadoEnMapSinListaTerminos();
