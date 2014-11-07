@@ -64,20 +64,6 @@ void NGrama:: stringANgrama(){
 			}
 		}
 	}while(iss);
-    //for (int i = 0; i < this->listaTerminos.size(); i++) cout<<this->listaTerminos[i]<<endl;
-    //arma n-grama
- /*   for(std::size_t i=0;i<this->listaTerminos.size() -cantGrama+1; i++) {
-       string aux;
-       for(int k = 0; k < cantGrama; k++) {
-    	   if (aux.compare("")){
-
-    		   this->listaNgrama.push_back(aux);
-    	   }
-           if(k > 0) aux +=  " ";
-           aux+= (this->listaTerminos[i+k]);
-       }
-       this->listaNgrama.push_back(aux);
-    } */
 
     for(std::size_t i=0; i<this->listaTerminos.size() -cantGrama+1; i++) {
       	 pair<std::string,int> aux;

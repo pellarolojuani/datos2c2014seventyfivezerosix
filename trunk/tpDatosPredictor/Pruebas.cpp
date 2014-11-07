@@ -66,7 +66,7 @@ void pruebaNgrama(){
 
 	//oracion.max long ngrama y separador.
 	NGrama ngrama5 =  NGrama(oracion, 5,",");
-	ngrama5.stringA5Grama();
+	//ngrama5.stringA5Grama();
 
 	vector<pair<string,int> > listaNgrama;
 	listaNgrama = ngrama5.getListaNgrama();
@@ -506,12 +506,12 @@ void pruebaSetEntrenamientoConMap(){
 
 void nuevaPruebaStreamANgrama(){
 	NGramas nGramas = NGramas(3, " ");
-	FILE *pruebas = fopen("train_v2.txt", "r");
+	FILE *pruebas = fopen("prueba.txt", "r");
 	FILE *fp_ngramas = fopen("ngramas.txt", "w+");
 	nGramas.streamANgrama(pruebas);
 	cout<<"Guardando en disco.."<<endl;
-	nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
-	//nGramas.getLexico()->emitirRegistros();
+	//nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
+	nGramas.getLexico()->emitirRegistros();
 
 	fclose(pruebas);
 }

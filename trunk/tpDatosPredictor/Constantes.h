@@ -22,7 +22,7 @@
 
 /*1073741824*/
 #ifndef GIGA
-#define GIGA								268435456 //1/4 giga
+#define GIGA								262144000 //250MB
 #endif
 
 #ifndef READ
