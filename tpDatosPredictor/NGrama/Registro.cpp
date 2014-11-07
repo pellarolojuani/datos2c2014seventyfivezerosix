@@ -115,8 +115,10 @@ void Registro::stringARegistro(string unTexto){
 string Registro::registroAString(){
 	string resultado = "";
 
+	if (this->termino == "") return "";
+
 	resultado += (this->contexto);
-	resultado += " ";
+	if (resultado != "") resultado += " "; //aplica espacio solo si hay contexto
 	resultado += (this->termino);
 	resultado += " ";
 
@@ -143,19 +145,8 @@ size_t Registro::guardarRegistroEnDisco(FILE* fp){
 
 	size_t offset;
 	string texto = this->registroAString();
+	if (texto == "") return -1;
 	texto += '\n';
-
-	int cant = 0;
-	for (int i = 0; i < texto.size(); i++){
-		if (texto[i] == SEPARADOR_NGRAMA) cant++;
-	}
-	offset = ftell(fp);
-	/*if (cant == 0){ //si es un termino sin contexto lo guardamos en el arbol de offsets
-		Nodo termino ;
-		termino.setTermino(unRegistro.first);
-		termino.setOffset(offset);
-		lexico->insertar(termino); //agrega el elemento y su offset al arbol
-	}*/
 
 	fputs(texto.c_str(), fp);
 
