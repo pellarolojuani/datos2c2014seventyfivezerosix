@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -77,6 +78,109 @@ void NGrama:: stringANgrama(){
 
          this->armarYGuardarNgrama(aux);
       }
+}
+
+void NGrama::stringA5Grama(){
+    istringstream iss(this->oracion);
+    do
+	{
+		string sub;
+		//split por espacios.
+		iss >> sub;
+		//porque en la ultima iteracion viene vacio y pincha, tengo que ver bien la condicion de while.
+		if(sub.compare("")){
+			string ultimoCaracter = sub.substr(sub.length()-1) ;
+			//aca deberiamos salvar todos los caracter tipo ,.; etc
+
+			//NOTA: los caracteres .,; etc estan siempre separados de la palabra anterior
+			//por un espacio en el set de entrenamiento, es decir que nunca van a venir
+			//seguidos de una palabra sino de un espacio.
+			if(!ultimoCaracter.compare(".") || !ultimoCaracter.compare(",") || !ultimoCaracter.compare(";")){
+				//this->listaTerminos.push_back(sub.substr(0,sub.length()-1));
+				this->listaTerminos.push_back(sub.substr(sub.length()-1));
+			}else{
+				this->listaTerminos.push_back(sub);
+			}
+		}
+	}while(iss);
+
+	for (int i = 0; i < this->listaTerminos.size(); i++){
+    	cout<<i<<": "<<this->listaTerminos.at(i)<<endl;
+    }
+
+    for (int i = 4; i < this->listaTerminos.size(); i++){
+
+    	pair<std::string,int> primero; primero.first = "";
+    	pair<std::string,int> segundo; segundo.first = "";
+    	pair<std::string,int> tercero; tercero.first = "";
+    	pair<std::string,int> cuarto; cuarto.first = "";
+    	pair<std::string,int> quinto; quinto.first = "";
+
+
+    	primero.first += this->listaTerminos.at(i-4);
+    	this->armarYGuardarNgrama(primero);
+
+    	segundo.first += this->listaTerminos.at(i-4);
+    	segundo.first += this->separadorNgrama;
+    	segundo.first += this->listaTerminos.at(i-3);
+    	this->armarYGuardarNgrama(segundo);
+
+    	tercero.first += this->listaTerminos.at(i-4);
+    	tercero.first += " ";
+    	tercero.first += this->listaTerminos.at(i-3);
+    	tercero.first += this->separadorNgrama;
+    	tercero.first += this->listaTerminos.at(i-2);
+    	this->armarYGuardarNgrama(tercero);
+
+    	cuarto.first += this->listaTerminos.at(i-4);
+    	cuarto.first += " ";
+    	cuarto.first += this->listaTerminos.at(i-3);
+    	cuarto.first += " ";
+    	cuarto.first += this->listaTerminos.at(i-2);
+    	cuarto.first += this->separadorNgrama;
+    	cuarto.first += this->listaTerminos.at(i-1);
+    	this->armarYGuardarNgrama(cuarto);
+
+    	quinto.first += this->listaTerminos.at(i-4);
+    	quinto.first += " ";
+    	quinto.first += this->listaTerminos.at(i-3);
+    	quinto.first += " ";
+    	quinto.first += this->listaTerminos.at(i-2);
+    	quinto.first += " ";
+    	quinto.first += this->listaTerminos.at(i-1);
+    	quinto.first += this->separadorNgrama;
+    	quinto.first += this->listaTerminos.at(i);
+    	this->armarYGuardarNgrama(quinto);
+    }
+    pair<std::string,int> ultimo; ultimo.first = "";
+
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-4);
+    ultimo.first += " ";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-3);
+    ultimo.first += " ";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-2);
+    ultimo.first += this->separadorNgrama;
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgrama(ultimo);
+
+    ultimo.first = "";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-3);
+    ultimo.first += " ";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-2);
+    ultimo.first += this->separadorNgrama;
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgrama(ultimo);
+
+    ultimo.first = "";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-2);
+    ultimo.first += this->separadorNgrama;
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgrama(ultimo);
+
+    ultimo.first = "";
+    ultimo.first += this->listaTerminos.at(this->listaTerminos.size()-1);
+    this->armarYGuardarNgrama(ultimo);
+
 }
 
 void NGrama::streamANgrama(FILE* fp){
@@ -332,5 +436,59 @@ void NGrama::stringANGramaAlmacenadoEnMapSinListaTerminos(){
 }
 
 
+void NGrama::stringANGramaMapTerminosYNGramas(){
+	 istringstream iss(this->oracion);
+	 this->oracion.clear();
+	 int posicion = 0;
+	 	cout<<"Comienzo a leer terminos"<<endl;
+	    do
+		{
+			//try{
+				string sub;
+				iss >> sub;
+				//cout<<sub<<endl;
+				//porque en la ultima iteracion viene vacio y pincha, tengo que ver bien la condicion de while.
+				if(sub.compare("")){
+						//guardo los terminos como upper.
+						std::transform(sub.begin(), sub.end(),sub.begin(), ::toupper);
+						mapDePosicionesTerminos.insert(std::pair<int,string>(posicion,sub));
+					}
+				posicion++;
+		//	}catch(bad_alloc & ba) {
+			//	cout<<posicion<<endl;
+		//	}
+		}while(iss);
+	    cout<<"Finalizo de leer terminos"<<endl;
+	    iss.clear();
+	    cout<<"Comienzo a armar"<<endl;
+	    for(std::size_t i=0; i<this->mapDePosicionesTerminos.size() -cantGrama+1; i++) {
+	      	 pair<std::string,int> aux;
+	         for(int k = 0; k < cantGrama; k++) {
+	      	   if (aux.first.compare("")){
+	      		 this->armarYGuardarNgramaSoloEnMap(aux);
+	      	   }
+	           if(k > 0) aux.first +=  " ";
+	           aux.first+= (mapDePosicionesTerminos.find(i+k)->second);
+	         }
+	         this->armarYGuardarNgramaSoloEnMap(aux);
+	      }
+	    cout<<"Finalizo  armar"<<endl;
+	    mapDePosicionesTerminos.clear();
+}
 
+void NGrama::levantarNGramasDeArchivo(){
+	ifstream ficheroNgrama("ngrama.txt");
+	 string s;
+	 while(getline(ficheroNgrama, s)) {
+		string frecuencia = s.substr(s.find_last_of(",")+1);
+		stringstream ss(s);
+		int i;
+		ss >> i;
+		string ngrama =  s.substr(0,s.find_last_of(",")-1);
+
+	    cout << ngrama <<"-"<<frecuencia << endl;
+	    mapDeNGramas.insert(std::pair<std::string,int>(ngrama,i));
+	}
+	 ficheroNgrama.close();
+}
 
