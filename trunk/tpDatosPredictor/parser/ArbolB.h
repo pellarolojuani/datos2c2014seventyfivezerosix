@@ -111,9 +111,9 @@ class ArbolB{
         return buscarRecursivamente(raiz, target);
     }
 
-    bool aumentarFrecuencia(T target){
+    bool aumentarFrecuencia(T target, size_t frec){
     	/*Solo para el caso en el que se guarden Registros en el arbol*/
-    	return aumentarFrecuenciaRecursivo(raiz, target);
+    	return aumentarFrecuenciaRecursivo(raiz, target, frec);
     }
 
    bool modify(T target)
@@ -380,16 +380,16 @@ class ArbolB{
                 return false;
         }
 
-        bool aumentarFrecuenciaRecursivo(B_nodo<T,orden>* actual, T& target){
+        bool aumentarFrecuenciaRecursivo(B_nodo<T,orden>* actual, T& target, size_t frec){
 
             bool resultado = false;
             size_t posicion;
 
             if ( actual != NULL )
             {
-                resultado = buscarEnNodoParaAumentarFrecuencia(actual, target, posicion);
+                resultado = buscarEnNodoParaAumentarFrecuencia(actual, target, posicion, frec);
                 if ( resultado == false )
-                    resultado = aumentarFrecuenciaRecursivo(actual->ramas[posicion], target);
+                    resultado = aumentarFrecuenciaRecursivo(actual->ramas[posicion], target, frec);
                 else
                     target = actual->data[posicion];//PARTE QUE NO ENTIENDO.
             }
@@ -397,7 +397,7 @@ class ArbolB{
 
         }
 
-        bool buscarEnNodoParaAumentarFrecuencia(B_nodo<T,orden>* actual, T& target, size_t &posicion){
+        bool buscarEnNodoParaAumentarFrecuencia(B_nodo<T,orden>* actual, T& target, size_t &posicion, size_t frec){
         	posicion = 0;
 
         	//Aumenta posicion hasta que target sea menor que la siguiente entrada.
@@ -408,7 +408,7 @@ class ArbolB{
         	}
 
         	if (( posicion < actual->entradasOcupadas )&&( target == actual->data[posicion] )){
-        		actual->data[posicion].aumentarFrecuencia(1);
+        		actual->data[posicion].aumentarFrecuencia(frec);
         		return true;
         	}
 

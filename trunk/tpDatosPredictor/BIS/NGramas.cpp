@@ -55,7 +55,7 @@ void NGramas::agregarRegistroEnArbol(Registro unRegistro){
 	if (!this->lexico->buscar(unRegistro)){
 		this->lexico->insertar(unRegistro);
 	}else{
-		this->lexico->aumentarFrecuencia(unRegistro);
+		this->lexico->aumentarFrecuencia(unRegistro, 1);
 	}
 }
 //--------------------------------------------------------//
@@ -76,7 +76,7 @@ void NGramas::streamANgrama(FILE* fp){
 		string ngrama = "";
 
 		ngrama += getSiguienteTermino(fp);
-		if (ngrama == "") break;
+		//if (ngrama == "") break;
 		size_t nuevoOffset = ftell(fp);
 		Registro unRegistro = Registro();
 		unRegistro.stringARegistro(ngrama);

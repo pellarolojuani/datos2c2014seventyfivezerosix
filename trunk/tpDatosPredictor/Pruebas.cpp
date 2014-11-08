@@ -54,7 +54,7 @@ void pruebaArbol() {
 
 	otroArbol->insertar(unRegistro);
 	otroArbol->insertar(otroRegistro);
-	otroArbol->aumentarFrecuencia(unRegistro);
+	otroArbol->aumentarFrecuencia(unRegistro, 1);
 	otroArbol->emitirRegistros();
 
 	delete []otroArbol;
@@ -450,6 +450,9 @@ void pruebaMerge(){
     merge(2);
     cout<<"Termino el proceso de MERGE"<<endl;
 }
+
+
+
 void pruebaNgramaSoloConMap(){
 
 	string oracion ="This is a very beautiful day . This is a very big house . The elephant is very big . The house is small . The dog is black . The car is very big and red .";
@@ -506,12 +509,13 @@ void pruebaSetEntrenamientoConMap(){
 
 void nuevaPruebaStreamANgrama(){
 	NGramas nGramas = NGramas(3, " ");
-	FILE *pruebas = fopen("prueba.txt", "r");
+	FILE *pruebas = fopen("train_v2.txt", "r");
 	FILE *fp_ngramas = fopen("ngramas.txt", "w+");
+	fseek(pruebas, 262144002, SEEK_SET);
 	nGramas.streamANgrama(pruebas);
 	cout<<"Guardando en disco.."<<endl;
-	//nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
-	nGramas.getLexico()->emitirRegistros();
+	nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
+	//nGramas.getLexico()->emitirRegistros();
 
 	fclose(pruebas);
 }
@@ -525,8 +529,19 @@ void pruebaLeerLoteDePruebas(){
 		cout<<pruebas.getId()<<": "<<pruebas.getSentence()<<endl<<endl;
 	}
 
-
 	pruebas.cerrarArchivo();
+}
+
+void pruebaLevantarRegistros(){
+	//esta prueba levanta los dos archivos de registros y arma el arbol en disco
+
+	char *c = new char[2884354560];	//reservamos mas de 2.5gb de memoria!
+	delete[] c;
+
+	abb::ArbolB<Registro,40>* lexico = new abb::ArbolB<Registro, 40>();
+	ManejoArchivo manejoArchivo = ManejoArchivo("file1.txt", "r");
+	manejoArchivo.armarArbol(lexico);
+	//lexico->emitirRegistros();
 }
 
 int main(int argc, char *argv[]){
@@ -552,6 +567,7 @@ int main(int argc, char *argv[]){
 	cout<<"15- test procesar set entrenamiento con map "<<endl;	
 	cout<<"16- nuevaPruebaStreamANgrama"<<endl;
 	cout<<"17- Leer lote de pruebas"<<endl;
+	cout<<"18- test LevantarRegistros"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -597,6 +613,8 @@ int main(int argc, char *argv[]){
 		case 16: nuevaPruebaStreamANgrama();
 		break;
 		case 17: pruebaLeerLoteDePruebas();
+		break;
+		case 18: pruebaLevantarRegistros();
 		break;
 	}
 

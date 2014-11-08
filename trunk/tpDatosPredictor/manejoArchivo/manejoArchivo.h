@@ -35,6 +35,7 @@ public:
 	ManejoArchivo();
 	ManejoArchivo(string pathEntrada);
 	ManejoArchivo(string pathEntrada, string modo);
+	void abrirArchivo(string pathEntrada, string modo);
 	virtual ~ManejoArchivo();
 	void cerrarArchivo();
 	long int contarBytes();
@@ -48,7 +49,7 @@ public:
 
 	FILE* getArchivo();
 
-
+	void armarArbol(abb::ArbolB<Registro,40>* lexico);
 
 };
 void merge(int cantArchivos);
