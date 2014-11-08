@@ -43,7 +43,14 @@ ManejoArchivo::ManejoArchivo(string pathEntrada, string modo){
 	eof = false;
 }
 
-
+void ManejoArchivo::abrirArchivo(string pathEntrada, string modo){
+	this->nombreArchivo = pathEntrada;
+	fd_archivo = fopen(pathEntrada.c_str(), modo.c_str());
+	if (fd_archivo == 0)
+		cout << "No se puede abrir el archivo" << "\n";
+	this->cantidadBytes = this->contarBytes();
+	eof = false;
+}
 
 FILE* ManejoArchivo::getArchivo(){
 	return this->fd_archivo;
@@ -188,7 +195,7 @@ void merge(int cantArchivos){
 
 	int cant_eof = 0;
 
-	string str[cantArchivos];	               //va a contener 1 cadena de caracteres por archivo
+	string str[cantArchivos];          //va a contener 1 cadena de caracteres por archivo
 	Registro registro_menor;           //va a guardar el menor registro entre los que leyo de los archivos
 	registro_menor.setContexto("zzzzzzzzzzzzzzzzzz");
 	registro_menor.setTermino("zzzzzzzzzzzzzzzzz");
@@ -259,5 +266,34 @@ void merge(int cantArchivos){
 				nombreArchivo += ".txt";
 		remove(nombreArchivo.c_str());
 	}
+
+}
+
+void ManejoArchivo::armarArbol(abb::ArbolB<Registro,40>* lexico){
+	//el archivo tiene que estar abierto en modo escritura
+
+	Registro unRegistro = Registro();
+	size_t cant = 0;
+	cout<<"Procesando primer archivo.."<<endl;
+	while(ftell(this->fd_archivo) != EOF){
+		unRegistro = this->getSiguienteRegistro();
+		lexico->insertar(unRegistro);
+		cant++;
+		cout<<cant<<endl;
+	}
+	this->cerrarArchivo();
+
+	cout<<"Procesando segundo archivo.."<<endl;
+	this->abrirArchivo("file2.txt", "r");
+
+	while(ftell(this->fd_archivo) != EOF){
+		unRegistro = this->getSiguienteRegistro();
+		if (lexico->buscar(unRegistro) == true){
+			lexico->aumentarFrecuencia(unRegistro, unRegistro.getFrecuencia());
+		}else{
+			lexico->insertar(unRegistro);
+		}
+	}
+	cout<<"FIN de armado de arbol."<<endl;
 
 }
