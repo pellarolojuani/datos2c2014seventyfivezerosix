@@ -44,6 +44,7 @@ public:
 	void stringANGramaAlmacenadoEnMapSinListaTerminos();
 	void stringANGramaMapTerminosYNGramas();
 	void levantarNGramasDeArchivo();
+	void stringA5Grama();
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
