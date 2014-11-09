@@ -22,6 +22,7 @@ private:
 	string sentencePredicha; //contiene la sentencia completa.
 	vector<pair<string,int> > listaNgrama;
 	Parser parser;
+	string sentenceSinComillas;
 
 public:
 	TestV2();
@@ -67,6 +68,14 @@ public:
 	}
 
 	void cerrarArchivo();
+
+	const string& getSentenceSinComillas() const {
+		return sentenceSinComillas;
+	}
+
+	void setSentenceSinComillas(const string& sentenceSinComillas) {
+		this->sentenceSinComillas = sentenceSinComillas;
+	}
 };
 
 } /* namespace std */
