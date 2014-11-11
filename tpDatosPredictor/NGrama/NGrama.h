@@ -44,11 +44,11 @@ public:
 	void stringANGramaAlmacenadoEnMapSinListaTerminos();
 	void stringANGramaMapTerminosYNGramas();
 	void levantarNGramasDeArchivo();
-	void stringA5Grama();
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
 	long getFrecuenciaDeNgrama(int tamanioGrama);
+	void stringA5Grama();
 
 	const std::vector<std::string>& getListaTerminos() const {
 		return listaTerminos;

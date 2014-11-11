@@ -6,14 +6,17 @@
  */
 
 #ifndef NGRAMAS_H_
-#define NGRAMA_H_
+#define NGRAMAS_H_
 #include <string>
+#include <stdio.h>
 #include <vector>
 #include <iostream>
 #include <map>
+#include <tr1/unordered_map>
 #include "../Constantes.h"
 #include "../parser/ArbolB.h"
 #include "../NGrama/Registro.h"
+#include "../manejoArchivo/manejoArchivo.h"
 
 using namespace std;
 
@@ -25,6 +28,13 @@ private:
 	string separadorNgrama;
 	vector<string> listaTerminos;
 	abb::ArbolB<Registro,60> *lexico;
+
+	//aca guardamos como clave el registroAstring y como valor su frecuencia
+	tr1::unordered_map<string, size_t> registros;
+
+	//en terminos_x_contexto guardamos por cada contexto la cantidad total de temrinos
+	//para poder calcular despues su probabilidad
+	tr1::unordered_map<string, size_t> terminos_x_contexto;
 
 	void armarYGuardarNgrama(pair<string,int> par);
 
@@ -44,6 +54,7 @@ public:
 
 	abb::ArbolB<Registro,60>* getLexico();
 	void agregarRegistroEnArbol(Registro unRegistro);
+	void levantarNgramas(string unArchivoNgramas);
 
 };
 

@@ -19,9 +19,12 @@
 #include <iostream>
 #include <string>
 #include <map>
+//#include <tr1/unordered_map.h>
 #include <vector>
 #include <utility>
 #include <algorithm>    // std::stable_sort
+#include "util/Timer.h"
+#include <time.h>
 
 using namespace std;
 
@@ -92,9 +95,9 @@ void pruebaNgramaMax(){
     //std::stable_sort(listaNgrama.begin(), listaNgrama.end());//,compare_first_only());
     std::cout << std::endl << "Sorted:" << std::endl;
 
-    cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
 	for(std::size_t i=0; i < listaNgrama.size(); ++i){
 		cout << listaNgrama.at(i).first<< "," <<listaNgrama.at(i).second << endl;
+    cout <<"Cantidad elementos: "<< listaNgrama.size()<< endl;
 	}
 }
 
@@ -533,15 +536,13 @@ void pruebaLeerLoteDePruebas(){
 }
 
 void pruebaLevantarRegistros(){
-	//esta prueba levanta los dos archivos de registros y arma el arbol en disco
+	//esta prueba levanta el archivo de registros y guarda los ngramas en un hash
 
 	char *c = new char[2884354560];	//reservamos mas de 2.5gb de memoria!
 	delete[] c;
 
-	abb::ArbolB<Registro,40>* lexico = new abb::ArbolB<Registro, 40>();
-	ManejoArchivo manejoArchivo = ManejoArchivo("file1.txt", "r");
-	manejoArchivo.armarArbol(lexico);
-	//lexico->emitirRegistros();
+	NGramas nGramas = NGramas(3, " ");
+	nGramas.levantarNgramas("file1.txt");
 }
 
 int main(int argc, char *argv[]){
