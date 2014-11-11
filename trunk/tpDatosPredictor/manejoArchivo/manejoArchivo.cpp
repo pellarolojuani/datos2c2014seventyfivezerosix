@@ -268,32 +268,3 @@ void merge(int cantArchivos){
 	}
 
 }
-
-void ManejoArchivo::armarArbol(abb::ArbolB<Registro,40>* lexico){
-	//el archivo tiene que estar abierto en modo escritura
-
-	Registro unRegistro = Registro();
-	size_t cant = 0;
-	cout<<"Procesando primer archivo.."<<endl;
-	while(ftell(this->fd_archivo) != EOF){
-		unRegistro = this->getSiguienteRegistro();
-		lexico->insertar(unRegistro);
-		cant++;
-		cout<<cant<<endl;
-	}
-	this->cerrarArchivo();
-
-	cout<<"Procesando segundo archivo.."<<endl;
-	this->abrirArchivo("file2.txt", "r");
-
-	while(ftell(this->fd_archivo) != EOF){
-		unRegistro = this->getSiguienteRegistro();
-		if (lexico->buscar(unRegistro) == true){
-			lexico->aumentarFrecuencia(unRegistro, unRegistro.getFrecuencia());
-		}else{
-			lexico->insertar(unRegistro);
-		}
-	}
-	cout<<"FIN de armado de arbol."<<endl;
-
-}

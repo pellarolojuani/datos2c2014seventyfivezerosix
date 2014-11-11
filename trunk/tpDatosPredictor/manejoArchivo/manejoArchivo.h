@@ -9,6 +9,7 @@
 #define MANEJOARCHIVO_H_
 #include <string>
 #include <stdlib.h>
+#include <stdio.h>
 #include <fstream>
 #include <sstream>
 #include <algorithm>    // std::stable_sort
@@ -49,7 +50,7 @@ public:
 
 	FILE* getArchivo();
 
-	void armarArbol(abb::ArbolB<Registro,40>* lexico);
+	void levantarNgramas();
 
 };
 void merge(int cantArchivos);
