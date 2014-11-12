@@ -86,6 +86,7 @@ void NGramas::streamANgrama(FILE* fp){
 		unRegistro.stringARegistro(ngrama);
 		if (unRegistro.getTermino() != "" && unRegistro.getTermino() != " ")
 			this->agregarRegistroEnArbol(unRegistro);
+
 		for (int k = 0; k < cantGrama-1; k++){
 			ngrama += " ";
 			ngrama += getSiguienteTermino(fp);
@@ -96,7 +97,6 @@ void NGramas::streamANgrama(FILE* fp){
 		fseek(fp, nuevoOffset, SEEK_SET);
 
 	}
-
 }
 
 
