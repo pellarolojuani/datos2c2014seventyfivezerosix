@@ -36,17 +36,21 @@ private:
 	//para poder calcular despues su probabilidad
 	tr1::unordered_map<string, size_t> terminos_x_contexto;
 
+	string oracion;
+
 	void armarYGuardarNgrama(pair<string,int> par);
 
 public:
 	NGramas();
 	NGramas(int cantGrama, string separadorNgrama);
+	NGramas(int cantGrama, string separadorNgrama,string oracion);
 	//NGramas(string oracion,int cantGrama,string separadorNgrama);
 	virtual ~NGramas();
 
 	void stringANgrama();
 	void stringA5Grama();
 	void stringANGramaMax(); //solo arma los ngrama de long max indicada.
+	void stringANGramaHashTable();
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
@@ -56,6 +60,13 @@ public:
 	void agregarRegistroEnArbol(Registro unRegistro);
 	void levantarNgramas(string unArchivoNgramas);
 
+	const string& getOracion() const {
+		return oracion;
+	}
+
+	void setOracion(const string& oracion) {
+		this->oracion = oracion;
+	}
 };
 
 

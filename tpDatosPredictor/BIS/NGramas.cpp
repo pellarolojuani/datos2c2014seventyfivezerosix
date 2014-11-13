@@ -14,6 +14,7 @@ NGramas::NGramas() {
 	listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
 	this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
+	this->oracion = "";
 }
 
 NGramas::NGramas(int cantGrama, string separadorNgrama){
@@ -23,6 +24,17 @@ NGramas::NGramas(int cantGrama, string separadorNgrama){
 	this->listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
 	this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
+	this->oracion = "";
+}
+
+NGramas::NGramas(int cantGrama, string separadorNgrama,string oracion){
+	this->lexico = new abb::ArbolB<Registro, 60>;
+	this->cantGrama = cantGrama;
+	this->separadorNgrama = separadorNgrama;
+	this->listaTerminos = vector<string>();
+	this->registros = tr1::unordered_map<string, size_t>();
+	this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
+	this->oracion = oracion;
 }
 
 NGramas::~NGramas() {
@@ -112,9 +124,11 @@ void NGramas::levantarNgramas(string unArchivoNgramas){
 	size_t cantRegistros = 0;
 
 	while(feof(manejoArchivo.getArchivo()) == 0){
-		cout<<ftell(manejoArchivo.getArchivo())<<endl;
+		//cout<<ftell(manejoArchivo.getArchivo())<<endl;
 		unRegistro = manejoArchivo.getSiguienteRegistro();
 		cantRegistros ++;
+		cout<< "ngrama:" << unRegistro.registroAString()<< endl;
+		cout<< "contexto:" <<unRegistro.getContexto()<< endl;
 		this->registros[unRegistro.registroAString()] += unRegistro.getFrecuencia();
 		this->terminos_x_contexto[unRegistro.getContexto()] += unRegistro.getFrecuencia();
 	}
@@ -124,4 +138,31 @@ void NGramas::levantarNgramas(string unArchivoNgramas){
 	cout<<"the: "<<this->terminos_x_contexto["the"]<<endl;
 	cout<<"The: "<<this->terminos_x_contexto["The"]<<endl;
 	cout<<"Final del procesamiento del archivo."<<endl;
+}
+
+void NGramas::stringANGramaHashTable(){
+	istringstream iss(this->oracion);
+	this->registros.rehash(40000000);
+	long posicionPuntero = 0;
+	    do
+		{
+			string sub = "";
+			string subAux;
+			  for(std::size_t i=0; i<3; i++) {
+				iss >> sub;
+				if(i==0){
+					posicionPuntero = iss.tellg();
+				}
+				if(sub.compare("")){
+					subAux = subAux + sub;
+					//aca guardamos en los hash.
+					//this->registros[subAux] += 1;
+					cout << subAux << endl;
+					subAux += " ";
+				}
+			}
+			  iss.seekg(posicionPuntero);
+			  subAux.clear();
+		}while(iss);
+
 }
