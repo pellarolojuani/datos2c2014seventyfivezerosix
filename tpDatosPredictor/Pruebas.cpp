@@ -25,6 +25,7 @@
 #include <algorithm>    // std::stable_sort
 #include "util/Timer.h"
 #include <time.h>
+#include <fstream>
 
 using namespace std;
 
@@ -514,11 +515,19 @@ void nuevaPruebaStreamANgrama(){
 	NGramas nGramas = NGramas(3, " ");
 	FILE *pruebas = fopen("train_v2.txt", "r");
 	FILE *fp_ngramas = fopen("ngramas.txt", "w+");
+	Timer t = Timer();
+	t.start();
+	cout<<"Comenzó a leer - "<< t.getTime()<<endl;
 	fseek(pruebas, 262144002, SEEK_SET);
+	cout<<"Terminó de leer - "<< t.getTime()<<endl;
+	cout<<"Comenzó a armar ngrama - "<< t.getTime()<<endl;
 	nGramas.streamANgrama(pruebas);
-	cout<<"Guardando en disco.."<<endl;
+	cout<<"Terminó de armar ngrama - "<< t.getTime()<<endl;
+	cout<<"Guardando en disco.."<< t.getTime() << endl;
 	nGramas.getLexico()->guardarEnArchivo(fp_ngramas);
+	cout<<"Fin guardar en disco.."<< t.getTime() << endl;
 	//nGramas.getLexico()->emitirRegistros();
+	t.stop();
 
 	fclose(pruebas);
 }
@@ -545,10 +554,30 @@ void pruebaLevantarRegistros(){
 	nGramas.levantarNgramas("file1.txt");
 }
 
+void pruebaArmarNgramaEnHash(){
+
+	char * buffer = new char [GIGA];
+	int * reserva = new int [6442450944];
+	delete[] reserva;
+
+	ifstream leer_fich ("train_v2.txt");
+	ofstream fichero("textoLeido.txt");
+	 Timer t = Timer();
+		 t.start();
+	leer_fich.read(buffer,GIGA);
+	fichero << buffer ;
+	leer_fich.close();
+
+	NGramas nGramas = NGramas(3, " ",buffer);
+	nGramas.stringANGramaHashTable();
+}
+
+
+
 int main(int argc, char *argv[]){
 
 //Aca voy habilitando las pruebas que quiera correr
-	int i=0;
+int i=0;
 	char j;
 	cout<<"ELEGIR NUMERO DE PRUEBA: "<<endl;
 	cout<<"1- testPruebaArbol"<<endl;
@@ -569,6 +598,7 @@ int main(int argc, char *argv[]){
 	cout<<"16- nuevaPruebaStreamANgrama"<<endl;
 	cout<<"17- Leer lote de pruebas"<<endl;
 	cout<<"18- test LevantarRegistros"<<endl;
+	cout<<"19- test pruebaArmarNgramaEnHash"<<endl;
 	cin>>i;
 	switch (i){
 		case 1: pruebaArbol();
@@ -616,6 +646,8 @@ int main(int argc, char *argv[]){
 		case 17: pruebaLeerLoteDePruebas();
 		break;
 		case 18: pruebaLevantarRegistros();
+		break;
+		case 19: pruebaArmarNgramaEnHash();
 		break;
 	}
 
