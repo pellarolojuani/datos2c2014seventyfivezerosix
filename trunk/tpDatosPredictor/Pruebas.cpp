@@ -550,8 +550,14 @@ void pruebaLevantarRegistros(){
 	char *c = new char[2884354560];	//reservamos mas de 2.5gb de memoria!
 	delete[] c;
 
+	 Timer t = Timer();
+	t.start();
+
 	NGramas nGramas = NGramas(3, " ");
 	nGramas.levantarNgramas("file1.txt");
+
+	cout<<"Tiempo: "<<t.getTime()<<endl;
+	t.stop();
 }
 
 void pruebaArmarNgramaEnHash(){

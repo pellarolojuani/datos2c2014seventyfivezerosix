@@ -20,9 +20,10 @@ private:
  	size_t id;
 	string sentence; //contiene una sentencia incompleta.
 	string sentencePredicha; //contiene la sentencia completa.
-	vector<pair<string,int> > listaNgrama;
 	Parser parser;
 	string sentenceSinComillas;
+	NGramas ngramas; //Con esto vamos a levantar todos los ngramas y acá van a estar
+					 //los dos hash
 
 public:
 	TestV2();
@@ -43,13 +44,6 @@ public:
 
 	void readNextSentence();
 
-	const vector<pair<string, int> >& getListaNgrama() const {
-		return listaNgrama;
-	}
-
-	void setListaNgrama(const vector<pair<string, int> >& listaNgrama) {
-		this->listaNgrama = listaNgrama;
-	}
 
 	const string& getSentence() const {
 		return sentence;

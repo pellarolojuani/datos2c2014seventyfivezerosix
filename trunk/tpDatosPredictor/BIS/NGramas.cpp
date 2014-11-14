@@ -13,7 +13,7 @@ NGramas::NGramas() {
 	separadorNgrama = " ";
 	listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
-	this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
+	//this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
 	this->oracion = "";
 }
 
@@ -23,7 +23,7 @@ NGramas::NGramas(int cantGrama, string separadorNgrama){
 	this->separadorNgrama = separadorNgrama;
 	this->listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
-	this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
+    //this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
 	this->oracion = "";
 }
 
@@ -33,7 +33,7 @@ NGramas::NGramas(int cantGrama, string separadorNgrama,string oracion){
 	this->separadorNgrama = separadorNgrama;
 	this->listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
-	this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
+	//this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
 	this->oracion = oracion;
 }
 
@@ -118,25 +118,23 @@ void NGramas::levantarNgramas(string unArchivoNgramas){
 	manejoArchivo.abrirArchivo(unArchivoNgramas, "r");
 	Registro unRegistro = Registro();
 	this->registros.rehash(40000000);
-	this->terminos_x_contexto.rehash(25000000);
+	//this->terminos_x_contexto.rehash(25000000);
 	cout<<"Procesando archivo.."<<endl;
 
 	size_t cantRegistros = 0;
 
 	while(feof(manejoArchivo.getArchivo()) == 0){
-		//cout<<ftell(manejoArchivo.getArchivo())<<endl;
+		cout<<ftell(manejoArchivo.getArchivo())<<endl;
 		unRegistro = manejoArchivo.getSiguienteRegistro();
 		cantRegistros ++;
-		cout<< "ngrama:" << unRegistro.registroAString()<< endl;
-		cout<< "contexto:" <<unRegistro.getContexto()<< endl;
 		this->registros[unRegistro.registroAString()] += unRegistro.getFrecuencia();
-		this->terminos_x_contexto[unRegistro.getContexto()] += unRegistro.getFrecuencia();
+		//this->terminos_x_contexto[unRegistro.getContexto()] += unRegistro.getFrecuencia();
 	}
 	manejoArchivo.cerrarArchivo();
 
 	cout<<"Cantidad Registros leidos: "<<cantRegistros<<endl;
-	cout<<"the: "<<this->terminos_x_contexto["the"]<<endl;
-	cout<<"The: "<<this->terminos_x_contexto["The"]<<endl;
+	//cout<<"the: "<<this->terminos_x_contexto["the"]<<endl;
+	//cout<<"The: "<<this->terminos_x_contexto["The"]<<endl;
 	cout<<"Final del procesamiento del archivo."<<endl;
 }
 

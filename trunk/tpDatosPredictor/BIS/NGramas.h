@@ -34,7 +34,7 @@ private:
 
 	//en terminos_x_contexto guardamos por cada contexto la cantidad total de temrinos
 	//para poder calcular despues su probabilidad
-	tr1::unordered_map<string, size_t> terminos_x_contexto;
+	//tr1::unordered_map<string, size_t> terminos_x_contexto;
 
 	string oracion;
 
