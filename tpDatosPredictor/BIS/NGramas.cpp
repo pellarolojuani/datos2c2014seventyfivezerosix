@@ -116,12 +116,12 @@ void NGramas::streamANgrama(FILE* fp){
 }
 
 
-void NGramas::levantarNgramas(){
+void NGramas::levantarNgramas(string unArchivoNgramas){
 
 	ManejoArchivo manejoArchivo = ManejoArchivo();
-	manejoArchivo.abrirArchivo("file1.txt", "r");
+	manejoArchivo.abrirArchivo(unArchivoNgramas, "r");
 	Registro unRegistro = Registro();
-	this->registros.rehash(80000000);
+	this->registros.rehash(40000000);
 	//this->terminos_x_contexto.rehash(25000000);
 	cout<<"Procesando archivo.."<<endl;
 
@@ -150,7 +150,7 @@ void NGramas::stringANGramaHashTable(char* buffer){
 	    do
 		{
 			string sub = "";
-			string subAux;
+			string subAux = "";
 			  for(std::size_t i=0; i<3; i++) {
 				iss >> sub;
 				if(i==0){
