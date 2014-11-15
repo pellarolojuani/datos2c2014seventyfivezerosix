@@ -116,12 +116,12 @@ void NGramas::streamANgrama(FILE* fp){
 }
 
 
-void NGramas::levantarNgramas(string unArchivoNgramas){
+void NGramas::levantarNgramas(){
 
 	ManejoArchivo manejoArchivo = ManejoArchivo();
-	manejoArchivo.abrirArchivo(unArchivoNgramas, "r");
+	manejoArchivo.abrirArchivo("file1.txt", "r");
 	Registro unRegistro = Registro();
-	this->registros.rehash(40000000);
+	this->registros.rehash(80000000);
 	//this->terminos_x_contexto.rehash(25000000);
 	cout<<"Procesando archivo.."<<endl;
 

@@ -58,7 +58,7 @@ public:
 
 	abb::ArbolB<Registro,60>* getLexico();
 	void agregarRegistroEnArbol(Registro unRegistro);
-	void levantarNgramas(string unArchivoNgramas);
+	void levantarNgramas();
 
 	tr1::unordered_map<string, size_t> getRegistros();
 
