@@ -46,6 +46,7 @@ public:
 	void lineaNGramaARegistro(string str);
 	void stringARegistro(string str);
 	string registroAString();
+	string registroAStringSinFrecuencia();
 	void copiarRegistro(Registro unRegistro);
 	void aumentarFrecuencia(int numero);
 
