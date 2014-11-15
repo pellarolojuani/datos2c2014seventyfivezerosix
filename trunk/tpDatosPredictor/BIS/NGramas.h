@@ -50,7 +50,7 @@ public:
 	void stringANgrama();
 	void stringA5Grama();
 	void stringANGramaMax(); //solo arma los ngrama de long max indicada.
-	void stringANGramaHashTable();
+	void stringANGramaHashTable(char* buffer);
 
 	void streamANgrama(FILE* fp);
 	void aumentarFrecuenciaDeNgrama(int tamanioGrama);
@@ -58,6 +58,17 @@ public:
 
 	abb::ArbolB<Registro,60>* getLexico();
 	void agregarRegistroEnArbol(Registro unRegistro);
+	void levantarNgramas();
+
+	tr1::unordered_map<string, size_t> getRegistros();
+	void guardarNgramasAAchivo(char* nombreArchivo); //levanta en memoria x bytes del set y armar ngramas.
+	void fusionarArchivosNgramas(string unArchivoNgrama,string otroArchivoNgrama); //abre 2 archivos de ngramas y los fusiona en uno.
+	void levantarNgramas();
+
+	tr1::unordered_map<string, size_t> getRegistros();
+	void levantarNgramas();
+
+	tr1::unordered_map<string, size_t> getRegistros();
 	void levantarNgramas();
 
 	tr1::unordered_map<string, size_t> getRegistros();

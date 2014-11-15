@@ -142,10 +142,11 @@ void NGramas::levantarNgramas(){
 	cout<<"Final del procesamiento del archivo."<<endl;
 }
 
-void NGramas::stringANGramaHashTable(){
-	istringstream iss(this->oracion);
+void NGramas::stringANGramaHashTable(char* buffer){
+	istringstream iss(buffer);
+	strcpy(buffer,"");
 	this->registros.rehash(40000000);
-	long posicionPuntero = 0;
+	unsigned long int posicionPuntero = 0;
 	    do
 		{
 			string sub = "";
@@ -158,13 +159,57 @@ void NGramas::stringANGramaHashTable(){
 				if(sub.compare("")){
 					subAux = subAux + sub;
 					//aca guardamos en los hash.
-					//this->registros[subAux] += 1;
-					cout << subAux << endl;
+					this->registros[subAux] += 1;
+					//cout << subAux << endl;
 					subAux += " ";
 				}
 			}
 			  iss.seekg(posicionPuntero);
 			  subAux.clear();
 		}while(iss);
+	    iss.str(std::string());
+}
+
+void NGramas:: guardarNgramasAAchivo(char* nombreArchivo){
+
+	tr1::unordered_map<string, size_t>::iterator itr;
+	 ofstream fichero(nombreArchivo);
+
+	 for(itr = this->registros.begin(); itr != registros.end(); ++itr){
+			 string ngrama = (*itr).first.c_str();
+			 ngrama = ngrama + " ";
+			 stringstream ss;
+			 ss << (*itr).second;
+			 ngrama = ngrama + ss.str();
+
+			 fichero << ngrama << endl;
+		 }
+	 fichero.close();
+}
+
+void NGramas::fusionarArchivosNgramas(string unArchivoNgrama,string otroArchivoNgrama){
+	ManejoArchivo manejoArchivo = ManejoArchivo();
+	ManejoArchivo otroArchivo = ManejoArchivo();
+	manejoArchivo.abrirArchivo(unArchivoNgrama, "r");
+	otroArchivo.abrirArchivo(otroArchivoNgrama, "r");
+	Registro unRegistro = Registro();
+	this->registros.rehash(200000000);
+	//this->terminos_x_contexto.rehash(25000000);
+	cout<<"Procesando  1er archivo.."<<endl;
+
+	while(feof(manejoArchivo.getArchivo()) == 0){
+		unRegistro = manejoArchivo.getSiguienteRegistro();
+		this->registros[unRegistro.registroAString()] += unRegistro.getFrecuencia();
+	}
+	manejoArchivo.cerrarArchivo();
+	cout<<"Termino Procesar  1er archivo.."<<endl;
+	cout<<"Procesando  2do archivo.."<<endl;
+	while(feof(otroArchivo.getArchivo()) == 0){
+			unRegistro = otroArchivo.getSiguienteRegistro();
+			this->registros[unRegistro.registroAString()] += unRegistro.getFrecuencia();
+	}
+	cout<<"Termino Procesar  2do archivo.."<<endl;
+	otroArchivo.cerrarArchivo();
+	unRegistro.~Registro();
 
 }
