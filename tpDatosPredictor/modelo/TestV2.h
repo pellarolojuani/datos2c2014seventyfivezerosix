@@ -74,6 +74,8 @@ public:
 	void setSentenceSinComillas(const string& sentenceSinComillas) {
 		this->sentenceSinComillas = sentenceSinComillas;
 	}
+
+	void calcularPrediccion(); // CALCULA LA PALABRA FALTANTE Y MODIFICA SENTECEPREDICHA
 };
 
 } /* namespace std */
