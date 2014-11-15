@@ -17,6 +17,7 @@ TestV2::TestV2() {
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
 	this->parser.getLinea(); //para descartar la primera linea
+	this->ngramas = tr1::unordered_map<string, size_t>();
 }
 
 TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama) {
@@ -26,7 +27,7 @@ TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama)
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
 	this->parser.getLinea(); //para descartar la primera linea
-
+	this->ngramas = tr1::unordered_map<string, size_t>();
 }
 
 TestV2::~TestV2() {
@@ -34,6 +35,12 @@ TestV2::~TestV2() {
 
 void TestV2::cerrarArchivo(){
 	this->parser.cerrarArchivo();
+}
+
+void TestV2::armarHashDeRegistros(){
+	NGramas ngramas = NGramas();
+	ngramas.levantarNgramas();
+	this->ngramas = ngramas.getRegistros();
 }
 
 void TestV2::readNextSentence(){

@@ -11,6 +11,7 @@
 #include <vector>
 #include <tr1/unordered_map>
 #include "../parser/Parser.h"
+#include "../BIS/NGramas.h"
 
 namespace std {
 
@@ -21,7 +22,7 @@ private:
  	size_t id;
 	string sentence; //contiene una sentencia incompleta.
 	string sentencePredicha; //contiene la sentencia completa.
-	Parser parser;
+	Parser parser;	//Para todas las operaciones de lectura/escritura del archivo
 	string sentenceSinComillas;
 
 	tr1::unordered_map<string, size_t> ngramas;//acá van los ngramas levantados de disco

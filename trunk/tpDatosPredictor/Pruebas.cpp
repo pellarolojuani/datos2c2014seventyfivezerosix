@@ -551,7 +551,7 @@ void pruebaLevantarRegistros(){
 	t.start();
 
 	NGramas nGramas = NGramas(3, " ");
-	nGramas.levantarNgramas("file1.txt");
+	nGramas.levantarNgramas();
 
 	cout<<"Tiempo: "<<t.getTime()<<endl;
 	t.stop();
