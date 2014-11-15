@@ -551,7 +551,7 @@ void pruebaLevantarRegistros(){
 	t.start();
 
 	NGramas nGramas = NGramas(3, " ");
-	nGramas.levantarNgramas();
+	nGramas.levantarNgramas("ngrama.txt");
 
 	cout<<"Tiempo: "<<t.getTime()<<endl;
 	t.stop();
@@ -560,19 +560,33 @@ void pruebaLevantarRegistros(){
 void pruebaArmarNgramaEnHash(){
 
 	char * buffer = new char [GIGA];
-	int * reserva = new int [6442450944];
-	delete[] reserva;
+		//int * reserva = new int [4442450944];
+		//delete[] reserva;
 
-	ifstream leer_fich ("train_v2.txt");
-	ofstream fichero("textoLeido.txt");
-	 Timer t = Timer();
-		 t.start();
-	leer_fich.read(buffer,GIGA);
-	fichero << buffer ;
-	leer_fich.close();
-
-	NGramas nGramas = NGramas(3, " ",buffer);
-	nGramas.stringANGramaHashTable();
+		ifstream leer_fich ("train_v2.txt");
+		ofstream fichero("textoLeido.txt");
+		Timer t = Timer();
+		t.start();
+		cout<<"Comienzo leer set entrenamiento - " << t.getTime() << " seg"<< endl;
+		leer_fich.read(buffer,GIGA);
+		leer_fich.read(buffer,GIGA);
+		leer_fich.read(buffer,GIGA);
+		//avanzo 250mb
+		leer_fich.read(buffer,GIGA);
+		fichero << buffer ;
+		cout<<"Fin leer set entrenamiento - " << t.getTime() << " seg"<< endl;
+		leer_fich.close();
+		fichero.close();
+		cout<<"Comienzo Armado de Ngramas - " << t.getTime() << " seg"<< endl;
+		NGramas nGramas = NGramas(3, " ");
+		nGramas.stringANGramaHashTable(buffer);
+		cout<<"Fin Armado de Ngramas - " << t.getTime() << " seg"<< endl;
+		cout<<"Comienzo copiado de Ngramas a archivo - " << t.getTime() << " seg"<< endl;
+		nGramas.guardarNgramasAAchivo("ngramas.txt");
+		//nGramas.guardarNgramasHashAAchivo("ngramas.txt");
+		cout<<"Fin copiado de Ngramas a archivo - " << t.getTime() << " seg"<< endl;
+		t.stop();
+		t.~Timer();
 }
 
 
