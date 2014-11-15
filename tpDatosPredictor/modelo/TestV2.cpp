@@ -22,7 +22,6 @@ TestV2::TestV2() {
 TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama) {
 	this->id = id;
 	this->sentence = sentence;
-	this->listaNgrama = listaNgrama;
 	this->sentencePredicha = "";
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");

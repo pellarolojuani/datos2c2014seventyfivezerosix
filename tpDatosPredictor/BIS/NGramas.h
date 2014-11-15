@@ -60,6 +60,8 @@ public:
 	void agregarRegistroEnArbol(Registro unRegistro);
 	void levantarNgramas(string unArchivoNgramas);
 
+	tr1::unordered_map<string, size_t> getRegistros();
+
 	const string& getOracion() const {
 		return oracion;
 	}

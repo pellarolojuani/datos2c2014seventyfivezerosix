@@ -45,6 +45,10 @@ abb::ArbolB<Registro,60>* NGramas::getLexico(){
 	return this->lexico;
 }
 
+tr1::unordered_map<string, size_t> NGramas::getRegistros(){
+	return this->registros;
+}
+
 //--------------------------------------------------------//
 //---------Comienzo de funciones auxiliares --------------//
 string getSiguienteTermino(FILE* fp){

@@ -354,9 +354,6 @@ void pruebaObtenerSentenceTestV2(){
 
 	}
 
-	for(std::size_t i=0; i < testV2.getListaNgrama().size();++i){
-		cout << testV2.getListaNgrama()[i].first  << "," << testV2.getListaNgrama()[i].second << endl;
-	}
 	//si siguiera leyendo, esta es la linea que sigue.
 	cout << "antes de posicionamineto estoy en = " << unParser.getLinea() << endl;
 	//aca me posiciono en la ultima linea que lei en el for.

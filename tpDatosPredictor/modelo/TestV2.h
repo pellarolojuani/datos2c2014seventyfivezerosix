@@ -9,6 +9,7 @@
 #define TESTV2_H_
 #include <string>
 #include <vector>
+#include <tr1/unordered_map>
 #include "../parser/Parser.h"
 
 namespace std {
@@ -22,8 +23,10 @@ private:
 	string sentencePredicha; //contiene la sentencia completa.
 	Parser parser;
 	string sentenceSinComillas;
-	NGramas ngramas; //Con esto vamos a levantar todos los ngramas y acá van a estar
-					 //los dos hash
+
+	tr1::unordered_map<string, size_t> ngramas;//acá van los ngramas levantados de disco
+
+	void armarHashDeRegistros();
 
 public:
 	TestV2();
