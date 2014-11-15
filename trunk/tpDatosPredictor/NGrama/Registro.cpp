@@ -130,6 +130,18 @@ string Registro::registroAString(){
 	return resultado;
 }
 
+string Registro::registroAStringSinFrecuencia(){
+	string resultado = "";
+
+	if (this->termino == "") return "";
+
+	resultado += (this->contexto);
+	if (resultado != "") resultado += " "; //aplica espacio solo si hay contexto
+	resultado += (this->termino);
+
+	return resultado;
+}
+
 void Registro::copiarRegistro(Registro unRegistro){
 	this->contexto = unRegistro.getContexto();
 	this->frecuencia = unRegistro.getFrecuencia();
