@@ -25,14 +25,16 @@ private:
 	Parser parser;	//Para todas las operaciones de lectura/escritura del archivo
 	string sentenceSinComillas;
 
-	tr1::unordered_map<string, size_t> ngramas;//acá van los ngramas levantados de disco
+	NGramas ngramas;
 
-	void armarHashDeRegistros();
 
 public:
 	TestV2();
 	TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama);
 	virtual ~TestV2();
+
+	string getTerminoMasProbable(string unContexto);
+	void armarHashDeRegistros();
 
 	size_t getId() const {
 		return id;

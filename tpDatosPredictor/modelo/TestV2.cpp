@@ -17,7 +17,7 @@ TestV2::TestV2() {
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
 	this->parser.getLinea(); //para descartar la primera linea
-	this->ngramas = tr1::unordered_map<string, size_t>();
+
 }
 
 TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama) {
@@ -27,7 +27,7 @@ TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama)
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
 	this->parser.getLinea(); //para descartar la primera linea
-	this->ngramas = tr1::unordered_map<string, size_t>();
+
 }
 
 TestV2::~TestV2() {
@@ -38,9 +38,22 @@ void TestV2::cerrarArchivo(){
 }
 
 void TestV2::armarHashDeRegistros(){
-	NGramas ngramas = NGramas();
+	this->ngramas = NGramas(3, " ");
 	ngramas.levantarNgramas();
-	this->ngramas = ngramas.getRegistros();
+}
+
+string TestV2::getTerminoMasProbable(string unContexto){
+	//este metodo devuelve el termino con mayor frecuencia dentro de el contexto indicado como parametro
+
+	size_t maxFrec = 0;
+	string maxElemento = "";
+	for (tr1::unordered_map<string, size_t>::iterator it = this->ngramas.contextos[unContexto].begin(); it != this->ngramas.contextos[unContexto].end(); it++){
+		if ((*it).second > maxFrec) {
+			maxFrec = (*it).second;
+			maxElemento = (*it).first;
+		}
+	}
+	return maxElemento;
 }
 
 void TestV2::readNextSentence(){
@@ -74,7 +87,7 @@ void TestV2::readNextSentence(){
 }
 
 void TestV2::calcularPrediccion(){
-	tr1::unordered_map<string, size_t>::const_iterator iterator = this->ngramas;
+	/*tr1::unordered_map<string, size_t>::const_iterator iterator = this->ngramas;
 	istringstream frase (this->sentenceSinComillas);
 	int cantidadDePalabras = 0;
 
@@ -127,8 +140,8 @@ void TestV2::calcularPrediccion(){
 		triFrec[i] = iterator->second;
 	}
 
-	double tri_minFrec = 9999999999999999999999999999999999999999999999;
-	int tri_minFrec_pos = 0;
+	size_t tri_minFrec = 9999999999999999999999999999999999999999999999;
+	size_t tri_minFrec_pos = 0;
 
 	// BUSCO CUAL ES EL TRIGRAMA DE MENOR FRECUENCIA
 	for(int i=0; i<cantidadDePalabras-2; i++){
@@ -163,7 +176,7 @@ void TestV2::calcularPrediccion(){
 	} else{
 		bi_minFrec = biFrec[tri_minFrec_pos+1];
 		bi_minFrec_pos = tri_minFrec_pos+1;
-	}
+	}*/
 
 	// DEBERIA BUSCAR CUAL ES BIGRAMA CON MAYOR FRECUENCIA COMPUESTO POR:
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
