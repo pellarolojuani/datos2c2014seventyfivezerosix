@@ -27,6 +27,8 @@ private:
 
 	NGramas ngramas;
 
+	FILE *resultados;
+
 
 public:
 	TestV2();
@@ -35,6 +37,8 @@ public:
 
 	string getTerminoMasProbable(string unContexto);
 	void armarHashDeRegistros();
+	void cerrarArchivoResultados();
+	void guardarSentencePredicha();
 
 	size_t getId() const {
 		return id;
