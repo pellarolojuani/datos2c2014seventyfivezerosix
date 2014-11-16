@@ -551,7 +551,7 @@ void pruebaLevantarRegistros(){
 	t.start();
 
 	NGramas nGramas = NGramas(3, " ");
-	nGramas.levantarNgramas("ngrama.txt");
+	nGramas.levantarNgramas();
 
 	cout<<"Tiempo: "<<t.getTime()<<endl;
 	t.stop();
@@ -560,8 +560,8 @@ void pruebaLevantarRegistros(){
 void pruebaArmarNgramaEnHash(){
 
 	char * buffer = new char [GIGA];
-		//int * reserva = new int [4442450944];
-		//delete[] reserva;
+	//int * reserva = new int [6442450944];
+	//delete[] reserva;
 
 		ifstream leer_fich ("train_v2.txt");
 		ofstream fichero("textoLeido.txt");
