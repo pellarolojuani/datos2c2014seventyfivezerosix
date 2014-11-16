@@ -550,8 +550,11 @@ void pruebaLevantarRegistros(){
 	 Timer t = Timer();
 	t.start();
 
-	NGramas nGramas = NGramas(3, " ");
-	nGramas.levantarNgramas();
+	TestV2 test = TestV2();
+	test.armarHashDeRegistros();
+
+	cout<<"the "<<test.getTerminoMasProbable("the")<<endl;
+	cout<<"The "<<test.getTerminoMasProbable("The")<<endl;
 
 	cout<<"Tiempo: "<<t.getTime()<<endl;
 	t.stop();

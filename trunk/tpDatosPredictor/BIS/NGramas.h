@@ -32,15 +32,16 @@ private:
 	//aca guardamos como clave el registroAstring y como valor su frecuencia
 	tr1::unordered_map<string, size_t> registros;
 
-	//en terminos_x_contexto guardamos por cada contexto la cantidad total de temrinos
-	//para poder calcular despues su probabilidad
-	//tr1::unordered_map<string, size_t> terminos_x_contexto;
-
 	string oracion;
 
 	void armarYGuardarNgrama(pair<string,int> par);
 
 public:
+
+	/*------------------------------------------------------*/
+		tr1::unordered_map<string, tr1::unordered_map<string, size_t> > contextos;
+	/*------------------------------------------------------*/
+
 	NGramas();
 	NGramas(int cantGrama, string separadorNgrama);
 	NGramas(int cantGrama, string separadorNgrama,string oracion);
@@ -58,9 +59,9 @@ public:
 
 	abb::ArbolB<Registro,60>* getLexico();
 	void agregarRegistroEnArbol(Registro unRegistro);
-	void levantarNgramas(string unArchivoNgramas);
+	void levantarNgramas();
 
-	tr1::unordered_map<string, size_t> getRegistros();
+	tr1::unordered_map<string, tr1::unordered_map<string, size_t> > getContextos();
 	void guardarNgramasAAchivo(char* nombreArchivo); //levanta en memoria x bytes del set y armar ngramas.
 	void fusionarArchivosNgramas(string unArchivoNgrama,string otroArchivoNgrama); //abre 2 archivos de ngramas y los fusiona en uno.
 

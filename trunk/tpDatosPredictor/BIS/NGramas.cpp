@@ -13,8 +13,9 @@ NGramas::NGramas() {
 	separadorNgrama = " ";
 	listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
-	//this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
 	this->oracion = "";
+
+	//this->contextos = tr1::unordered_map<string, tr1::unordered_map<string, size_t> >();
 }
 
 NGramas::NGramas(int cantGrama, string separadorNgrama){
@@ -23,8 +24,9 @@ NGramas::NGramas(int cantGrama, string separadorNgrama){
 	this->separadorNgrama = separadorNgrama;
 	this->listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
-    //this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
 	this->oracion = "";
+
+	//this->contextos = tr1::unordered_map<string, tr1::unordered_map<string, size_t> >();
 }
 
 NGramas::NGramas(int cantGrama, string separadorNgrama,string oracion){
@@ -33,8 +35,9 @@ NGramas::NGramas(int cantGrama, string separadorNgrama,string oracion){
 	this->separadorNgrama = separadorNgrama;
 	this->listaTerminos = vector<string>();
 	this->registros = tr1::unordered_map<string, size_t>();
-	//this->terminos_x_contexto = tr1::unordered_map<string, size_t>();
 	this->oracion = oracion;
+
+	//this->contextos = tr1::unordered_map<string, tr1::unordered_map<string, size_t> >();
 }
 
 NGramas::~NGramas() {
@@ -45,8 +48,8 @@ abb::ArbolB<Registro,60>* NGramas::getLexico(){
 	return this->lexico;
 }
 
-tr1::unordered_map<string, size_t> NGramas::getRegistros(){
-	return this->registros;
+tr1::unordered_map<string, tr1::unordered_map<string, size_t> > NGramas::getContextos(){
+	return this->contextos;
 }
 
 //--------------------------------------------------------//
@@ -115,32 +118,72 @@ void NGramas::streamANgrama(FILE* fp){
 	}
 }
 
-
-void NGramas::levantarNgramas(string unArchivoNgramas){
-
+void NGramas::levantarNgramas(){
 	ManejoArchivo manejoArchivo = ManejoArchivo();
-	manejoArchivo.abrirArchivo(unArchivoNgramas, "r");
+	manejoArchivo.abrirArchivo("file1.txt", "r");
 	Registro unRegistro = Registro();
-	this->registros.rehash(40000000);
-	//this->terminos_x_contexto.rehash(25000000);
-	cout<<"Procesando archivo.."<<endl;
+	this->contextos.rehash(10000000);
+
+	cout<<"Procesando primer archivo.."<<endl;
 
 	size_t cantRegistros = 0;
 
 	while(feof(manejoArchivo.getArchivo()) == 0){
-		cout<<ftell(manejoArchivo.getArchivo())<<endl;
+		//cout<<ftell(manejoArchivo.getArchivo())<<endl;
 		unRegistro = manejoArchivo.getSiguienteRegistro();
 		cantRegistros ++;
-		this->registros[unRegistro.registroAString()] += unRegistro.getFrecuencia();
-		//this->terminos_x_contexto[unRegistro.getContexto()] += unRegistro.getFrecuencia();
+		this->contextos[unRegistro.getContexto()][unRegistro.getTermino()] += unRegistro.getFrecuencia();
+
+	}
+	manejoArchivo.cerrarArchivo();
+
+	//cout<<"Cantidad Registros leidos: "<<cantRegistros<<endl;
+	//cout<<"the: "<<this->contextos["the"].size()<<endl;
+	//cout<<"The: "<<this->contextos["The"].size()<<endl;
+
+	cout<<"Final del procesamiento del archivo."<<endl;
+
+}
+
+/*void NGramas::levantarNgramas(){
+
+	ManejoArchivo manejoArchivo = ManejoArchivo();
+	manejoArchivo.abrirArchivo("file1.txt", "r");
+	Registro unRegistro = Registro();
+
+	this->registros.rehash(90000000);
+
+	cout<<"Procesando primer archivo.."<<endl;
+
+	size_t cantRegistros = 0;
+
+	while(feof(manejoArchivo.getArchivo()) == 0){
+		//cout<<ftell(manejoArchivo.getArchivo())<<endl;
+		unRegistro = manejoArchivo.getSiguienteRegistro();
+		cantRegistros ++;
+		this->registros[unRegistro.registroAStringSinFrecuencia()] += unRegistro.getFrecuencia();
+
 	}
 	manejoArchivo.cerrarArchivo();
 
 	cout<<"Cantidad Registros leidos: "<<cantRegistros<<endl;
-	//cout<<"the: "<<this->terminos_x_contexto["the"]<<endl;
-	//cout<<"The: "<<this->terminos_x_contexto["The"]<<endl;
+	cout<<"the: "<<this->registros["the"]<<endl;
+	cout<<"The: "<<this->registros["The"]<<endl;
+
+	//---------PARA RECORRER UN MAP--------
+	size_t maxFrec = 0;
+	string maxElemento = "";
+	for (tr1::unordered_map<string, size_t>::iterator it = this->registros.begin(); it != this->registros.end(); it++){
+		if ((*it).second > maxFrec) {
+			maxFrec = (*it).second;
+			maxElemento = (*it).first;
+		}
+	}
+	cout<<"Elemento con mayor frecuencia: "<<maxElemento<<endl;
+	//------------------------------------
+
 	cout<<"Final del procesamiento del archivo."<<endl;
-}
+} */
 
 void NGramas::stringANGramaHashTable(char* buffer){
 	istringstream iss(buffer);
