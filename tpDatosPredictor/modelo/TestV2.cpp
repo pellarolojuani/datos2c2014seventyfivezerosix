@@ -16,7 +16,13 @@ TestV2::TestV2() {
 	this->sentencePredicha = "";
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
-	this->parser.getLinea(); //para descartar la primera linea
+
+	this->resultados = fopen("test_results.txt", "w+");
+
+	//descarto la primera linea del archivo de test y se la pongo
+	//al archivo de test_results
+	fputs(this->parser.getLinea().c_str(), this->resultados);
+	fputc('\n', this->resultados);
 
 }
 
@@ -26,8 +32,33 @@ TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama)
 	this->sentencePredicha = "";
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
-	this->parser.getLinea(); //para descartar la primera linea
 
+	this->resultados = fopen("test_results.txt", "w+");
+
+	//descarto la primera linea del archivo de test y se la pongo
+	//al archivo de test_results
+	fputs(this->parser.getLinea().c_str(), this->resultados);
+	fputc('\n', this->resultados);
+
+}
+
+void TestV2::cerrarArchivoResultados(){
+	fclose(this->resultados);
+}
+
+void TestV2::guardarSentencePredicha(){
+	string comillas = "\"";
+	string linea = "";
+	ostringstream num;
+	num << (this->id);
+	string ID = num.str();
+	linea += ID;
+	linea += ",";
+	linea += comillas;
+	linea += this->sentencePredicha;
+	linea += comillas;
+	linea += '\n';
+	fputs(linea.c_str(), this->resultados);
 }
 
 TestV2::~TestV2() {
