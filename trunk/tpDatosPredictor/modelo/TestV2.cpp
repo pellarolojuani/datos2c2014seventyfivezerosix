@@ -119,7 +119,7 @@ void TestV2::readNextSentence(){
 }
 
 void TestV2::calcularPrediccion(){
-	tr1::unordered_map<string, tr1::unordered_map<string, size_t> >::const_iterator iteradorMap1 = this->ngramas.contextos;
+	tr1::unordered_map<string, tr1::unordered_map<string, size_t> >::const_iterator iteradorMap1;
 	tr1::unordered_map<string, size_t>::const_iterator iteradorMap2;
 
 	istringstream frase (this->sentenceSinComillas);
