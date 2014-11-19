@@ -6,6 +6,7 @@
  */
 
 #include "TestV2.h"
+#include <limits>
 
 
 namespace std {
@@ -118,7 +119,9 @@ void TestV2::readNextSentence(){
 }
 
 void TestV2::calcularPrediccion(){
-	/*tr1::unordered_map<string, size_t>::const_iterator iterator = this->ngramas;
+	tr1::unordered_map<string, tr1::unordered_map<string, size_t> >::const_iterator iteradorMap1 = this->ngramas.contextos;
+	tr1::unordered_map<string, size_t>::const_iterator iteradorMap2;
+
 	istringstream frase (this->sentenceSinComillas);
 	int cantidadDePalabras = 0;
 
@@ -129,6 +132,7 @@ void TestV2::calcularPrediccion(){
 
 	string trigramas[cantidadDePalabras-2];
 	string bigramas[cantidadDePalabras-1];
+	string unigramas[cantidadDePalabras-3];
 
 	double triFrec[cantidadDePalabras-2];
 	double biFrec[cantidadDePalabras-1];
@@ -146,6 +150,7 @@ void TestV2::calcularPrediccion(){
 
 	for(int i=0; i<cantidadDePalabras; i++){
 		frase >> word;
+		unigramas[i] = word;
 		if (tri_flag < 3){
 			tri_aux += word;
 			tri_flag++;
@@ -167,11 +172,12 @@ void TestV2::calcularPrediccion(){
 	}
 
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		iterator = ngramas.find(trigramas[i]);
-		triFrec[i] = iterator->second;
+		iteradorMap1 = ngramas.contextos.find(bigramas[i]);
+		iteradorMap2 = iteradorMap1->second.find(unigramas[i+2]);
+		triFrec[i] = iteradorMap2->second;
 	}
 
-	size_t tri_minFrec = 9999999999999999999999999999999999999999999999;
+	size_t tri_minFrec = std::numeric_limits<double>::max();
 	size_t tri_minFrec_pos = 0;
 
 	// BUSCO CUAL ES EL TRIGRAMA DE MENOR FRECUENCIA
@@ -180,10 +186,12 @@ void TestV2::calcularPrediccion(){
 			tri_minFrec_pos = i;
 			tri_minFrec = triFrec[i];
 		} else if (triFrec[i] == tri_minFrec){
-			iterator = ngramas.find(bigramas[i]);
-			biFrec[i] = iterator->second;
-			iterator = ngramas.find(bigramas[i+1]);
-			biFrec[i+1] = iterator->second;
+			iteradorMap1 = ngramas.contextos.find(unigramas[i]);
+			iteradorMap2 = iteradorMap1->second.find(unigramas[i+1]);
+			biFrec[i] = iteradorMap2->second;
+			iteradorMap1 = ngramas.contextos.find(unigramas[i+1]);
+			iteradorMap2 = iteradorMap1->second.find(unigramas[i+2]);
+			biFrec[i+1] = iteradorMap2->second;
 
 			double menor = 0;
 			if (biFrec[i] <= biFrec[i+1]) menor = biFrec[i];
@@ -191,15 +199,17 @@ void TestV2::calcularPrediccion(){
 		}
 	}
 
-	double bi_minFrec = 9999999999999999999999999999999999999999999999;
+	double bi_minFrec = std::numeric_limits<double>::max();
 	int bi_minFrec_pos = 0;
 
 	// BUSCO CUAL ES EL BIGRAMA DE MENOR FRECUENCIA
 	if (biFrec[tri_minFrec_pos] == 0){
-		iterator = ngramas.find(bigramas[tri_minFrec_pos]);
-		biFrec[tri_minFrec_pos] = iterator->second;
-		iterator = ngramas.find(bigramas[tri_minFrec_pos+1]);
-		biFrec[tri_minFrec_pos+1] = iterator->second;
+		iteradorMap1 = ngramas.contextos.find(unigramas[tri_minFrec_pos]);
+		iteradorMap2 = iteradorMap1->second.find(unigramas[tri_minFrec_pos+1]);
+		biFrec[tri_minFrec_pos] = iteradorMap2->second;
+		iteradorMap1 = ngramas.contextos.find(unigramas[tri_minFrec_pos+1]);
+		iteradorMap2 = iteradorMap1->second.find(unigramas[tri_minFrec_pos+2]);
+		biFrec[tri_minFrec_pos+1] = iteradorMap2->second;
 	}
 	if (biFrec[tri_minFrec_pos] <= biFrec[tri_minFrec_pos+1]){
 		bi_minFrec = biFrec[tri_minFrec_pos];
@@ -207,13 +217,30 @@ void TestV2::calcularPrediccion(){
 	} else{
 		bi_minFrec = biFrec[tri_minFrec_pos+1];
 		bi_minFrec_pos = tri_minFrec_pos+1;
-	}*/
+	}
 
-	// DEBERIA BUSCAR CUAL ES BIGRAMA CON MAYOR FRECUENCIA COMPUESTO POR:
+	// BUSCO CUAL ES BIGRAMA CON MAYOR FRECUENCIA COMPUESTO POR:
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
-	//
-	// UNA VEZ ENCONTRADO, "ALGUNA OTRA" ES LA PALABRA A AGREGAR!
+	string palabraPropuesta;
+	palabraPropuesta = this->getTerminoMasProbable(bigramas[bi_minFrec_pos]);
 
+	// ARMO LA SENTENCE PREDICHA
+	word = ""; // limpio contenido de word
+	frase.str(this->sentenceSinComillas); // vuelvo a llenar el istringstream
+	string frasePropuesta = "";
+
+	for(int i=0; i<bi_minFrec_pos+1; i++){
+		frase >> word;
+		frasePropuesta += word;
+	}
+	frasePropuesta += palabraPropuesta;
+
+	for(int i=bi_minFrec_pos+1; i<cantidadDePalabras; i++){
+		frase >> word;
+		frasePropuesta += word;
+	}
+
+	this->sentencePredicha = frasePropuesta;
 }
 
 
