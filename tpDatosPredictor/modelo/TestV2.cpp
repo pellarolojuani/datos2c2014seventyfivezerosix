@@ -132,7 +132,7 @@ void TestV2::calcularPrediccion(){
 
 	string trigramas[cantidadDePalabras-2];
 	string bigramas[cantidadDePalabras-1];
-	string unigramas[cantidadDePalabras-3];
+	string unigramas[cantidadDePalabras];
 
 	double triFrec[cantidadDePalabras-2];
 	double biFrec[cantidadDePalabras-1];
