@@ -9,7 +9,7 @@
 #define CONSTANTES_H_
 
 #ifndef LONG_MAX_LINEA
-#define LONG_MAX_LINEA						300
+#define LONG_MAX_LINEA						1000
 #endif
 
 #ifndef N
@@ -18,6 +18,10 @@
 
 #ifndef SEPARADOR_NGRAMA
 #define SEPARADOR_NGRAMA					' '
+#endif
+
+#ifndef TOTAL_FRECUENCIAS
+#define TOTAL_FRECUENCIAS					""
 #endif
 
 /*1073741824*/

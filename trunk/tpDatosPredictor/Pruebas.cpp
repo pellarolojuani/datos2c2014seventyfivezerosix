@@ -533,7 +533,7 @@ void pruebaLeerLoteDePruebas(){
 
 	TestV2 pruebas = TestV2();
 
-	for (int i = 0; i < 10; i++){
+	for (int i = 0; i < 20; i++){
 		pruebas.readNextSentence();
 		cout<<pruebas.getId()<<": "<<pruebas.getSentence()<<endl<<endl;
 	}
@@ -552,9 +552,13 @@ void pruebaLevantarRegistros(){
 
 	TestV2 test = TestV2();
 	test.armarHashDeRegistros();
+	cout<<"Comienzan a correr las pruebas.."<<endl;
+	test.correrPruebas();
 
-	cout<<"the "<<test.getTerminoMasProbable("the")<<endl;
-	cout<<"The "<<test.getTerminoMasProbable("The")<<endl;
+
+	//cout<<"Termino mas probable: "<<test.getTerminoMasProbable("")<<endl;
+	//cout<<"the "<<test.getTerminoMasProbable("the")<<endl;
+	//cout<<"The "<<test.getTerminoMasProbable("The")<<endl;
 
 	cout<<"Tiempo: "<<t.getTime()<<endl;
 	t.stop();
@@ -591,8 +595,6 @@ void pruebaArmarNgramaEnHash(){
 		t.stop();
 		t.~Timer();
 }
-
-
 
 int main(int argc, char *argv[]){
 
