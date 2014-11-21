@@ -134,6 +134,9 @@ void NGramas::levantarNgramas(){
 		cantRegistros ++;
 		this->contextos[unRegistro.getContexto()][unRegistro.getTermino()] += unRegistro.getFrecuencia();
 
+		//en cada contexto tenemos la suma total de frecuencias para poder dividir y calcular probabilidades
+		this->contextos[unRegistro.getContexto()][TOTAL_FRECUENCIAS] += unRegistro.getFrecuencia();
+
 	}
 	manejoArchivo.cerrarArchivo();
 

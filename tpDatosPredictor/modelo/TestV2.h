@@ -39,6 +39,7 @@ public:
 	void armarHashDeRegistros();
 	void cerrarArchivoResultados();
 	void guardarSentencePredicha();
+	double calcularProbabilidad(string unContexto, string unTermino);
 
 	size_t getId() const {
 		return id;
@@ -53,6 +54,7 @@ public:
 	}
 
 	void readNextSentence();
+	void correrPruebas();
 
 
 	const string& getSentence() const {

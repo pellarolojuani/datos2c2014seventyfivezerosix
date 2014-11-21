@@ -47,6 +47,18 @@ void TestV2::cerrarArchivoResultados(){
 	fclose(this->resultados);
 }
 
+void TestV2::correrPruebas(){
+	size_t i = 0;
+	while (i != 306682){
+		this->readNextSentence();
+		this->calcularPrediccion();
+		this->guardarSentencePredicha();
+		i++;
+	}
+	this->cerrarArchivoResultados();
+	this->cerrarArchivo();
+}
+
 void TestV2::guardarSentencePredicha(){
 	string comillas = "\"";
 	string linea = "";
@@ -60,6 +72,7 @@ void TestV2::guardarSentencePredicha(){
 	linea += comillas;
 	linea += '\n';
 	fputs(linea.c_str(), this->resultados);
+	cout<<"Generada sentence "<<ID<<endl;
 }
 
 TestV2::~TestV2() {
@@ -92,30 +105,52 @@ void TestV2::readNextSentence(){
 	//Lee la siguiente frase en el lote de pruebas y actualiza
 	//los valores de id y sentence.
 
+
 	string comillaDoble = "\"\"";
 	string comillaSimple = "\"";
 
 	size_t posicion = this->parser.getPosicionActualArchivo();
 	string oracionAux =  this->parser.getLinea();
 
-	//para que no procese "id","sentence" (son los nombres de las columnas).
-	if(oracionAux.find("sentence") == std::string::npos){
-		string oracion = oracionAux.erase(oracionAux.find_last_not_of(" \n\r\t")+1);
-		std::size_t pos = oracion.find(",");
-		string id = oracion.substr(0,pos);
-		string sentence = oracion.substr(pos+1);
-		string sentenceSinComilla = sentence.substr(1,sentence.rfind('"')-1);
+	string oracion = oracionAux.erase(oracionAux.find_last_not_of(" \n\r\t")+1);
+	std::size_t pos = oracion.find(",");
+	string id = oracion.substr(0,pos);
+	string sentence = oracion.substr(pos+1);
+	string sentenceSinComilla = sentence.substr(1,sentence.size()-2);
 
-		string sentenceSinComillaDoble = sentenceSinComilla;
-		for (int i = 0; i < sentenceSinComilla.length()-1; i++){
-			if (sentenceSinComilla[i] == '"' && sentenceSinComilla[i+1] == '"'){
-				sentenceSinComillaDoble.replace(i, 1, "");
-			}
+	string sentenceSinComillaDoble;
+	for (size_t a = 0; a < sentenceSinComilla.length()-1; a++){
+		if (sentenceSinComilla[a] == '"' && sentenceSinComilla[a+1] == '"'){
+			sentenceSinComilla.replace(a, 1, "");
 		}
-
-		this->setId(std::atoi(id.c_str()));
-		this->setSentence(sentenceSinComillaDoble);
 	}
+	sentenceSinComillaDoble = sentenceSinComilla;
+	cout<<sentenceSinComillaDoble<<endl;
+
+	this->setId(std::atoi(id.c_str()));
+	this->setSentenceSinComillas(sentenceSinComillaDoble);
+	this->sentencePredicha = "";
+
+}
+
+double TestV2::calcularProbabilidad(string unContexto, string unTermino){
+
+	double num = this->ngramas.contextos[unContexto][unTermino];
+	double den = this->ngramas.contextos[unContexto][TOTAL_FRECUENCIAS];
+
+	if (den == 0) return 0; 	//en esta caso no existe el termino en nuestro diccionario: CAGAMOS!
+	if (num == 0 && unContexto.size() != 0){	//Bajamos al contexto anterior para calcular su probabilidad
+		size_t pos = unContexto.find(" ");
+		if (pos != string::npos){
+			string contextoAnterior = unContexto.substr(unContexto.find(" ")+1);
+			num = 0.4*this->ngramas.contextos[contextoAnterior][unTermino];
+		}
+		if (num == 0 || pos == string::npos){ //en este caso calculamos la probabilidad del termino sin contexto
+			num = 0.4*0.4*this->ngramas.contextos[""][unTermino];
+		}
+	}
+	return num/den;
+
 }
 
 void TestV2::calcularPrediccion(){
@@ -171,6 +206,7 @@ void TestV2::calcularPrediccion(){
 		}
 	}
 
+
 	for(int i=0; i<cantidadDePalabras-2; i++){
 		iteradorMap1 = ngramas.contextos.find(bigramas[i]);
 		iteradorMap2 = iteradorMap1->second.find(unigramas[i+2]);
@@ -179,6 +215,7 @@ void TestV2::calcularPrediccion(){
 
 	size_t tri_minFrec = std::numeric_limits<double>::max();
 	size_t tri_minFrec_pos = 0;
+
 
 	// BUSCO CUAL ES EL TRIGRAMA DE MENOR FRECUENCIA
 	for(int i=0; i<cantidadDePalabras-2; i++){
@@ -219,10 +256,16 @@ void TestV2::calcularPrediccion(){
 		bi_minFrec_pos = tri_minFrec_pos+1;
 	}
 
+
 	// BUSCO CUAL ES BIGRAMA CON MAYOR FRECUENCIA COMPUESTO POR:
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
+
 	string palabraPropuesta;
 	palabraPropuesta = this->getTerminoMasProbable(bigramas[bi_minFrec_pos]);
+
+	//
+	//FALTA EL CASO EN QUE NO ENCUENTRE EL TERMINO CON ESE CONTEXTO!!
+	//
 
 	// ARMO LA SENTENCE PREDICHA
 	word = ""; // limpio contenido de word
@@ -241,8 +284,22 @@ void TestV2::calcularPrediccion(){
 	}
 
 	this->sentencePredicha = frasePropuesta;
-}
 
+
+
+	for(int i=0; i<bi_minFrec_pos+1; i++){
+		frase >> word;
+		frasePropuesta += word;
+	}
+	frasePropuesta += palabraPropuesta;
+
+	for(int i=bi_minFrec_pos+1; i<cantidadDePalabras; i++){
+		frase >> word;
+		frasePropuesta += word;
+	}
+
+	this->sentencePredicha = frasePropuesta;
+}
 
 
 }	/* namespace std */
