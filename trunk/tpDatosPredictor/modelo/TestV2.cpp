@@ -154,8 +154,6 @@ double TestV2::calcularProbabilidad(string unContexto, string unTermino){
 }
 
 void TestV2::calcularPrediccion(){
-	tr1::unordered_map<string, tr1::unordered_map<string, size_t> >::const_iterator iteradorMap1;
-	tr1::unordered_map<string, size_t>::const_iterator iteradorMap2;
 
 	istringstream frase (this->sentenceSinComillas);
 	int cantidadDePalabras = 0;
@@ -169,8 +167,8 @@ void TestV2::calcularPrediccion(){
 	string bigramas[cantidadDePalabras-1];
 	string unigramas[cantidadDePalabras];
 
-	double triFrec[cantidadDePalabras-2];
-	double biFrec[cantidadDePalabras-1];
+	double triProb[cantidadDePalabras-2];
+	double biProb[cantidadDePalabras-1];
 
 	string tri_aux = "";
 	string bi_aux = "";
@@ -188,80 +186,74 @@ void TestV2::calcularPrediccion(){
 		unigramas[i] = word;
 		if (tri_flag < 3){
 			tri_aux += word;
+			if (tri_flag < 2) tri_aux += " ";
 			tri_flag++;
 		} else{
 			trigramas[tri_pos] = tri_aux;
 			tri_pos++;
 			tri_flag = 1;
 			tri_aux = word;
+			tri_aux += " ";
 		}
 		if (bi_flag < 2){
 			bi_aux += word;
+			if (bi_flag < 2) tri_aux += " ";
 			bi_flag++;
 		} else{
 			bigramas[bi_pos] = bi_aux;
 			bi_pos++;
 			bi_flag = 1;
 			bi_aux = word;
+			bi_aux += " ";
 		}
 	}
 
 
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		iteradorMap1 = ngramas.contextos.find(bigramas[i]);
-		iteradorMap2 = iteradorMap1->second.find(unigramas[i+2]);
-		triFrec[i] = iteradorMap2->second;
+		triProb[i] = this->calcularProbabilidad(bigramas[i], unigramas[i+2]);
 	}
 
-	size_t tri_minFrec = std::numeric_limits<double>::max();
-	size_t tri_minFrec_pos = 0;
+	size_t tri_minProb = std::numeric_limits<double>::max();
+	size_t tri_minProb_pos = 0;
 
 
-	// BUSCO CUAL ES EL TRIGRAMA DE MENOR FRECUENCIA
+	// BUSCO CUAL ES EL TRIGRAMA DE MENOR PROBABILIDAD
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		if (triFrec[i] < tri_minFrec){
-			tri_minFrec_pos = i;
-			tri_minFrec = triFrec[i];
-		} else if (triFrec[i] == tri_minFrec){
-			iteradorMap1 = ngramas.contextos.find(unigramas[i]);
-			iteradorMap2 = iteradorMap1->second.find(unigramas[i+1]);
-			biFrec[i] = iteradorMap2->second;
-			iteradorMap1 = ngramas.contextos.find(unigramas[i+1]);
-			iteradorMap2 = iteradorMap1->second.find(unigramas[i+2]);
-			biFrec[i+1] = iteradorMap2->second;
+		if (triProb[i] < tri_minProb){
+			tri_minProb_pos = i;
+			tri_minProb = triProb[i];
+		} else if (triProb[i] == tri_minProb){
+			biProb[i] = this->calcularProbabilidad(unigramas[i], unigramas[i+1]);
+			biProb[i+1] = this->calcularProbabilidad(unigramas[i+1], unigramas[i+2]);
 
-			double menor = 0;
-			if (biFrec[i] <= biFrec[i+1]) menor = biFrec[i];
-			else menor = biFrec[i+1];
+			double menor;
+			if (biProb[i] <= biProb[i+1]) menor = biProb[i];
+			else menor = biProb[i+1];
 		}
 	}
 
-	double bi_minFrec = std::numeric_limits<double>::max();
-	int bi_minFrec_pos = 0;
+	double bi_minProb = std::numeric_limits<double>::max();
+	int bi_minProb_pos = 0;
 
 	// BUSCO CUAL ES EL BIGRAMA DE MENOR FRECUENCIA
-	if (biFrec[tri_minFrec_pos] == 0){
-		iteradorMap1 = ngramas.contextos.find(unigramas[tri_minFrec_pos]);
-		iteradorMap2 = iteradorMap1->second.find(unigramas[tri_minFrec_pos+1]);
-		biFrec[tri_minFrec_pos] = iteradorMap2->second;
-		iteradorMap1 = ngramas.contextos.find(unigramas[tri_minFrec_pos+1]);
-		iteradorMap2 = iteradorMap1->second.find(unigramas[tri_minFrec_pos+2]);
-		biFrec[tri_minFrec_pos+1] = iteradorMap2->second;
+	if (biProb[tri_minProb_pos] == 0){
+		biProb[tri_minProb_pos] = this->calcularProbabilidad(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
+		biProb[tri_minProb_pos+1] = this->calcularProbabilidad(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
 	}
-	if (biFrec[tri_minFrec_pos] <= biFrec[tri_minFrec_pos+1]){
-		bi_minFrec = biFrec[tri_minFrec_pos];
-		bi_minFrec_pos = tri_minFrec_pos;
+	if (biProb[tri_minProb_pos] <= biProb[tri_minProb_pos+1]){
+		bi_minProb = biProb[tri_minProb_pos];
+		bi_minProb_pos = tri_minProb_pos;
 	} else{
-		bi_minFrec = biFrec[tri_minFrec_pos+1];
-		bi_minFrec_pos = tri_minFrec_pos+1;
+		bi_minProb = biProb[tri_minProb_pos+1];
+		bi_minProb_pos = tri_minProb_pos+1;
 	}
 
 
-	// BUSCO CUAL ES BIGRAMA CON MAYOR FRECUENCIA COMPUESTO POR:
+	// BUSCO CUAL ES BIGRAMA CON MAYOR PROBABILIDAD COMPUESTO POR:
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
 
 	string palabraPropuesta;
-	palabraPropuesta = this->getTerminoMasProbable(bigramas[bi_minFrec_pos]);
+	palabraPropuesta = this->getTerminoMasProbable(bigramas[bi_minProb_pos]);
 
 	//
 	//FALTA EL CASO EN QUE NO ENCUENTRE EL TERMINO CON ESE CONTEXTO!!
@@ -272,33 +264,21 @@ void TestV2::calcularPrediccion(){
 	frase.str(this->sentenceSinComillas); // vuelvo a llenar el istringstream
 	string frasePropuesta = "";
 
-	for(int i=0; i<bi_minFrec_pos+1; i++){
+	for(int i=0; i<bi_minProb_pos+1; i++){
 		frase >> word;
 		frasePropuesta += word;
+		frasePropuesta += " ";
 	}
 	frasePropuesta += palabraPropuesta;
 
-	for(int i=bi_minFrec_pos+1; i<cantidadDePalabras; i++){
+	for(int i=bi_minProb_pos+1; i<cantidadDePalabras; i++){
+		frasePropuesta += " ";
 		frase >> word;
 		frasePropuesta += word;
 	}
 
 	this->sentencePredicha = frasePropuesta;
 
-
-
-	for(int i=0; i<bi_minFrec_pos+1; i++){
-		frase >> word;
-		frasePropuesta += word;
-	}
-	frasePropuesta += palabraPropuesta;
-
-	for(int i=bi_minFrec_pos+1; i<cantidadDePalabras; i++){
-		frase >> word;
-		frasePropuesta += word;
-	}
-
-	this->sentencePredicha = frasePropuesta;
 }
 
 
