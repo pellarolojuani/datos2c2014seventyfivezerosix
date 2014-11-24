@@ -23,7 +23,7 @@ TestV2::TestV2() {
 	//descarto la primera linea del archivo de test y se la pongo
 	//al archivo de test_results
 	fputs(this->parser.getLinea().c_str(), this->resultados);
-	fputc('\n', this->resultados);
+	//fputc('\n', this->resultados);
 
 }
 
@@ -49,12 +49,12 @@ void TestV2::cerrarArchivoResultados(){
 
 void TestV2::correrPruebas(){
 	size_t i = 0;
-	while (i != 306682){
+	//while (i != 306682){
 		this->readNextSentence();
 		this->calcularPrediccion();
 		this->guardarSentencePredicha();
 		i++;
-	}
+	//}
 	this->cerrarArchivoResultados();
 	this->cerrarArchivo();
 }
@@ -94,8 +94,10 @@ string TestV2::getTerminoMasProbable(string unContexto){
 	string maxElemento = "";
 	for (tr1::unordered_map<string, size_t>::iterator it = this->ngramas.contextos[unContexto].begin(); it != this->ngramas.contextos[unContexto].end(); it++){
 		if ((*it).second > maxFrec) {
-			maxFrec = (*it).second;
-			maxElemento = (*it).first;
+			if ((*it).first.size() != 0){
+				maxFrec = (*it).second;
+				maxElemento = (*it).first;
+			}
 		}
 	}
 	return maxElemento;
@@ -155,20 +157,24 @@ double TestV2::calcularProbabilidad(string unContexto, string unTermino){
 
 void TestV2::calcularPrediccion(){
 
-	istringstream frase (this->sentenceSinComillas);
+	istringstream unaFrase (this->sentenceSinComillas);
 	int cantidadDePalabras = 0;
 
 	string word;
-	while (frase >> word){
+	while (unaFrase >> word){
 		cantidadDePalabras++;
 	}
 
-	string trigramas[cantidadDePalabras-2];
-	string bigramas[cantidadDePalabras-1];
-	string unigramas[cantidadDePalabras];
+	vector<string> trigramas = vector<string>();
+	vector<string> bigramas = vector<string>();
+	vector<string> unigramas = vector<string>();
 
-	double triProb[cantidadDePalabras-2];
-	double biProb[cantidadDePalabras-1];
+	vector<double> triFrec = vector<double>();
+	vector<double> biFrec = vector<double>();
+
+	vector<double> triProb = vector<double>();
+	vector<double> biProb = vector<double>(cantidadDePalabras-1);
+
 
 	string tri_aux = "";
 	string bi_aux = "";
@@ -179,50 +185,65 @@ void TestV2::calcularPrediccion(){
 	int bi_pos = 0; // guarda posicion dentro de bigramas[]
 
 	word = ""; // limpio contenido de word
-	frase.str(this->sentenceSinComillas); // vuelvo a llenar el istringstream
+	istringstream frase (this->sentenceSinComillas); // vuelvo a llenar el istringstream
 
 	for(int i=0; i<cantidadDePalabras; i++){
 		frase >> word;
-		unigramas[i] = word;
+		//unigramas[i] = word;
+		unigramas.push_back(word);
 		if (tri_flag < 3){
 			tri_aux += word;
-			if (tri_flag < 2) tri_aux += " ";
+			tri_aux += " ";
 			tri_flag++;
 		} else{
-			trigramas[tri_pos] = tri_aux;
+			//trigramas[tri_pos] = tri_aux;
+			if (tri_flag == 3){
+				tri_aux = tri_aux.substr(0, tri_aux.size()-1); //saco el espacio al final del string
+				trigramas.push_back(tri_aux);
+			}
+			tri_aux = tri_aux.substr(tri_aux.find_first_of(" ")+1);
 			tri_pos++;
-			tri_flag = 1;
-			tri_aux = word;
+			tri_flag = 3;
+			tri_aux += " ";
+			tri_aux += word;
+			if (i == cantidadDePalabras -1)
+				trigramas.push_back(tri_aux);
 			tri_aux += " ";
 		}
 		if (bi_flag < 2){
 			bi_aux += word;
-			if (bi_flag < 2) tri_aux += " ";
+			bi_aux += " ";
 			bi_flag++;
 		} else{
-			bigramas[bi_pos] = bi_aux;
+			//bigramas[bi_pos] = bi_aux;
+			if (bi_flag == 2){
+				bi_aux = bi_aux.substr(0, bi_aux.size()-1); //saco el espacio al final del string
+				bigramas.push_back(bi_aux);
+			}
+			bi_aux = bi_aux.substr(bi_aux.find_first_of(" ")+1);
 			bi_pos++;
-			bi_flag = 1;
-			bi_aux = word;
+			bi_flag = 2;
+			bi_aux += " ";
+			bi_aux += word;
+			if (i == cantidadDePalabras -1)
+				bigramas.push_back(bi_aux);
 			bi_aux += " ";
 		}
 	}
 
-
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		triProb[i] = this->calcularProbabilidad(bigramas[i], unigramas[i+2]);
+		triProb.push_back(this->calcularProbabilidad(bigramas.at(i), unigramas.at(i+2)));
 	}
 
 	size_t tri_minProb = std::numeric_limits<double>::max();
 	size_t tri_minProb_pos = 0;
 
-
 	// BUSCO CUAL ES EL TRIGRAMA DE MENOR PROBABILIDAD
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		if (triProb[i] < tri_minProb){
+		if (triProb.at(i) < tri_minProb){
 			tri_minProb_pos = i;
-			tri_minProb = triProb[i];
-		} else if (triProb[i] == tri_minProb){
+			tri_minProb = triProb.at(i);
+		} else if (triProb.at(i) == tri_minProb){
 			biProb[i] = this->calcularProbabilidad(unigramas[i], unigramas[i+1]);
 			biProb[i+1] = this->calcularProbabilidad(unigramas[i+1], unigramas[i+2]);
 
@@ -253,28 +274,25 @@ void TestV2::calcularPrediccion(){
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
 
 	string palabraPropuesta;
-	palabraPropuesta = this->getTerminoMasProbable(bigramas[bi_minProb_pos]);
-
-	//
-	//FALTA EL CASO EN QUE NO ENCUENTRE EL TERMINO CON ESE CONTEXTO!!
-	//
+	palabraPropuesta = this->getTerminoMasProbable(bigramas.at(bi_minProb_pos));
 
 	// ARMO LA SENTENCE PREDICHA
 	word = ""; // limpio contenido de word
-	frase.str(this->sentenceSinComillas); // vuelvo a llenar el istringstream
+	istringstream sentence (this->sentenceSinComillas); // vuelvo a llenar el istringstream
 	string frasePropuesta = "";
 
-	for(int i=0; i<bi_minProb_pos+1; i++){
-		frase >> word;
+	for(int i=0; i<bi_minProb_pos+2; i++){
+		sentence >> word;
 		frasePropuesta += word;
 		frasePropuesta += " ";
 	}
 	frasePropuesta += palabraPropuesta;
+	if (palabraPropuesta.size() != 0) frasePropuesta += " ";
 
-	for(int i=bi_minProb_pos+1; i<cantidadDePalabras; i++){
-		frasePropuesta += " ";
-		frase >> word;
+	for(int i=bi_minProb_pos+2; i<cantidadDePalabras; i++){
+		sentence >> word;
 		frasePropuesta += word;
+		if (i != cantidadDePalabras-1) frasePropuesta += " ";
 	}
 
 	this->sentencePredicha = frasePropuesta;
