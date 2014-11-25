@@ -49,12 +49,12 @@ void TestV2::cerrarArchivoResultados(){
 
 void TestV2::correrPruebas(){
 	size_t i = 0;
-	//while (i != 306682){
+	while (i != 306682){
 		this->readNextSentence();
 		this->calcularPrediccion();
 		this->guardarSentencePredicha();
 		i++;
-	//}
+	}
 	this->cerrarArchivoResultados();
 	this->cerrarArchivo();
 }
@@ -127,7 +127,6 @@ void TestV2::readNextSentence(){
 		}
 	}
 	sentenceSinComillaDoble = sentenceSinComilla;
-	cout<<sentenceSinComillaDoble<<endl;
 
 	this->setId(std::atoi(id.c_str()));
 	this->setSentenceSinComillas(sentenceSinComillaDoble);
@@ -232,7 +231,10 @@ void TestV2::calcularPrediccion(){
 	}
 
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		triProb.push_back(this->calcularProbabilidad(bigramas.at(i), unigramas.at(i+2)));
+		double uni = this->calcularProbabilidad("", unigramas.at(i));
+		double bi = this->calcularProbabilidad(unigramas.at(i), unigramas.at(i+1));
+		double tri = this->calcularProbabilidad(bigramas.at(i), unigramas.at(i+2));
+		triProb.push_back(uni*bi*tri);	//Regla de la cadena. Probabilidad!
 	}
 
 	size_t tri_minProb = std::numeric_limits<double>::max();
@@ -244,8 +246,12 @@ void TestV2::calcularPrediccion(){
 			tri_minProb_pos = i;
 			tri_minProb = triProb.at(i);
 		} else if (triProb.at(i) == tri_minProb){
-			biProb[i] = this->calcularProbabilidad(unigramas[i], unigramas[i+1]);
-			biProb[i+1] = this->calcularProbabilidad(unigramas[i+1], unigramas[i+2]);
+			double bi = this->calcularProbabilidad(unigramas[i], unigramas[i+1]);
+			double uni = this->calcularProbabilidad("", unigramas[i]);
+			biProb[i] = bi*uni;
+			bi = this->calcularProbabilidad(unigramas[i+1], unigramas[i+2]);
+			uni = this->calcularProbabilidad("", unigramas[i+1]);
+			biProb[i+1] = bi+uni; //Regla de la cadena. Probabilidad!
 
 			double menor;
 			if (biProb[i] <= biProb[i+1]) menor = biProb[i];
@@ -256,10 +262,14 @@ void TestV2::calcularPrediccion(){
 	double bi_minProb = std::numeric_limits<double>::max();
 	int bi_minProb_pos = 0;
 
-	// BUSCO CUAL ES EL BIGRAMA DE MENOR FRECUENCIA
+	// BUSCO CUAL ES EL BIGRAMA DE MENOR PROBABILIDAD
 	if (biProb[tri_minProb_pos] == 0){
-		biProb[tri_minProb_pos] = this->calcularProbabilidad(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
-		biProb[tri_minProb_pos+1] = this->calcularProbabilidad(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
+		double bi = this->calcularProbabilidad(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
+		double uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos]);
+		biProb[tri_minProb_pos] = bi*uni;
+		bi = this->calcularProbabilidad(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
+		uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos+1]);
+		biProb[tri_minProb_pos+1] = bi*uni;
 	}
 	if (biProb[tri_minProb_pos] <= biProb[tri_minProb_pos+1]){
 		bi_minProb = biProb[tri_minProb_pos];
