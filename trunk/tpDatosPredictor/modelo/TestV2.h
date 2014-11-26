@@ -83,7 +83,7 @@ public:
 		this->sentenceSinComillas = sentenceSinComillas;
 	}
 
-	void calcularPrediccion(); // CALCULA LA PALABRA FALTANTE Y MODIFICA SENTECEPREDICHA
+	int calcularPrediccion(); // CALCULA LA PALABRA FALTANTE Y MODIFICA SENTECEPREDICHA. DEVUELVE 1 SI INSERTA ALGO, 0 CASO QUE NO
 };
 
 } /* namespace std */
