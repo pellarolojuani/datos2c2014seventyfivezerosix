@@ -171,42 +171,35 @@ void TestV2::calcularPrediccion(){
 	vector<double> triFrec = vector<double>();
 	vector<double> biFrec = vector<double>();
 
-	vector<double> triProb = vector<double>();
-	vector<double> biProb = vector<double>(cantidadDePalabras-1);
-
+	vector<double> triProb = vector<double>();     // sobrarian 2 posiciones que se ocupan pero luego se eliminan
+	vector<double> biProb = vector<double>(cantidadDePalabras-1);      // sobraria 1 posicion que se ocupa pero luego se elimina
+	cout << "Creados los vectores"<< endl;
 
 	string tri_aux = "";
 	string bi_aux = "";
 
 	int tri_flag = 0; // cantidad de palabras guardadas en tri_aux
 	int bi_flag = 0; // cantidad de palabras guardadas en bi_aux
-	int tri_pos = 0; // guarda posicion dentro de trigramas[]
-	int bi_pos = 0; // guarda posicion dentro de bigramas[]
 
 	word = ""; // limpio contenido de word
 	istringstream frase (this->sentenceSinComillas); // vuelvo a llenar el istringstream
 
 	for(int i=0; i<cantidadDePalabras; i++){
 		frase >> word;
-		//unigramas[i] = word;
 		unigramas.push_back(word);
 		if (tri_flag < 3){
 			tri_aux += word;
 			tri_aux += " ";
 			tri_flag++;
 		} else{
-			//trigramas[tri_pos] = tri_aux;
 			if (tri_flag == 3){
 				tri_aux = tri_aux.substr(0, tri_aux.size()-1); //saco el espacio al final del string
 				trigramas.push_back(tri_aux);
 			}
 			tri_aux = tri_aux.substr(tri_aux.find_first_of(" ")+1);
-			tri_pos++;
-			tri_flag = 3;
 			tri_aux += " ";
 			tri_aux += word;
-			if (i == cantidadDePalabras -1)
-				trigramas.push_back(tri_aux);
+			if (i == cantidadDePalabras -1) trigramas.push_back(tri_aux);
 			tri_aux += " ";
 		}
 		if (bi_flag < 2){
@@ -214,29 +207,26 @@ void TestV2::calcularPrediccion(){
 			bi_aux += " ";
 			bi_flag++;
 		} else{
-			//bigramas[bi_pos] = bi_aux;
 			if (bi_flag == 2){
 				bi_aux = bi_aux.substr(0, bi_aux.size()-1); //saco el espacio al final del string
 				bigramas.push_back(bi_aux);
 			}
 			bi_aux = bi_aux.substr(bi_aux.find_first_of(" ")+1);
-			bi_pos++;
-			bi_flag = 2;
 			bi_aux += " ";
 			bi_aux += word;
-			if (i == cantidadDePalabras -1)
-				bigramas.push_back(bi_aux);
+            if (i == cantidadDePalabras -1) bigramas.push_back(bi_aux);
+
 			bi_aux += " ";
 		}
 	}
-
+	cout << "Llenados los vectores"<< endl;
 	for(int i=0; i<cantidadDePalabras-2; i++){
 		double uni = this->calcularProbabilidad("", unigramas.at(i));
 		double bi = this->calcularProbabilidad(unigramas.at(i), unigramas.at(i+1));
 		double tri = this->calcularProbabilidad(bigramas.at(i), unigramas.at(i+2));
 		triProb.push_back(uni*bi*tri);	//Regla de la cadena. Probabilidad!
 	}
-
+	cout << "Calculadas las probabilidades de tri"<< endl;
 	size_t tri_minProb = std::numeric_limits<double>::max();
 	size_t tri_minProb_pos = 0;
 
@@ -253,11 +243,28 @@ void TestV2::calcularPrediccion(){
 			uni = this->calcularProbabilidad("", unigramas[i+1]);
 			biProb[i+1] = bi+uni; //Regla de la cadena. Probabilidad!
 
-			double menor;
-			if (biProb[i] <= biProb[i+1]) menor = biProb[i];
-			else menor = biProb[i+1];
+			double menor1;
+			if (biProb[i] <= biProb[i+1]) menor1 = biProb[i];
+			else menor1 = biProb[i+1];
+
+			double menor2;
+			bi = this->calcularProbabilidad(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
+			uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos]);
+			biProb[tri_minProb_pos] = bi+uni; //Regla de la cadena. Probabilidad!
+			bi = this->calcularProbabilidad(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
+			uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos+1]);
+			biProb[tri_minProb_pos+1] = bi+uni; //Regla de la cadena. Probabilidad!
+			if (biProb[tri_minProb_pos] <= biProb[tri_minProb_pos+1]) menor2 = biProb[tri_minProb_pos];
+			else menor2 = biProb[tri_minProb_pos+1];
+
+			if (menor1 < menor2){
+				tri_minProb_pos = i;
+				tri_minProb = triProb.at(i);
+			}
+
 		}
 	}
+	cout << "El trigrama de menor probabilidad es: "<< trigramas.at(tri_minProb_pos)<<endl;
 
 	double bi_minProb = std::numeric_limits<double>::max();
 	int bi_minProb_pos = 0;
@@ -278,20 +285,20 @@ void TestV2::calcularPrediccion(){
 		bi_minProb = biProb[tri_minProb_pos+1];
 		bi_minProb_pos = tri_minProb_pos+1;
 	}
-
+	cout << "El bigrama de menor probab es: "<< bigramas.at(bi_minProb_pos)<<endl;
 
 	// BUSCO CUAL ES BIGRAMA CON MAYOR PROBABILIDAD COMPUESTO POR:
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
 
 	string palabraPropuesta;
-	palabraPropuesta = this->getTerminoMasProbable(bigramas.at(bi_minProb_pos));
+	palabraPropuesta = this->getTerminoMasProbable(unigramas.at(bi_minProb_pos));
 
 	// ARMO LA SENTENCE PREDICHA
 	word = ""; // limpio contenido de word
 	istringstream sentence (this->sentenceSinComillas); // vuelvo a llenar el istringstream
 	string frasePropuesta = "";
 
-	for(int i=0; i<bi_minProb_pos+2; i++){
+	for(int i=0; i<bi_minProb_pos+1; i++){
 		sentence >> word;
 		frasePropuesta += word;
 		frasePropuesta += " ";
@@ -299,7 +306,7 @@ void TestV2::calcularPrediccion(){
 	frasePropuesta += palabraPropuesta;
 	if (palabraPropuesta.size() != 0) frasePropuesta += " ";
 
-	for(int i=bi_minProb_pos+2; i<cantidadDePalabras; i++){
+	for(int i=bi_minProb_pos+1; i<cantidadDePalabras; i++){
 		sentence >> word;
 		frasePropuesta += word;
 		if (i != cantidadDePalabras-1) frasePropuesta += " ";
