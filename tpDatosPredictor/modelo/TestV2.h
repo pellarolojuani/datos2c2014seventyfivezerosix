@@ -24,6 +24,7 @@ private:
 	string sentencePredicha; //contiene la sentencia completa.
 	Parser parser;	//Para todas las operaciones de lectura/escritura del archivo
 	string sentenceSinComillas;
+	bool eof;
 
 	NGramas ngramas;
 

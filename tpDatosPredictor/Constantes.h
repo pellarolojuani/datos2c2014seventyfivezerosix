@@ -9,7 +9,7 @@
 #define CONSTANTES_H_
 
 #ifndef LONG_MAX_LINEA
-#define LONG_MAX_LINEA						2500
+#define LONG_MAX_LINEA						3000
 #endif
 
 #ifndef N

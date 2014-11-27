@@ -47,8 +47,8 @@ string Parser::getSiguienteTermino(){
 
 string Parser::getLinea(){
 	char linea[LONG_MAX_LINEA];
+	if (feof(this->archivo)) return "";
 	fgets(linea, LONG_MAX_LINEA, this->archivo);
-
 
 	return linea;
 }
