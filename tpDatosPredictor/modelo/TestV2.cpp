@@ -122,7 +122,7 @@ void TestV2::readNextSentence(){
 
 	size_t posicion = this->parser.getPosicionActualArchivo();
 	string oracionAux =  this->parser.getLinea();
-	if (oracionAux == LONG_MAX_LINEA) oracionAux += this->parser.getLinea();
+	if (oracionAux.size() == LONG_MAX_LINEA) oracionAux += this->parser.getLinea();
 	if (oracionAux.size() == 0 || oracionAux.size() == 1){
 		this->eof = true;
 		return;
