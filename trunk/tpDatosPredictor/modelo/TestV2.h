@@ -41,6 +41,8 @@ public:
 	void cerrarArchivoResultados();
 	void guardarSentencePredicha();
 	double calcularProbabilidad(string unContexto, string unTermino);
+	double calcularProbabilidad_bigrama(string termino1, string termino2);
+	double calcularProbabilidad_trigrama(string termino1, string termino2, string termino3);
 
 	size_t getId() const {
 		return id;

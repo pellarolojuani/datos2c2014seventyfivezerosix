@@ -172,6 +172,18 @@ double TestV2::calcularProbabilidad(string unContexto, string unTermino){
 
 }
 
+double TestV2::calcularProbabilidad_bigrama(string termino1, string termino2){
+	double uni = this->calcularProbabilidad("", termino1);
+	double bi = this->calcularProbabilidad(termino1, termino2);
+	return uni*bi;	//Regla de la cadena. Probabilidad!
+}
+
+double TestV2::calcularProbabilidad_trigrama(string termino1, string termino2, string termino3){
+	double bi = this->calcularProbabilidad_bigrama(termino1, termino2);
+	double tri = this->calcularProbabilidad(termino1 + " " + termino2, termino3);
+	return bi*tri;	//Regla de la cadena. Probabilidad!
+}
+
 int TestV2::calcularPrediccion(){
 	istringstream unaFrase (this->sentenceSinComillas);
 	if (this->sentenceSinComillas==""){
@@ -252,10 +264,7 @@ int TestV2::calcularPrediccion(){
 	}
 	//cout << "Llenados los vectores"<< endl;
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		double uni = this->calcularProbabilidad("", unigramas.at(i));
-		double bi = this->calcularProbabilidad(unigramas.at(i), unigramas.at(i+1));
-		double tri = this->calcularProbabilidad(bigramas.at(i), unigramas.at(i+2));
-		triProb.push_back(uni*bi*tri);	//Regla de la cadena. Probabilidad!
+		triProb.push_back(this->calcularProbabilidad_trigrama(unigramas.at(i), unigramas.at(i+1), unigramas.at(i+2)));
 	}
 	//cout << "Calculadas las probabilidades de tri"<< endl;
 	size_t tri_minProb = std::numeric_limits<double>::max();
@@ -267,24 +276,16 @@ int TestV2::calcularPrediccion(){
 			tri_minProb_pos = i;
 			tri_minProb = triProb.at(i);
 		} else if (triProb.at(i) == tri_minProb){
-			double bi = this->calcularProbabilidad(unigramas[i], unigramas[i+1]);
-			double uni = this->calcularProbabilidad("", unigramas[i]);
-			biProb[i] = bi*uni;
-			bi = this->calcularProbabilidad(unigramas[i+1], unigramas[i+2]);
-			uni = this->calcularProbabilidad("", unigramas[i+1]);
-			biProb[i+1] = bi+uni; //Regla de la cadena. Probabilidad!
+			biProb[i] = this->calcularProbabilidad_bigrama(unigramas[i], unigramas[i+1]);
+			biProb[i+1] = this->calcularProbabilidad_bigrama(unigramas[i+1], unigramas[i+2]);
 
 			double menor1;
 			if (biProb[i] <= biProb[i+1]) menor1 = biProb[i];
 			else menor1 = biProb[i+1];
 
 			double menor2;
-			bi = this->calcularProbabilidad(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
-			uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos]);
-			biProb[tri_minProb_pos] = bi+uni; //Regla de la cadena. Probabilidad!
-			bi = this->calcularProbabilidad(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
-			uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos+1]);
-			biProb[tri_minProb_pos+1] = bi+uni; //Regla de la cadena. Probabilidad!
+			biProb[tri_minProb_pos] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
+			biProb[tri_minProb_pos+1] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
 			if (biProb[tri_minProb_pos] <= biProb[tri_minProb_pos+1]) menor2 = biProb[tri_minProb_pos];
 			else menor2 = biProb[tri_minProb_pos+1];
 
@@ -302,13 +303,9 @@ int TestV2::calcularPrediccion(){
 
 	// BUSCO CUAL ES EL BIGRAMA DE MENOR PROBABILIDAD
 	if (biProb[tri_minProb_pos] == 0){
-		double bi = this->calcularProbabilidad(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
-		double uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos]);
-		biProb[tri_minProb_pos] = bi*uni;
+		biProb[tri_minProb_pos] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);;
 		if (cantidadDePalabras>2){
-			bi = this->calcularProbabilidad(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
-			uni = this->calcularProbabilidad("", unigramas[tri_minProb_pos+1]);
-			biProb[tri_minProb_pos+1] = bi*uni;
+			biProb[tri_minProb_pos+1] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);;
 		}
 	}
 	if ( cantidadDePalabras>2 && biProb[tri_minProb_pos] >= biProb[tri_minProb_pos+1] ){
@@ -325,6 +322,23 @@ int TestV2::calcularPrediccion(){
 
 	string palabraPropuesta;
 	palabraPropuesta = this->getTerminoMasProbable(unigramas.at(bi_minProb_pos));
+
+	// Evaluo si el trigrama con la palabra propuesta es mas probable que el trigrama sin insercion
+	double uni = this->calcularProbabilidad("", unigramas.at(tri_minProb_pos));
+	double bi;
+	double tri;
+	double prob_trigramaPropuesto;
+	if ( bi_minProb_pos == tri_minProb_pos ){
+		prob_trigramaPropuesto = this->calcularProbabilidad_trigrama(unigramas[tri_minProb_pos], palabraPropuesta, unigramas[tri_minProb_pos+1]);
+	} else{
+		prob_trigramaPropuesto = this->calcularProbabilidad_trigrama(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1], palabraPropuesta);
+	}
+
+	// Si el trigramaPropuesto no es mas probable, no inserto nada y devuelvo misma frase
+	if (prob_trigramaPropuesto <= tri_minProb){
+		this->sentencePredicha = this->sentenceSinComillas;
+		return 0;
+	}
 
 	// ARMO LA SENTENCE PREDICHA
 	word = ""; // limpio contenido de word
