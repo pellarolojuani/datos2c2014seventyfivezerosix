@@ -180,6 +180,7 @@ double TestV2::calcularProbabilidad_bigrama(string termino1, string termino2){
 
 double TestV2::calcularProbabilidad_trigrama(string termino1, string termino2, string termino3){
 	double bi = this->calcularProbabilidad_bigrama(termino1, termino2);
+	bi += this->calcularProbabilidad_bigrama(termino2, termino3);
 	double tri = this->calcularProbabilidad(termino1 + " " + termino2, termino3);
 	return bi*tri;	//Regla de la cadena. Probabilidad!
 }
