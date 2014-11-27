@@ -15,6 +15,7 @@ TestV2::TestV2() {
 	this->id = 0;
 	this->sentence = "";
 	this->sentencePredicha = "";
+	this->eof = false;
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
 
@@ -31,6 +32,7 @@ TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama)
 	this->id = id;
 	this->sentence = sentence;
 	this->sentencePredicha = "";
+	this->eof = false;
 	this->parser = Parser();
 	this->parser.abrirArchivo("test_v2.txt");
 
@@ -48,12 +50,12 @@ void TestV2::cerrarArchivoResultados(){
 }
 
 void TestV2::correrPruebas(){
-	size_t i = 0;
-	while (i != 306682){
-		this->readNextSentence();
+
+	this->readNextSentence();
+	while (!this->eof){
 		this->calcularPrediccion();
 		this->guardarSentencePredicha();
-		i++;
+		this->readNextSentence();
 	}
 	this->cerrarArchivoResultados();
 	this->cerrarArchivo();
@@ -65,14 +67,21 @@ void TestV2::guardarSentencePredicha(){
 	ostringstream num;
 	num << (this->id);
 	string ID = num.str();
+	string sentence = "";
+	for (size_t a = 0; a < this->sentencePredicha.length(); a++){
+		sentence += this->sentencePredicha[a];
+		if (this->sentencePredicha[a] == '"'){
+			sentence += '"';
+		}
+	}
 	linea += ID;
 	linea += ",";
 	linea += comillas;
-	linea += this->sentencePredicha;
+	linea += sentence;
 	linea += comillas;
 	linea += '\n';
 	fputs(linea.c_str(), this->resultados);
-	cout<<"Generada sentence "<<ID<<endl;
+	cout<<ID<<endl;
 }
 
 TestV2::~TestV2() {
@@ -113,6 +122,10 @@ void TestV2::readNextSentence(){
 
 	size_t posicion = this->parser.getPosicionActualArchivo();
 	string oracionAux =  this->parser.getLinea();
+	if (oracionAux.size() == 0 || oracionAux.size() == 1){
+		this->eof = true;
+		return;
+	}
 
 	string oracion = oracionAux.erase(oracionAux.find_last_not_of(" \n\r\t")+1);
 	std::size_t pos = oracion.find(",");
@@ -185,7 +198,7 @@ int TestV2::calcularPrediccion(){
 
 	vector<double> triProb = vector<double>();     // sobrarian 2 posiciones que se ocupan pero luego se eliminan
 	vector<double> biProb = vector<double>(cantidadDePalabras-1);      // sobraria 1 posicion que se ocupa pero luego se elimina
-	cout << "Creados los vectores"<< endl;
+	//cout << "Creados los vectores"<< endl;
 
 	string tri_aux = "";
 	string bi_aux = "";
@@ -236,14 +249,14 @@ int TestV2::calcularPrediccion(){
 			bigramas.push_back(bi_aux);
 		}
 	}
-	cout << "Llenados los vectores"<< endl;
+	//cout << "Llenados los vectores"<< endl;
 	for(int i=0; i<cantidadDePalabras-2; i++){
 		double uni = this->calcularProbabilidad("", unigramas.at(i));
 		double bi = this->calcularProbabilidad(unigramas.at(i), unigramas.at(i+1));
 		double tri = this->calcularProbabilidad(bigramas.at(i), unigramas.at(i+2));
 		triProb.push_back(uni*bi*tri);	//Regla de la cadena. Probabilidad!
 	}
-	cout << "Calculadas las probabilidades de tri"<< endl;
+	//cout << "Calculadas las probabilidades de tri"<< endl;
 	size_t tri_minProb = std::numeric_limits<double>::max();
 	size_t tri_minProb_pos = 0;
 
@@ -281,7 +294,7 @@ int TestV2::calcularPrediccion(){
 
 		}
 	}
-	cout << "El trigrama de menor probabilidad es: "<< trigramas.at(tri_minProb_pos)<<endl;
+	//cout << "El trigrama de menor probabilidad es: "<< trigramas.at(tri_minProb_pos)<<endl;
 
 	double bi_minProb = std::numeric_limits<double>::max();
 	int bi_minProb_pos = 0;
@@ -304,7 +317,7 @@ int TestV2::calcularPrediccion(){
 		bi_minProb = biProb[tri_minProb_pos];
 		bi_minProb_pos = tri_minProb_pos;
 	}
-	cout << "El bigrama de menor probab es: "<< bigramas.at(bi_minProb_pos)<<endl;
+	//cout << "El bigrama de menor probab es: "<< bigramas.at(bi_minProb_pos)<<endl;
 
 	// BUSCO CUAL ES BIGRAMA CON MAYOR PROBABILIDAD COMPUESTO POR:
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
