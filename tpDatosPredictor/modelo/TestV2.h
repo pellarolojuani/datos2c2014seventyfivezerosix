@@ -36,7 +36,7 @@ public:
 	TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama);
 	virtual ~TestV2();
 
-	string getTerminoMasProbable(string unContexto);
+	string getTerminoMasProbable(string unContexto, string unContextoPosterior = "");
 	void armarHashDeRegistros();
 	void cerrarArchivoResultados();
 	void guardarSentencePredicha();

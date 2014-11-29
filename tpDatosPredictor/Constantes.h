@@ -9,7 +9,7 @@
 #define CONSTANTES_H_
 
 #ifndef LONG_MAX_LINEA
-#define LONG_MAX_LINEA						2500
+#define LONG_MAX_LINEA						5000
 #endif
 
 #ifndef N
@@ -26,7 +26,7 @@
 
 /*1073741824*/
 #ifndef GIGA
-#define GIGA								524288000//262144000 //250MB
+#define GIGA								107374182 //100MB 134217728 //125MB 268435456 //250MB
 #endif
 
 #ifndef READ

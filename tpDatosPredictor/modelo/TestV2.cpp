@@ -96,15 +96,20 @@ void TestV2::armarHashDeRegistros(){
 	ngramas.levantarNgramas();
 }
 
-string TestV2::getTerminoMasProbable(string unContexto){
+string TestV2::getTerminoMasProbable(string unContexto, string unContextoPosterior){
 	//este metodo devuelve el termino con mayor frecuencia dentro de el contexto indicado como parametro
 
 	size_t maxFrec = 0;
 	string maxElemento = "";
+	size_t frecRegresivaProgresiva = 0;
 	for (tr1::unordered_map<string, size_t>::iterator it = this->ngramas.contextos[unContexto].begin(); it != this->ngramas.contextos[unContexto].end(); it++){
-		if ((*it).second > maxFrec) {
+		frecRegresivaProgresiva = (*it).second;
+		if (unContextoPosterior != ""){
+		frecRegresivaProgresiva += this->ngramas.contextos[(*it).first][unContextoPosterior];
+		}
+		if (frecRegresivaProgresiva > maxFrec) {
 			if ((*it).first.size() != 0){
-				maxFrec = (*it).second;
+				maxFrec = frecRegresivaProgresiva;
 				maxElemento = (*it).first;
 			}
 		}
@@ -180,7 +185,6 @@ double TestV2::calcularProbabilidad_bigrama(string termino1, string termino2){
 
 double TestV2::calcularProbabilidad_trigrama(string termino1, string termino2, string termino3){
 	double bi = this->calcularProbabilidad_bigrama(termino1, termino2);
-	bi += this->calcularProbabilidad_bigrama(termino2, termino3);
 	double tri = this->calcularProbabilidad(termino1 + " " + termino2, termino3);
 	return bi*tri;	//Regla de la cadena. Probabilidad!
 }
@@ -322,7 +326,7 @@ int TestV2::calcularPrediccion(){
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
 
 	string palabraPropuesta;
-	palabraPropuesta = this->getTerminoMasProbable(unigramas.at(bi_minProb_pos));
+	palabraPropuesta = this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), unigramas.at(bi_minProb_pos+1));
 
 	// Evaluo si el trigrama con la palabra propuesta es mas probable que el trigrama sin insercion
 	double uni = this->calcularProbabilidad("", unigramas.at(tri_minProb_pos));
