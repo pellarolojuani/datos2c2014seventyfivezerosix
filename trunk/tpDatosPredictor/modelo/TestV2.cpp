@@ -103,6 +103,8 @@ string TestV2::getTerminoMasProbable(string unContexto, string unContextoPosteri
 	string maxElemento = "";
 	tr1::unordered_map<string, size_t>::iterator it_buscador;
 	size_t frecRegresivaProgresiva = 0;
+	bool contextoPunto = false;
+
 	for (tr1::unordered_map<string, size_t>::iterator it = this->ngramas.contextos[unContexto].begin(); it != this->ngramas.contextos[unContexto].end(); it++){
 		frecRegresivaProgresiva = (*it).second;
 		if (unContextoPosterior != ""){
@@ -111,6 +113,13 @@ string TestV2::getTerminoMasProbable(string unContexto, string unContextoPosteri
 				frecRegresivaProgresiva += (*it_buscador).second;
 			}
 		}
+
+		if (unContexto==".") contextoPunto = true;
+		char c = (*it).first[0];
+		if (contextoPunto && !isupper(c)){
+			frecRegresivaProgresiva = 0;
+		}
+
 		if (frecRegresivaProgresiva > maxFrec) {
 			if ((*it).first.size() != 0){
 				maxFrec = frecRegresivaProgresiva;
@@ -368,7 +377,7 @@ int TestV2::calcularPrediccion(){
 	}
 
 	// Si el trigramaPropuesto no es mas probable, no inserto nada y devuelvo misma frase
-	if (prob_trigramaPropuesto <= tri_minProb){
+	if (prob_trigramaPropuesto - tri_minProb < 0.1){
 		this->sentencePredicha = this->sentenceSinComillas;
 		return 0;
 	}
