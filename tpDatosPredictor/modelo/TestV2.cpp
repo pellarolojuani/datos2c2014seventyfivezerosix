@@ -101,11 +101,15 @@ string TestV2::getTerminoMasProbable(string unContexto, string unContextoPosteri
 
 	size_t maxFrec = 0;
 	string maxElemento = "";
+	tr1::unordered_map<string, size_t>::iterator it_buscador;
 	size_t frecRegresivaProgresiva = 0;
 	for (tr1::unordered_map<string, size_t>::iterator it = this->ngramas.contextos[unContexto].begin(); it != this->ngramas.contextos[unContexto].end(); it++){
 		frecRegresivaProgresiva = (*it).second;
 		if (unContextoPosterior != ""){
-		frecRegresivaProgresiva += this->ngramas.contextos[(*it).first][unContextoPosterior];
+			it_buscador = this->ngramas.contextos[(*it).first].find(unContextoPosterior);
+			if (it_buscador != this->ngramas.contextos[(*it).first].end()){
+				frecRegresivaProgresiva += (*it_buscador).second;
+			}
 		}
 		if (frecRegresivaProgresiva > maxFrec) {
 			if ((*it).first.size() != 0){
@@ -202,7 +206,7 @@ int TestV2::calcularPrediccion(){
 		cantidadDePalabras++;
 	}
 
-	if (cantidadDePalabras==1){
+	if (cantidadDePalabras<3){
 		this->sentencePredicha = this->sentenceSinComillas;
 		return 0;
 	}
