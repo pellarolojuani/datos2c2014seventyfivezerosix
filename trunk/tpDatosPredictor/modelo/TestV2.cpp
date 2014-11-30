@@ -163,20 +163,44 @@ void TestV2::readNextSentence(){
 
 double TestV2::calcularProbabilidad(string unContexto, string unTermino){
 
-	double num = this->ngramas.contextos[unContexto][unTermino];
-	double den = this->ngramas.contextos[unContexto][TOTAL_FRECUENCIAS];
+	tr1::unordered_map<string, tr1::unordered_map<string, size_t> >::iterator it_buscadorContexto;
+	tr1::unordered_map<string, size_t>::iterator it_buscadorTermino;
+	double num = 0;
+	double den = 0;
 
-	if (den == 0) return 0; 	//en esta caso no existe el termino en nuestro diccionario: CAGAMOS!
-	if (num == 0 && unContexto.size() != 0){	//Bajamos al contexto anterior para calcular su probabilidad
-		size_t pos = unContexto.find(" ");
-		if (pos != string::npos){
-			string contextoAnterior = unContexto.substr(unContexto.find(" ")+1);
-			num = 0.4*this->ngramas.contextos[contextoAnterior][unTermino];
-		}
-		if (num == 0 || pos == string::npos){ //en este caso calculamos la probabilidad del termino sin contexto
-			num = 0.4*0.4*this->ngramas.contextos[""][unTermino];
+	it_buscadorContexto = this->ngramas.contextos.find(unContexto);
+	if ( it_buscadorContexto != this->ngramas.contextos.end() ){
+		// encontro el contexto
+		it_buscadorTermino = this->ngramas.contextos[unContexto].find(unTermino);
+		if ( it_buscadorTermino != this->ngramas.contextos[unContexto].end() ){
+			// encontro el termino con dicho contexto
+			num = (*it_buscadorTermino).second;
+			den = this->ngramas.contextos[unContexto][TOTAL_FRECUENCIAS];
 		}
 	}
+	if ( it_buscadorContexto == this->ngramas.contextos.end() || it_buscadorTermino == this->ngramas.contextos[unContexto].end() ){
+			// no encontro el contexto o encontro el contexto, pero no existe el termino con dicho contexto
+			size_t pos = unContexto.find(" ");
+			if (pos != string::npos){
+				string contextoAnterior = unContexto.substr(unContexto.find(" ")+1);
+				it_buscadorTermino = this->ngramas.contextos[contextoAnterior].find(unTermino);
+				// el contextoAnterior existe, porque existe contexto
+				if ( it_buscadorTermino == this->ngramas.contextos[contextoAnterior].end() ){
+					// no encontro el termino con contextoAnterior
+					if (pos == string::npos){ //en este caso calculamos la probabilidad del termino sin contexto
+					num = 0.4*0.4*this->ngramas.contextos[""][unTermino];
+					den = this->ngramas.contextos[""][TOTAL_FRECUENCIAS];
+					}
+				} else{
+					// encontro el termino con contextoAnterior
+					num = 0.4*(*it_buscadorTermino).second;
+					den = this->ngramas.contextos[contextoAnterior][TOTAL_FRECUENCIAS];
+					}
+			}
+		}
+
+	if (den == 0) return 0; 	//en esta caso no existe el termino en nuestro diccionario: CAGAMOS!
+
 	return num/den;
 
 }
