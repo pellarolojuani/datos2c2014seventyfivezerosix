@@ -101,20 +101,35 @@ string TestV2::getTerminoMasProbable(string unContexto, string unContextoPosteri
 
 	size_t maxFrec = 0;
 	string maxElemento = "";
-	tr1::unordered_map<string, size_t>::iterator it_buscador;
+	tr1::unordered_map<string, tr1::unordered_map<string, size_t> >::iterator it_buscadorContexto;
+	tr1::unordered_map<string, size_t>::iterator it_buscador2;
 	size_t frecRegresivaProgresiva = 0;
 	bool contextoPunto = false;
+
+	it_buscadorContexto = this->ngramas.contextos.find(unContexto);
+	if ( it_buscadorContexto == this->ngramas.contextos.end() ){
+		// no encontro el contexto, buscamos si podemos reducir el contexto de 2 a 1 palabra
+		size_t pos = unContexto.find(" ");
+		if (pos != string::npos){
+			unContexto = unContexto.substr(unContexto.find(" ")+1);
+		}
+	}
 
 	for (tr1::unordered_map<string, size_t>::iterator it = this->ngramas.contextos[unContexto].begin(); it != this->ngramas.contextos[unContexto].end(); it++){
 		frecRegresivaProgresiva = (*it).second;
 		if (unContextoPosterior != ""){
-			it_buscador = this->ngramas.contextos[(*it).first].find(unContextoPosterior);
-			if (it_buscador != this->ngramas.contextos[(*it).first].end()){
-				frecRegresivaProgresiva += (*it_buscador).second;
+			it_buscador2 = this->ngramas.contextos[(*it).first].find(unContextoPosterior);
+			if (it_buscador2 != this->ngramas.contextos[(*it).first].end()){
+				frecRegresivaProgresiva += (*it_buscador2).second;
 			}
 		}
 
-		if (unContexto==".") contextoPunto = true;
+		string contextoAnterior = unContexto;
+		size_t pos = unContexto.find(" ");
+		if (pos != string::npos){
+			contextoAnterior = unContexto.substr(unContexto.find(" ")+1);
+		}
+		if (contextoAnterior==".") contextoPunto = true;
 		char c = (*it).first[0];
 		if (contextoPunto && !isupper(c)){
 			frecRegresivaProgresiva = 0;
@@ -363,7 +378,12 @@ int TestV2::calcularPrediccion(){
 	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
 
 	string palabraPropuesta;
+	if (bi_minProb_pos>0){
+		// quiere decir que no estamos al comienzo de la frase, hay palabras antes que bi_minProb_pos
+		palabraPropuesta = this->getTerminoMasProbable(bigramas.at(bi_minProb_pos-1), unigramas.at(bi_minProb_pos+1));
+	} else{
 	palabraPropuesta = this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), unigramas.at(bi_minProb_pos+1));
+	}
 
 	// Evaluo si el trigrama con la palabra propuesta es mas probable que el trigrama sin insercion
 	double uni = this->calcularProbabilidad("", unigramas.at(tri_minProb_pos));
