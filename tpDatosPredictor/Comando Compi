@@ -1,0 +1,1 @@
+g++ NGrama/NGrama.cpp modelo/TestV2.cpp BIS/NGramas.cpp manejoArchivo/manejoArchivo.cpp parser/Nodo.cpp parser/Parser.cpp NGrama/Registro.cpp util/Timer.cpp Pruebas.cpp -o pruebas
