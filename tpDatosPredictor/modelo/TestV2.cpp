@@ -50,15 +50,30 @@ void TestV2::cerrarArchivoResultados(){
 }
 
 void TestV2::correrPruebas(){
+	int cambiadas = 0;
+	int sinCambiar = 0;
+	ofstream cambios;
+	cambios.open("frasesCambiadas.txt");
 
 	this->readNextSentence();
 	while (!this->eof){
-		this->calcularPrediccion();
+		int valor;
+		valor = this->calcularPrediccion();
+		if (valor==1){
+			cambiadas++;
+			cambios << this->id << ": " << this->sentencePredicha << endl;
+		} else{
+			sinCambiar++;
+		}
 		this->guardarSentencePredicha();
 		this->readNextSentence();
 	}
+	cambios.close();
 	this->cerrarArchivoResultados();
 	this->cerrarArchivo();
+	cout << "Frases sin cambiar: "<< sinCambiar << endl;
+	cout << "Cambiadas: " << cambiadas << endl;
+	cout << "Total: " << cambiadas+sinCambiar << endl;
 }
 
 void TestV2::guardarSentencePredicha(){
@@ -191,39 +206,67 @@ double TestV2::calcularProbabilidad(string unContexto, string unTermino){
 	tr1::unordered_map<string, size_t>::iterator it_buscadorTermino;
 	double num = 0;
 	double den = 0;
+	bool flag_buscarEnContextoAnterior = false;
+	bool flag_buscarSinContexto = false;
 
 	it_buscadorContexto = this->ngramas.contextos.find(unContexto);
 	if ( it_buscadorContexto != this->ngramas.contextos.end() ){
 		// encontro el contexto
 		it_buscadorTermino = this->ngramas.contextos[unContexto].find(unTermino);
 		if ( it_buscadorTermino != this->ngramas.contextos[unContexto].end() ){
-			// encontro el termino con dicho contexto
+			// encontro contexto y el termino
 			num = (*it_buscadorTermino).second;
 			den = this->ngramas.contextos[unContexto][TOTAL_FRECUENCIAS];
+		} else{
+			//encontro contexto pero no el termino
+			flag_buscarEnContextoAnterior = true;
 		}
+	} else{
+		// no encontro el contexto
+		flag_buscarEnContextoAnterior = true;
 	}
-	if ( it_buscadorContexto == this->ngramas.contextos.end() || it_buscadorTermino == this->ngramas.contextos[unContexto].end() ){
-			// no encontro el contexto o encontro el contexto, pero no existe el termino con dicho contexto
+
+	if ( flag_buscarEnContextoAnterior ){
+			// no encontro el contexto o encontro contexto pero no termino
 			size_t pos = unContexto.find(" ");
 			if (pos != string::npos){
 				string contextoAnterior = unContexto.substr(unContexto.find(" ")+1);
-				it_buscadorTermino = this->ngramas.contextos[contextoAnterior].find(unTermino);
-				// el contextoAnterior existe, porque existe contexto
-				if ( it_buscadorTermino == this->ngramas.contextos[contextoAnterior].end() ){
-					// no encontro el termino con contextoAnterior
-					if (pos == string::npos){ //en este caso calculamos la probabilidad del termino sin contexto
-					num = 0.4*0.4*this->ngramas.contextos[""][unTermino];
-					den = this->ngramas.contextos[""][TOTAL_FRECUENCIAS];
+				it_buscadorContexto = this->ngramas.contextos.find(contextoAnterior);
+				if (it_buscadorContexto != this->ngramas.contextos.end()){
+					// encontro contextoAnterior
+					it_buscadorTermino = this->ngramas.contextos[contextoAnterior].find(unTermino);
+					if ( it_buscadorTermino != this->ngramas.contextos[contextoAnterior].end() ){
+						// encontro contextoAnterior y termino
+						num = 0.4*(*it_buscadorTermino).second;
+						den = this->ngramas.contextos[contextoAnterior][TOTAL_FRECUENCIAS];
+					} else{
+						// encontro contextoAnterior pero no el termino
+						flag_buscarSinContexto = true;
 					}
 				} else{
-					// encontro el termino con contextoAnterior
-					num = 0.4*(*it_buscadorTermino).second;
-					den = this->ngramas.contextos[contextoAnterior][TOTAL_FRECUENCIAS];
-					}
+					// no encontro contextoAnterior
+					flag_buscarSinContexto = true;
+				}
+			} else{
+				// no hay mas palabras para achicar el contexto
+				flag_buscarSinContexto = true;
 			}
-		}
+	}
 
-	if (den == 0) return 0; 	//en esta caso no existe el termino en nuestro diccionario: CAGAMOS!
+	if ( flag_buscarSinContexto ){
+		// o no encontro contextoAnterior
+		// o encontro contextoAnterior pero no termino
+		// o no hay mas palabras para achicar el contexto
+		it_buscadorTermino = this->ngramas.contextos[""].find(unTermino);
+		if ( it_buscadorTermino != this->ngramas.contextos[""].end() ){
+			// encontro el termino sin contexto
+			num = 0.4*0.4*this->ngramas.contextos[""][unTermino];
+			den = this->ngramas.contextos[""][TOTAL_FRECUENCIAS];
+		} else{
+			// no encontro el termino
+			return 0; //en esta caso no existe el termino en nuestro diccionario: CAGAMOS!
+		}
+	}
 
 	return num/den;
 
@@ -352,8 +395,9 @@ int TestV2::calcularPrediccion(){
 			}
 
 		}
+	//if (triProb.at(i)==0) cout << "Trigrama <<" << trigramas.at(i) << ">> con Probabilidad <<" << triProb.at(i) << endl;
 	}
-	//cout << "El trigrama de menor probabilidad es: "<< trigramas.at(tri_minProb_pos)<<endl;
+	//cout << "El trigrama de menor probabilidad es <<"<< trigramas.at(tri_minProb_pos)<<">>"<<endl;
 
 	double bi_minProb = std::numeric_limits<double>::max();
 	int bi_minProb_pos = 0;
@@ -397,7 +441,7 @@ int TestV2::calcularPrediccion(){
 	}
 
 	// Si el trigramaPropuesto no es mas probable, no inserto nada y devuelvo misma frase
-	if (prob_trigramaPropuesto - tri_minProb < 0.1){
+	if (prob_trigramaPropuesto - tri_minProb < 0.0001){
 		this->sentencePredicha = this->sentenceSinComillas;
 		return 0;
 	}
