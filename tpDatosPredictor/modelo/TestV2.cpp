@@ -260,7 +260,7 @@ double TestV2::calcularProbabilidad(string unContexto, string unTermino){
 		it_buscadorTermino = this->ngramas.contextos[""].find(unTermino);
 		if ( it_buscadorTermino != this->ngramas.contextos[""].end() ){
 			// encontro el termino sin contexto
-			num = 0.4*0.4*this->ngramas.contextos[""][unTermino];
+			num = this->ngramas.contextos[""][unTermino];
 			den = this->ngramas.contextos[""][TOTAL_FRECUENCIAS];
 		} else{
 			// no encontro el termino
