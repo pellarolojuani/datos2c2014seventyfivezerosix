@@ -367,77 +367,122 @@ int TestV2::calcularPrediccion(){
 		triProb.push_back(this->calcularProbabilidad_trigrama(unigramas.at(i), unigramas.at(i+1), unigramas.at(i+2)));
 	}
 	//cout << "Calculadas las probabilidades de tri"<< endl;
-	size_t tri_minProb = std::numeric_limits<double>::max();
-	size_t tri_minProb_pos = 0;
 
-	// BUSCO CUAL ES EL TRIGRAMA DE MENOR PROBABILIDAD
+	double tri_minProb = std::numeric_limits<double>::max();
+	// BUSCO CUAL ES EL TRIGRAMA DE MENOR PROBABILIDAD --------------------------------------------
+
+	// busco cual es la menor probabilidad
 	for(int i=0; i<cantidadDePalabras-2; i++){
 		if (triProb.at(i) < tri_minProb){
-			tri_minProb_pos = i;
 			tri_minProb = triProb.at(i);
-		} else if (triProb.at(i) == tri_minProb){
-			biProb[i] = this->calcularProbabilidad_bigrama(unigramas[i], unigramas[i+1]);
-			biProb[i+1] = this->calcularProbabilidad_bigrama(unigramas[i+1], unigramas[i+2]);
-
-			double menor1;
-			if (biProb[i] <= biProb[i+1]) menor1 = biProb[i];
-			else menor1 = biProb[i+1];
-
-			double menor2;
-			biProb[tri_minProb_pos] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);
-			biProb[tri_minProb_pos+1] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);
-			if (biProb[tri_minProb_pos] <= biProb[tri_minProb_pos+1]) menor2 = biProb[tri_minProb_pos];
-			else menor2 = biProb[tri_minProb_pos+1];
-
-			if (menor1 < menor2){
-				tri_minProb_pos = i;
-				tri_minProb = triProb.at(i);
-			}
-
 		}
-	//if (triProb.at(i)==0) cout << "Trigrama <<" << trigramas.at(i) << ">> con Probabilidad <<" << triProb.at(i) << endl;
 	}
-	//cout << "El trigrama de menor probabilidad es <<"<< trigramas.at(tri_minProb_pos)<<">>"<<endl;
+
+	// agrego en un vector la posicion de todos los trigramas de probabilidad tri_minProb
+	vector<int> tri_minProb_pos = vector<int>();
+	for(int i=0; i<cantidadDePalabras-2; i++){
+		if (triProb.at(i) == tri_minProb){
+			tri_minProb_pos.push_back(i);
+		}
+	}
+/*	// los trigramas de peor probab son:
+	for (vector<int>::iterator it = tri_minProb_pos.begin() ; it != tri_minProb_pos.end(); ++it){
+		cout << "<" << trigramas.at((*it)) << ">" << " con probab " << triProb.at((*it));
+	}
+*/
+	// a los trigramas selectos, les agrego una palabra y guardo la probabilidad de dicho trigramaConInsercion en un vector
+	vector<double> probab_trigramasPropuestos = vector<double>();
+	vector<string> palabrasPropuestas = vector<string>();
+	int numeroDeIteracion = 0;
+	for (vector<int>::iterator it = tri_minProb_pos.begin() ; it != tri_minProb_pos.end(); ++it){
+		double bi_minProb = std::numeric_limits<double>::max();
+		int bi_minProb_pos = 0;
+
+		// BUSCO CUAL ES EL BIGRAMA DE MENOR PROBABILIDAD
+		if (biProb[(*it)] == 0){
+			biProb[(*it)] = this->calcularProbabilidad_bigrama(unigramas[(*it)], unigramas[(*it)+1]);;
+			if (cantidadDePalabras>2){
+				biProb[(*it)+1] = this->calcularProbabilidad_bigrama(unigramas[(*it)+1], unigramas[(*it)+2]);;
+			}
+		}
+		if ( cantidadDePalabras>2 && biProb[(*it)] >= biProb[(*it)+1] ){
+			bi_minProb = biProb[(*it)+1];
+			bi_minProb_pos = (*it)+1;
+		} else{
+			bi_minProb = biProb[(*it)];
+			bi_minProb_pos = (*it);
+		}
+		// peor bigrama encontrado
+
+		// BUSCO CUAL ES BIGRAMA CON MAYOR PROBABILIDAD COMPUESTO POR:
+		// 1ERA PALABRA DEL BIGRAMAS[bi_minProb_pos] + ALGUNA OTRA
+
+		if (bi_minProb_pos>0){
+			// quiere decir que no estamos al comienzo de la frase, hay palabras antes que bi_minProb_pos
+			palabrasPropuestas.push_back( this->getTerminoMasProbable(bigramas.at(bi_minProb_pos-1), unigramas.at(bi_minProb_pos+1)) );
+		} else{
+			palabrasPropuestas.push_back( this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), unigramas.at(bi_minProb_pos+1)) );
+		}
+		// calculo probabilidad de tri
+		if ( bi_minProb_pos == (*it) ){
+			probab_trigramasPropuestos.push_back( this->calcularProbabilidad_trigrama(unigramas[(*it)], palabrasPropuestas.at(numeroDeIteracion), unigramas[(*it)+1]) );
+		} else{
+			probab_trigramasPropuestos.push_back( this->calcularProbabilidad_trigrama(unigramas[(*it)], unigramas[(*it)+1], palabrasPropuestas.at(numeroDeIteracion)) );
+		}
+		numeroDeIteracion++;
+	} // ya calculadas las probab de los trigramas propuestos
+
+	int tri_minProbUnica_pos = 0;
+	int palabraPropuesta_pos = 0;
+	// me quedo con la probabilidad mas baja de los trigramas propuestos
+	numeroDeIteracion = 0;
+	double triPropuesto_minProb = std::numeric_limits<double>::max();
+	for(vector<int>::iterator it = tri_minProb_pos.begin() ; it != tri_minProb_pos.end(); ++it){
+		if (triProb.at((*it)) < triPropuesto_minProb){
+			triPropuesto_minProb = triProb.at((*it));
+			tri_minProbUnica_pos = (*it);
+			palabraPropuesta_pos = numeroDeIteracion;
+		}
+		numeroDeIteracion++;
+	}
+
+	// YA DEFINIDO EL DESEMPATE DE PEOR TRIGRAMA -------------------------------------------------------
+
+
+
+
+//	cout <<endl<<"El trigrama de menor probabilidad es <"<< trigramas.at(tri_minProbUnica_pos)<<"> con probab "<<triProb.at(tri_minProbUnica_pos)<<endl;
 
 	double bi_minProb = std::numeric_limits<double>::max();
 	int bi_minProb_pos = 0;
 
 	// BUSCO CUAL ES EL BIGRAMA DE MENOR PROBABILIDAD
-	if (biProb[tri_minProb_pos] == 0){
-		biProb[tri_minProb_pos] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1]);;
+	if (biProb[tri_minProbUnica_pos] == 0){
+		biProb[tri_minProbUnica_pos] = this->calcularProbabilidad_bigrama(unigramas[tri_minProbUnica_pos], unigramas[tri_minProbUnica_pos+1]);;
 		if (cantidadDePalabras>2){
-			biProb[tri_minProb_pos+1] = this->calcularProbabilidad_bigrama(unigramas[tri_minProb_pos+1], unigramas[tri_minProb_pos+2]);;
+			biProb[tri_minProbUnica_pos+1] = this->calcularProbabilidad_bigrama(unigramas[tri_minProbUnica_pos+1], unigramas[tri_minProbUnica_pos+2]);;
 		}
 	}
-	if ( cantidadDePalabras>2 && biProb[tri_minProb_pos] >= biProb[tri_minProb_pos+1] ){
-		bi_minProb = biProb[tri_minProb_pos+1];
-		bi_minProb_pos = tri_minProb_pos+1;
+	if ( cantidadDePalabras>2 && biProb[tri_minProbUnica_pos] >= biProb[tri_minProbUnica_pos+1] ){
+		bi_minProb = biProb[tri_minProbUnica_pos+1];
+		bi_minProb_pos = tri_minProbUnica_pos+1;
 	} else{
-		bi_minProb = biProb[tri_minProb_pos];
-		bi_minProb_pos = tri_minProb_pos;
+		bi_minProb = biProb[tri_minProbUnica_pos];
+		bi_minProb_pos = tri_minProbUnica_pos;
 	}
 	//cout << "El bigrama de menor probab es: "<< bigramas.at(bi_minProb_pos)<<endl;
 
-	// BUSCO CUAL ES BIGRAMA CON MAYOR PROBABILIDAD COMPUESTO POR:
-	// 1ERA PALABRA DEL BIGRAMAS[bi_minFrec_pos] + ALGUNA OTRA
-
 	string palabraPropuesta;
-	if (bi_minProb_pos>0){
-		// quiere decir que no estamos al comienzo de la frase, hay palabras antes que bi_minProb_pos
-		palabraPropuesta = this->getTerminoMasProbable(bigramas.at(bi_minProb_pos-1), unigramas.at(bi_minProb_pos+1));
-	} else{
-	palabraPropuesta = this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), unigramas.at(bi_minProb_pos+1));
-	}
+	palabraPropuesta = palabrasPropuestas.at(palabraPropuesta_pos);
 
 	// Evaluo si el trigrama con la palabra propuesta es mas probable que el trigrama sin insercion
-	double uni = this->calcularProbabilidad("", unigramas.at(tri_minProb_pos));
-	double bi;
-	double tri;
 	double prob_trigramaPropuesto;
-	if ( bi_minProb_pos == tri_minProb_pos ){
-		prob_trigramaPropuesto = this->calcularProbabilidad_trigrama(unigramas[tri_minProb_pos], palabraPropuesta, unigramas[tri_minProb_pos+1]);
+	if ( bi_minProb_pos == tri_minProbUnica_pos ){
+		prob_trigramaPropuesto = this->calcularProbabilidad_trigrama(unigramas[tri_minProbUnica_pos], palabraPropuesta, unigramas[tri_minProbUnica_pos+1]);
+//		cout << "Propongo <"<<unigramas[tri_minProbUnica_pos]<<" "<<palabraPropuesta<<" "<<unigramas[tri_minProbUnica_pos+1]<<"> con probab "<<prob_trigramaPropuesto<<endl;
 	} else{
-		prob_trigramaPropuesto = this->calcularProbabilidad_trigrama(unigramas[tri_minProb_pos], unigramas[tri_minProb_pos+1], palabraPropuesta);
+		prob_trigramaPropuesto = this->calcularProbabilidad_trigrama(unigramas[tri_minProbUnica_pos], unigramas[tri_minProbUnica_pos+1], palabraPropuesta);
+//		cout << "Propongo <"<<unigramas[tri_minProbUnica_pos]<<" "<<unigramas[tri_minProbUnica_pos+1]<<" "<<palabraPropuesta<<"> con probab "<<prob_trigramaPropuesto<<endl;
 	}
 
 	// Si el trigramaPropuesto no es mas probable, no inserto nada y devuelvo misma frase
