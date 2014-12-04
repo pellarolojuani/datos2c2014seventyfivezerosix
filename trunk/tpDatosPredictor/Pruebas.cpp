@@ -511,11 +511,11 @@ void pruebaSetEntrenamientoConMap(){
 void nuevaPruebaStreamANgrama(){
 	NGramas nGramas = NGramas(3, " ");
 	FILE *pruebas = fopen("train_v2.txt", "r");
-	FILE *fp_ngramas = fopen("ngramas.txt", "w+");
+	FILE *fp_ngramas = fopen("file3.txt", "w+");
 	Timer t = Timer();
 	t.start();
 	cout<<"Comenzó a leer - "<< t.getTime()<<endl;
-	fseek(pruebas, 262144002, SEEK_SET);
+	fseek(pruebas, 524288000, SEEK_SET);
 	cout<<"Terminó de leer - "<< t.getTime()<<endl;
 	cout<<"Comenzó a armar ngrama - "<< t.getTime()<<endl;
 	nGramas.streamANgrama(pruebas);
@@ -535,7 +535,7 @@ void pruebaLeerLoteDePruebas(){
 
 	for (int i = 0; i < 20; i++){
 		pruebas.readNextSentence();
-		cout<<pruebas.getId()<<": "<<pruebas.getSentence()<<endl<<endl;
+		cout<<pruebas.getId()<<": "<<pruebas.getSentenceSinComillas()<<endl<<endl;
 	}
 
 	pruebas.cerrarArchivo();
@@ -566,7 +566,7 @@ void pruebaLevantarRegistros(){
 
 void pruebaArmarNgramaEnHash(){
 
-	char * buffer = new char [GIGA];
+	char * buffer = new char [261144000];	//250mb
 	//int * reserva = new int [6442450944];
 	//delete[] reserva;
 
@@ -575,11 +575,13 @@ void pruebaArmarNgramaEnHash(){
 		Timer t = Timer();
 		t.start();
 		cout<<"Comienzo leer set entrenamiento - " << t.getTime() << " seg"<< endl;
-		leer_fich.read(buffer,GIGA);
-		leer_fich.read(buffer,GIGA);
-		leer_fich.read(buffer,GIGA);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
 		//avanzo 250mb
-		leer_fich.read(buffer,GIGA);
+		delete []buffer;
+		buffer = new char [261144000];
+		leer_fich.read(buffer,261144000);
 		fichero << buffer ;
 		cout<<"Fin leer set entrenamiento - " << t.getTime() << " seg"<< endl;
 		leer_fich.close();
