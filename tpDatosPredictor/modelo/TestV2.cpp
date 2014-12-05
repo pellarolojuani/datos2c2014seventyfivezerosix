@@ -438,8 +438,8 @@ int TestV2::calcularPrediccion(){
 	numeroDeIteracion = 0;
 	double triPropuesto_minProb = std::numeric_limits<double>::max();
 	for(vector<int>::iterator it = tri_minProb_pos.begin() ; it != tri_minProb_pos.end(); ++it){
-		if (triProb.at((*it)) < triPropuesto_minProb){
-			triPropuesto_minProb = triProb.at((*it));
+		if (probab_trigramasPropuestos.at(numeroDeIteracion) < triPropuesto_minProb){
+			triPropuesto_minProb = probab_trigramasPropuestos.at(numeroDeIteracion);
 			tri_minProbUnica_pos = (*it);
 			palabraPropuesta_pos = numeroDeIteracion;
 		}
