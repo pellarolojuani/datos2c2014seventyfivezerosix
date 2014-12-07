@@ -25,6 +25,11 @@
 #endif
 
 /*1073741824*/
+#ifndef UMBRAL
+#define UMBRAL								0.0009
+#endif
+
+/*1073741824*/
 #ifndef GIGA
 #define GIGA								786432000 //100MB 134217728 //125MB 268435456 //250MB
 #endif
