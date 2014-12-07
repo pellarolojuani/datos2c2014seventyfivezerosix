@@ -119,12 +119,16 @@ void NGramas::streamANgrama(FILE* fp){
 }
 
 void NGramas::levantarNgramas(){
+	cout << "Por favor ingrese la cantidad de archivos de NGramas que desea procesar: ";
+	int cantidadDeArchivos = 0;
+	cin >> cantidadDeArchivos;
+
 	ManejoArchivo manejoArchivo = ManejoArchivo();
 	manejoArchivo.abrirArchivo("file1.txt", "r");
 	Registro unRegistro = Registro();
 	this->contextos.rehash(10000000);
 
-	cout<<"Procesando primer archivo.."<<endl;
+	cout<<"Procesando archivo 1..."<<endl;
 
 	while(feof(manejoArchivo.getArchivo()) == 0){
 		unRegistro = manejoArchivo.getSiguienteRegistro();
@@ -139,56 +143,24 @@ void NGramas::levantarNgramas(){
 	}
 	manejoArchivo.cerrarArchivo();
 
-	//////
-	//REPETIR LO QUE SIGUE PARA CADA UNO DE LOS ARCHIVOS DE NGRAMAS QUE HAYA!!!
-	//////
-	cout<<"Procesando segundo archivo.."<<endl;
-	manejoArchivo.abrirArchivo("file2.txt", "r");
+	// SE PROCESAN ARCHIVOS FILTRADOS
+	for(int i=2; i<cantidadDeArchivos+1; i++){
+		cout<<"Procesando archivo "<< i <<"..."<<endl;
+		manejoArchivo.abrirArchivo("file2.txt", "r");
 
-	while(feof(manejoArchivo.getArchivo()) == 0){
-		unRegistro = manejoArchivo.getSiguienteRegistro();
+		while(feof(manejoArchivo.getArchivo()) == 0){
+			unRegistro = manejoArchivo.getSiguienteRegistro();
 
-		if (unRegistro.getFrecuencia() != 1){
-			this->contextos[unRegistro.getContexto()][unRegistro.getTermino()] += unRegistro.getFrecuencia();
+			if (unRegistro.getFrecuencia() != 1){
+				this->contextos[unRegistro.getContexto()][unRegistro.getTermino()] += unRegistro.getFrecuencia();
 
-			//en cada contexto tenemos la suma total de frecuencias para poder dividir y calcular probabilidades
-			this->contextos[unRegistro.getContexto()][TOTAL_FRECUENCIAS] += unRegistro.getFrecuencia();
+				//en cada contexto tenemos la suma total de frecuencias para poder dividir y calcular probabilidades
+				this->contextos[unRegistro.getContexto()][TOTAL_FRECUENCIAS] += unRegistro.getFrecuencia();
+			}
+
 		}
-
+		manejoArchivo.cerrarArchivo();
 	}
-	manejoArchivo.cerrarArchivo();
-
-	cout<<"Procesando tercer archivo.."<<endl;
-	manejoArchivo.abrirArchivo("file3.txt", "r");
-
-	while(feof(manejoArchivo.getArchivo()) == 0){
-		unRegistro = manejoArchivo.getSiguienteRegistro();
-
-		if (unRegistro.getFrecuencia() != 1){
-			this->contextos[unRegistro.getContexto()][unRegistro.getTermino()] += unRegistro.getFrecuencia();
-
-			//en cada contexto tenemos la suma total de frecuencias para poder dividir y calcular probabilidades
-			this->contextos[unRegistro.getContexto()][TOTAL_FRECUENCIAS] += unRegistro.getFrecuencia();
-		}
-
-	}
-	manejoArchivo.cerrarArchivo();
-
-	cout<<"Procesando cuarto archivo.."<<endl;
-	manejoArchivo.abrirArchivo("file4.txt", "r");
-
-	while(feof(manejoArchivo.getArchivo()) == 0){
-		unRegistro = manejoArchivo.getSiguienteRegistro();
-
-		if (unRegistro.getFrecuencia() != 1){
-			this->contextos[unRegistro.getContexto()][unRegistro.getTermino()] += unRegistro.getFrecuencia();
-
-			//en cada contexto tenemos la suma total de frecuencias para poder dividir y calcular probabilidades
-			this->contextos[unRegistro.getContexto()][TOTAL_FRECUENCIAS] += unRegistro.getFrecuencia();
-		}
-
-	}
-	manejoArchivo.cerrarArchivo();
 
 	cout<<"Final del procesamiento del archivo."<<endl;
 
