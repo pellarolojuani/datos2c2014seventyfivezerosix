@@ -62,7 +62,7 @@ public:
 	void levantarNgramas();
 
 	tr1::unordered_map<string, tr1::unordered_map<string, size_t> > getContextos();
-	void guardarNgramasAAchivo(char* nombreArchivo); //levanta en memoria x bytes del set y armar ngramas.
+	void guardarNgramasAAchivo(string nombreArchivo); //levanta en memoria x bytes del set y armar ngramas.
 	void fusionarArchivosNgramas(string unArchivoNgrama,string otroArchivoNgrama); //abre 2 archivos de ngramas y los fusiona en uno.
 
 

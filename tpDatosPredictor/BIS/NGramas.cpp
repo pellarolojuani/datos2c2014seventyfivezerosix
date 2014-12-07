@@ -262,10 +262,10 @@ void NGramas::stringANGramaHashTable(char* buffer){
 	    iss.str(std::string());
 }
 
-void NGramas:: guardarNgramasAAchivo(char* nombreArchivo){
+void NGramas:: guardarNgramasAAchivo(string nombreArchivo){
 
 	tr1::unordered_map<string, size_t>::iterator itr;
-	 ofstream fichero(nombreArchivo);
+	 ofstream fichero(nombreArchivo.c_str());
 
 	 for(itr = this->registros.begin(); itr != registros.end(); ++itr){
 			 string ngrama = (*itr).first.c_str();
