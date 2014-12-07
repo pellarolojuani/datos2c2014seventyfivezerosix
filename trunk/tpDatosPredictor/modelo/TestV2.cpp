@@ -168,7 +168,6 @@ void TestV2::readNextSentence(){
 	string comillaDoble = "\"\"";
 	string comillaSimple = "\"";
 
-	size_t posicion = this->parser.getPosicionActualArchivo();
 	string oracionAux =  this->parser.getLinea();
 	if (oracionAux.size() == LONG_MAX_LINEA) oracionAux += this->parser.getLinea();
 	if (oracionAux.size() == 0 || oracionAux.size() == 1){
@@ -309,9 +308,9 @@ int TestV2::calcularPrediccion(){
 	vector<double> triFrec = vector<double>();
 	vector<double> biFrec = vector<double>();
 
-	vector<double> triProb = vector<double>();     // sobrarian 2 posiciones que se ocupan pero luego se eliminan
-	vector<double> biProb = vector<double>(cantidadDePalabras-1);      // sobraria 1 posicion que se ocupa pero luego se elimina
-	//cout << "Creados los vectores"<< endl;
+	vector<double> triProb = vector<double>();     // sobrarian 2 posiciones que se ocupan pero contienen basura
+	vector<double> biProb = vector<double>(cantidadDePalabras-1);      // sobraria 1 posicion que se ocupa pero contienen basura
+//	cout << "Creados los vectores"<< endl;
 
 	string tri_aux = "";
 	string bi_aux = "";
@@ -362,11 +361,11 @@ int TestV2::calcularPrediccion(){
 			bigramas.push_back(bi_aux);
 		}
 	}
-	//cout << "Llenados los vectores"<< endl;
+//	cout << "Llenados los vectores"<< endl;
 	for(int i=0; i<cantidadDePalabras-2; i++){
 		triProb.push_back(this->calcularProbabilidad_trigrama(unigramas.at(i), unigramas.at(i+1), unigramas.at(i+2)));
 	}
-	//cout << "Calculadas las probabilidades de tri"<< endl;
+//	cout << "Calculadas las probabilidades de tri"<< endl;
 
 	double tri_minProb = std::numeric_limits<double>::max();
 	// BUSCO CUAL ES EL TRIGRAMA DE MENOR PROBABILIDAD --------------------------------------------
@@ -395,7 +394,6 @@ int TestV2::calcularPrediccion(){
 	vector<string> palabrasPropuestas = vector<string>();
 	int numeroDeIteracion = 0;
 	for (vector<int>::iterator it = tri_minProb_pos.begin() ; it != tri_minProb_pos.end(); ++it){
-		double bi_minProb = std::numeric_limits<double>::max();
 		int bi_minProb_pos = 0;
 
 		// BUSCO CUAL ES EL BIGRAMA DE MENOR PROBABILIDAD
@@ -406,10 +404,8 @@ int TestV2::calcularPrediccion(){
 			}
 		}
 		if ( cantidadDePalabras>2 && biProb[(*it)] >= biProb[(*it)+1] ){
-			bi_minProb = biProb[(*it)+1];
 			bi_minProb_pos = (*it)+1;
 		} else{
-			bi_minProb = biProb[(*it)];
 			bi_minProb_pos = (*it);
 		}
 		// peor bigrama encontrado
@@ -453,7 +449,6 @@ int TestV2::calcularPrediccion(){
 
 //	cout <<endl<<"El trigrama de menor probabilidad es <"<< trigramas.at(tri_minProbUnica_pos)<<"> con probab "<<triProb.at(tri_minProbUnica_pos)<<endl;
 
-	double bi_minProb = std::numeric_limits<double>::max();
 	int bi_minProb_pos = 0;
 
 	// BUSCO CUAL ES EL BIGRAMA DE MENOR PROBABILIDAD
@@ -464,10 +459,8 @@ int TestV2::calcularPrediccion(){
 		}
 	}
 	if ( cantidadDePalabras>2 && biProb[tri_minProbUnica_pos] >= biProb[tri_minProbUnica_pos+1] ){
-		bi_minProb = biProb[tri_minProbUnica_pos+1];
 		bi_minProb_pos = tri_minProbUnica_pos+1;
 	} else{
-		bi_minProb = biProb[tri_minProbUnica_pos];
 		bi_minProb_pos = tri_minProbUnica_pos;
 	}
 	//cout << "El bigrama de menor probab es: "<< bigramas.at(bi_minProb_pos)<<endl;
@@ -486,7 +479,7 @@ int TestV2::calcularPrediccion(){
 	}
 
 	// Si el trigramaPropuesto no es mas probable, no inserto nada y devuelvo misma frase
-	if (prob_trigramaPropuesto - tri_minProb < 0.0001){
+	if (prob_trigramaPropuesto - tri_minProb < UMBRAL){
 		this->sentencePredicha = this->sentenceSinComillas;
 		return 0;
 	}
