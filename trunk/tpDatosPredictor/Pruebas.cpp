@@ -116,10 +116,11 @@ void pruebaStreamANgrama(){
 	length = ftell(fp);
 	rewind(fp);
 
-	void* str = calloc(length + 1, 1);
+/*	void* str = calloc(length + 1, 1);
 	fread(str, 1, length, fp);
 	rewind(fp);
-	printf("%s", str);
+	printf("%s", str);*/
+	printf("%s", oracion);
 
 	cout<<endl<<"ARCHIVO LISTO"<<endl;
 
@@ -215,10 +216,7 @@ void pruebaGuardarNgramasEnArchivo(){
 	length = ftell(fp);
 	rewind(fp);
 
-	void* str = calloc(length + 1, 1);
-	fread(str, 1, length, fp);
-	rewind(fp);
-	printf("%s", str);
+	printf("%s", oracion);
 	cout<<endl;
 
 	NGrama ngrama5 =  NGrama(5," ");
@@ -263,10 +261,7 @@ void pruebaGetRegistroDeArchivo(){
 		length = ftell(fp);
 		rewind(fp);
 
-		void* str = calloc(length + 1, 1);
-		fread(str, 1, length, fp);
-		rewind(fp);
-		printf("%s", str);
+		printf("%s", oracion);
 		cout<<endl;
 
 		NGrama ngrama5 =  NGrama(5," ");
@@ -404,10 +399,7 @@ void pruebaMerge(){
 	length = ftell(fp);
 	rewind(fp);
 
-	void* str = calloc(length + 1, 1);
-	fread(str, 1, length, fp);
-	rewind(fp);
-	printf("%s", str);
+	printf("%s", oracion);
 	cout<<endl;
 
 	NGrama ngrama5 =  NGrama(5," ");
@@ -566,7 +558,7 @@ void pruebaLevantarRegistros(){
 
 void pruebaArmarNgramaEnHash(){
 
-	char * buffer = new char [261144000];	//250mb
+	char * buffer = new char [GIGA];	//250mb
 	//int * reserva = new int [6442450944];
 	//delete[] reserva;
 
@@ -575,13 +567,13 @@ void pruebaArmarNgramaEnHash(){
 		Timer t = Timer();
 		t.start();
 		cout<<"Comienzo leer set entrenamiento - " << t.getTime() << " seg"<< endl;
-		leer_fich.read(buffer,261144000);
-		leer_fich.read(buffer,261144000);
-		leer_fich.read(buffer,261144000);
+//		leer_fich.read(buffer,GIGA);
+//		leer_fich.read(buffer,GIGA);
+//		leer_fich.read(buffer,GIGA);
 		//avanzo 250mb
 		delete []buffer;
-		buffer = new char [261144000];
-		leer_fich.read(buffer,261144000);
+		buffer = new char [GIGA];
+		leer_fich.read(buffer,GIGA);
 		fichero << buffer ;
 		cout<<"Fin leer set entrenamiento - " << t.getTime() << " seg"<< endl;
 		leer_fich.close();
