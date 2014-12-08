@@ -26,7 +26,7 @@
 
 /*1073741824*/
 #ifndef UMBRAL
-#define UMBRAL								0.0009
+#define UMBRAL								0.00009
 #endif
 
 /*1073741824*/
