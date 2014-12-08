@@ -170,7 +170,7 @@ void TestV2::readNextSentence(){
 
 	string oracionAux =  this->parser.getLinea();
 	if (oracionAux.size() == LONG_MAX_LINEA) oracionAux += this->parser.getLinea();
-	if (oracionAux.size() == 0 || oracionAux.size() == 1){
+	if (oracionAux.size() == 0 || oracionAux.size() == 1 || this->getId() == 306681){
 		this->eof = true;
 		return;
 	}
@@ -372,11 +372,15 @@ int TestV2::calcularPrediccion(){
 
 	// busco cual es la menor probabilidad
 	for(int i=0; i<cantidadDePalabras-2; i++){
-		if (triProb.at(i) < tri_minProb){
+		if ( (triProb.at(i) < tri_minProb) && (triProb.at(i)!=0) ){
 			tri_minProb = triProb.at(i);
 		}
 	}
 
+	if (tri_minProb == std::numeric_limits<double>::max()){
+	        this->sentencePredicha = this->sentenceSinComillas;
+	        return 0;
+	    }
 	// agrego en un vector la posicion de todos los trigramas de probabilidad tri_minProb
 	vector<int> tri_minProb_pos = vector<int>();
 	for(int i=0; i<cantidadDePalabras-2; i++){
