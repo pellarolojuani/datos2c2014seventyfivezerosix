@@ -34,6 +34,7 @@ private:
 public:
 	TestV2();
 	TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama);
+	TestV2(string archivoPruebas);
 	virtual ~TestV2();
 
 	string getTerminoMasProbable(string unContexto, string unContextoPosterior = "");
