@@ -28,6 +28,23 @@ TestV2::TestV2() {
 
 }
 
+TestV2::TestV2(string archivoPruebas) {
+	this->id = 0;
+	this->sentence = "";
+	this->sentencePredicha = "";
+	this->eof = false;
+	this->parser = Parser();
+	this->parser.abrirArchivo(archivoPruebas);
+
+	this->resultados = fopen("test_results.txt", "w+");
+
+	//descarto la primera linea del archivo de test y se la pongo
+	//al archivo de test_results
+	fputs(this->parser.getLinea().c_str(), this->resultados);
+	//fputc('\n', this->resultados);
+
+}
+
 TestV2::TestV2(size_t id, string sentence,vector<pair<string,int> > listaNgrama) {
 	this->id = id;
 	this->sentence = sentence;
@@ -74,6 +91,7 @@ void TestV2::correrPruebas(){
 	cout << "Frases sin cambiar: "<< sinCambiar << endl;
 	cout << "Cambiadas: " << cambiadas << endl;
 	cout << "Total: " << cambiadas+sinCambiar << endl;
+
 }
 
 void TestV2::guardarSentencePredicha(){
@@ -483,6 +501,7 @@ int TestV2::calcularPrediccion(){
 	}
 
 	// Si el trigramaPropuesto no es mas probable, no inserto nada y devuelvo misma frase
+
 	if (prob_trigramaPropuesto - tri_minProb < UMBRAL){
 		this->sentencePredicha = this->sentenceSinComillas;
 		return 0;
