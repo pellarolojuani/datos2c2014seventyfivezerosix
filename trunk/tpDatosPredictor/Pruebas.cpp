@@ -556,6 +556,29 @@ void pruebaLevantarRegistros(){
 	t.stop();
 }
 
+void correrSetDePruebas(string unArchivoDePruebas){
+	//esta prueba levanta el archivo de registros y guarda los ngramas en un hash
+
+	char *c = new char[2884354560];	//reservamos mas de 2.5gb de memoria!
+	delete[] c;
+
+	 Timer t = Timer();
+	t.start();
+
+	TestV2 test = TestV2(unArchivoDePruebas);
+	test.armarHashDeRegistros();
+	cout<<"Comienzan a correr las pruebas.."<<endl;
+	test.correrPruebas();
+
+
+	//cout<<"Termino mas probable: "<<test.getTerminoMasProbable("")<<endl;
+	//cout<<"the "<<test.getTerminoMasProbable("the")<<endl;
+	//cout<<"The "<<test.getTerminoMasProbable("The")<<endl;
+
+	cout<<"Tiempo: "<<t.getTime()<<endl;
+	t.stop();
+}
+
 void pruebaArmarNgramaEnHash(){
 
 	char * buffer = new char [GIGA];	//250mb
@@ -570,6 +593,12 @@ void pruebaArmarNgramaEnHash(){
 //		leer_fich.read(buffer,GIGA);
 //		leer_fich.read(buffer,GIGA);
 //		leer_fich.read(buffer,GIGA);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
+		leer_fich.read(buffer,261144000);
 		//avanzo 250mb
 		delete []buffer;
 		buffer = new char [GIGA];
@@ -590,7 +619,37 @@ void pruebaArmarNgramaEnHash(){
 		t.~Timer();
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char * argv[]){
+
+	 // para ejecutarlo, una vez creado el ejecutable
+	 // ./<nombre del ejecutable> -<t o p> <directorio archivo de pruebas>
+	 // si quiero entrenar -t, si quiero correr las pruebas -p
+	//si no indico ningun parametro entra directamente a los tests!!
+
+	string parametro = "";
+	string pathArchivo = "";
+
+	if (argc > 1){
+		parametro = argv[1];
+		pathArchivo = string(argv[2]);
+
+		FILE * archivo = fopen(pathArchivo.c_str(), "r");
+		if (archivo == NULL){
+			cout<<"No existe el archivo indicado. Se cerrara el programa."<<endl;
+			return -1;
+		}else{
+			fclose(archivo); //en este caso existe el archivo y se puede continuar con la ejecucion del programa
+		}
+
+		if (parametro.compare("-p") == 0){
+			correrSetDePruebas(pathArchivo);
+		}
+		if (parametro.compare("-t") == 0){
+			pruebaArmarNgramaEnHash();
+		}
+	}else{ //en caso de que no se indique nigun parametro comienzan a correr las pruebas
+
+
 
 //Aca voy habilitando las pruebas que quiera correr
 int i=0;
@@ -672,6 +731,6 @@ int i=0;
 	cout<<"FIN DE PRUEBAS."<<endl;
 	cout<<endl;
 	return 0;
-
+	}
 
 }
