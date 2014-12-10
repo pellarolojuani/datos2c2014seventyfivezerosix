@@ -154,6 +154,17 @@ string TestV2::getTerminoMasProbable(string unContexto, string unContextoPosteri
 			it_buscador2 = this->ngramas.contextos[(*it).first].find(unContextoPosterior);
 			if (it_buscador2 != this->ngramas.contextos[(*it).first].end()){
 				frecRegresivaProgresiva += (*it_buscador2).second;
+			} else{
+				size_t pos = unContextoPosterior.find(" ");
+				if (pos != string::npos){
+					unContextoPosterior.substr(0, pos);
+					if (unContextoPosterior != ""){
+								it_buscador2 = this->ngramas.contextos[(*it).first].find(unContextoPosterior);
+								if (it_buscador2 != this->ngramas.contextos[(*it).first].end()){
+									frecRegresivaProgresiva += 0.4*(*it_buscador2).second;
+								}
+					}
+				}
 			}
 		}
 
@@ -437,9 +448,21 @@ int TestV2::calcularPrediccion(){
 
 		if (bi_minProb_pos>0){
 			// quiere decir que no estamos al comienzo de la frase, hay palabras antes que bi_minProb_pos
-			palabrasPropuestas.push_back( this->getTerminoMasProbable(bigramas.at(bi_minProb_pos-1), unigramas.at(bi_minProb_pos+1)) );
+			if (bi_minProb_pos<cantidadDePalabras-2){
+				// podemos tomar 2 palabras posteriores
+				palabrasPropuestas.push_back( this->getTerminoMasProbable(bigramas.at(bi_minProb_pos-1), bigramas.at(bi_minProb_pos+1)) );
+			} else{
+				// solo podemos tomar 1 palabra posterior
+				palabrasPropuestas.push_back( this->getTerminoMasProbable(bigramas.at(bi_minProb_pos-1), unigramas.at(bi_minProb_pos+1)) );
+			}
 		} else{
-			palabrasPropuestas.push_back( this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), unigramas.at(bi_minProb_pos+1)) );
+			if (bi_minProb_pos<cantidadDePalabras-2){
+				// podemos tomar 2 palabras posteriores
+				palabrasPropuestas.push_back( this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), bigramas.at(bi_minProb_pos+1)) );
+			} else{
+				// solo podemos tomar 1 palabra posterior
+				palabrasPropuestas.push_back( this->getTerminoMasProbable(unigramas.at(bi_minProb_pos), unigramas.at(bi_minProb_pos+1)) );
+			}
 		}
 		// calculo probabilidad de tri
 		if ( bi_minProb_pos == (*it) ){
