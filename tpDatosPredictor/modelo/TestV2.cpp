@@ -12,7 +12,7 @@
 namespace std {
 
 TestV2::TestV2() {
-	this->id = 0;
+	this->id = -1;
 	this->sentence = "";
 	this->sentencePredicha = "";
 	this->eof = false;
@@ -29,7 +29,7 @@ TestV2::TestV2() {
 }
 
 TestV2::TestV2(string archivoPruebas) {
-	this->id = 0;
+	this->id = -1;
 	this->sentence = "";
 	this->sentencePredicha = "";
 	this->eof = false;
@@ -74,6 +74,7 @@ void TestV2::correrPruebas(){
 
 	this->readNextSentence();
 	while (!this->eof){
+		if  (this->eof == true) break;
 		int valor;
 		valor = this->calcularPrediccion();
 		if (valor==1){
@@ -199,7 +200,7 @@ void TestV2::readNextSentence(){
 
 	string oracionAux =  this->parser.getLinea();
 	if (oracionAux.size() == LONG_MAX_LINEA) oracionAux += this->parser.getLinea();
-	if (oracionAux.size() == 0 || oracionAux.size() == 1 || this->getId() == 306681){
+	if (oracionAux.size() == 0 || oracionAux.size() == 1){
 		this->eof = true;
 		return;
 	}
@@ -221,6 +222,10 @@ void TestV2::readNextSentence(){
 			}
 		}
 		sentenceSinComillaDoble = sentenceSinComilla;
+	}
+	if (std::atoi(id.c_str()) == this->id){
+		this->eof = true;
+		return;
 	}
 	this->setId(std::atoi(id.c_str()));
 	this->setSentenceSinComillas(sentenceSinComillaDoble);
